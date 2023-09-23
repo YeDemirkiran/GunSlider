@@ -9,6 +9,7 @@ public class Bullet : MonoBehaviour
 
     [SerializeField] private Transform parentOnReset;
     [SerializeField] private Vector3 localPositionOnReset;
+    [SerializeField] private Vector3 localRotationOnReset;
     [SerializeField] private float maxDistanceFromParent;
 
     [SerializeField] private int maxHit = 2;
@@ -29,6 +30,7 @@ public class Bullet : MonoBehaviour
         {
             transform.SetParent(parentOnReset);
             transform.localPosition = localPositionOnReset;
+            transform.localEulerAngles = localRotationOnReset;
 
             hasFired = false;
             currentHit = 0;
@@ -38,18 +40,18 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    public void Shoot(Vector3 direction, bool relative)
+    public void Shoot(Vector3 direction)
     {
         hasFired = true;
 
-        if (relative)
-        {
-            rb.AddRelativeForce(direction);
-        }
-        else
-        {
-            rb.AddForce(direction);
-        }
+        rb.AddForce(direction, ForceMode.VelocityChange);
+    }
+
+    public void Shoot(float force)
+    {
+        hasFired = true;
+
+        rb.AddRelativeForce(Vector3.forward * force, ForceMode.VelocityChange);
     }
 
     private void OnCollisionEnter(Collision collision)

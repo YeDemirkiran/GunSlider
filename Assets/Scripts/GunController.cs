@@ -45,6 +45,8 @@ public class GunController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Time.timeScale = 0.1f;
+
         rotation.x += (invertY ? -1 : 1) * Input.GetAxis("Mouse Y") * sensitivity;
         rotation.x = Mathf.Clamp(rotation.x, angleClamp.x, angleClamp.y);
         
@@ -64,7 +66,8 @@ public class GunController : MonoBehaviour
 
                         bullets[currentBullet].transform.SetParent(null);
                         bullets[currentBullet].gameObject.SetActive(true);
-                        bullets[currentBullet].Shoot(transform.forward * bulletForce, false);
+                        bullets[currentBullet].Shoot(transform.forward * bulletForce);
+                        //bullets[currentBullet].Shoot(transform.forward * bulletForce, false);
 
                         currentBullet++;
 
