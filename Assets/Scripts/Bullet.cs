@@ -20,6 +20,7 @@ public class Bullet : MonoBehaviour
 
     [Header("COLLISION")]
     [SerializeField] private GameObject particleOnHit;
+    [SerializeField] private Mesh defaultParticleMesh;
     [SerializeField] private float particleDestroyTime;
 
     [HideInInspector] public bool hasFired = false;
@@ -64,28 +65,39 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        currentHit++;
+
         GameObject collider = collision.gameObject;
 
-        Material mat = collider.GetComponent<Renderer>().material;
-        Mesh mesh = null;
+        Material mat = null;
+        Mesh mesh = defaultParticleMesh;
 
-        if (!collider.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+        // IF THE COLLIDED OBJECT HAS A DATA COLLISION COMPONENT, THAT MEANS WE ARE GUARANTEED TO HAVE A MESH IN RETURN
+
+        if (collider.TryGetComponent(out CollisionData data))
         {
-            mesh = collider.GetComponent<MeshFilter>().mesh;
+            mat = data.meshHolder.GetComponent<Renderer>().material;
+
+            if (!data.meshHolder.TryGetComponent(out SkinnedMeshRenderer skinnedRenderer))
+            {
+                mesh = data.meshHolder.GetComponent<MeshFilter>().mesh;
+            }
+        }
+        // BUT IF IT DOESN'T HAVE IT AND THE COLLIDER AND THE MESH RENDERER AREN'T ON THE SAME GAMEOBJECT
+        // THEN WE HAVE TO GUARANTEE IT OURSELVES
+        else
+        {
+            if (collider.TryGetComponent(out Renderer renderer))
+            {
+                mat = renderer.material;
+            }
+
+            if (!collider.TryGetComponent(out SkinnedMeshRenderer skinnedRenderer))
+            {
+                mesh = collider.GetComponent<MeshFilter>().mesh;
+            }
         }
 
-            //if (collider.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
-            //{
-            //    mat = meshRenderer.material;
-            //    mesh = meshRenderer.sharedMesh;
-            //}
-            //else if (collider.TryGetComponent(out Renderer renderer))
-            //{
-            //    mat = renderer.material;
-            //    mesh = collider.GetComponent<MeshFilter>().mesh;
-            //}
-
-            currentHit++;
         GameObject particle = Instantiate(particleOnHit, collision.GetContact(0).point, Quaternion.LookRotation(-transform.forward));
         particle.GetComponent<ParticleSystemRenderer>().material = mat;
         particle.GetComponent<ParticleSystemRenderer>().mesh = mesh;

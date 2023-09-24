@@ -24,6 +24,11 @@ public class GameManager : MonoBehaviour
         pauseState = PauseState.MainMenu;
     }
 
+    //private void Start()
+    //{
+    //    SceneManager.LoadSceneAsync("Game 1", LoadSceneMode.Additive);   
+    //}
+
     // Update is called once per frame
     void Update()
     {
