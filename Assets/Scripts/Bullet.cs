@@ -57,6 +57,6 @@ public class Bullet : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         currentHit++;
-        Debug.Log("Hit! Current hit left: " + (maxHit - currentHit));
+        //Debug.Log("Hit! Current hit left: " + (maxHit - currentHit));
     }
 }

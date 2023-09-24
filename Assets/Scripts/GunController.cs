@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using static GeneralUtilities;
 
 public class GunController : MonoBehaviour
 {
@@ -15,7 +13,8 @@ public class GunController : MonoBehaviour
     private int currentBullet = 0;
 
     [Header("SHOOTING SETTINGS")]
-    [SerializeField] private int maxAmmo = 7;
+    public int maxAmmo = 7;
+    [HideInInspector] public int currentAmmo;
     [SerializeField] private float shootingCooldown = 0.125f;
     private float shootingTimer = 0f;
     private bool canShoot = true;
@@ -27,7 +26,7 @@ public class GunController : MonoBehaviour
 
     [Header("AUDIO")]
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip[] shotClips;
+    [SerializeField] private AudioClip[] shotClips, reloadClips;
     [SerializeField] private Vector2 pitchRandomness;
 
     private Vector3 rotation;
@@ -40,6 +39,8 @@ public class GunController : MonoBehaviour
         {
             bullet.gameObject.SetActive(false);
         }
+
+        currentAmmo = maxAmmo;
     }
 
     // Update is called once per frame
@@ -56,7 +57,7 @@ public class GunController : MonoBehaviour
 
         if (canShoot)
         {
-            if (Input.GetKey(KeyCode.Mouse0))
+            if (Input.GetKey(KeyCode.Mouse0) && currentAmmo > 0)
             {
                 for (int i = 0; i < bullets.Length; i++)
                 {
@@ -76,12 +77,15 @@ public class GunController : MonoBehaviour
                         // EFFECTS
                         CameraEffects.Instance.Shake(shootShakeDuration, shootShakeAmplitude, shootShakeFrequency);
 
-                        audioSource.pitch = Random.Range(pitchRandomness.x, pitchRandomness.y);
-                        audioSource.PlayOneShot(shotClips[Random.Range(0, shotClips.Length)]);
+                        //audioSource.pitch = Random.Range(pitchRandomness.x, pitchRandomness.y);
+                        //audioSource.PlayOneShot(shotClips[Random.Range(0, shotClips.Length)]);
+                        PlayRandomSound(audioSource, shotClips, pitchRandomness);
 
                         break;
                     }
                 }
+
+                currentAmmo--;
             }
         }
         else
@@ -95,6 +99,12 @@ public class GunController : MonoBehaviour
                 canShoot = true;
                 shootingTimer = 0;
             }
-        }  
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && currentAmmo < maxAmmo)
+        {
+            currentAmmo = maxAmmo;
+            PlayRandomSound(audioSource, reloadClips, pitchRandomness);
+        }
     }
 }
