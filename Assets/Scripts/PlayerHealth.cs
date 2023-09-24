@@ -16,10 +16,13 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (currentHealth <= 0f)
+        if (!GameManager.isPaused)
         {
-            OnDeath();
-        }
+            if (currentHealth <= 0f)
+            {
+                OnDeath();
+            }
+        }  
     }
 
     public void OnDeath()

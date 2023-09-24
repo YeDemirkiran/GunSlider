@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private AudioClip[] jumpClips, pushClips;
     [SerializeField] private Vector2 pitchRandomness;
 
-    private void Start()
+    private void Awake()
     {
         movementSpeed = standingSpeed;
         charController.height = standingHeight;
@@ -40,103 +40,106 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // CROUCH //
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (!GameManager.isPaused)
         {
-            charController.height = crouchingHeight;
-            movementSpeed = crouchingSpeed;
-        }
-
-        if (Input.GetKeyUp(KeyCode.LeftControl))
-        {
-            charController.height = standingHeight;
-            movementSpeed = standingSpeed;
-        }
-
-        // PUSH //
-
-        if (!hasPushed)
-        {
-            //// Calculating the apex
-            if (jumpApex < charController.velocity.y && !canJump)
+            // CROUCH //
+            if (Input.GetKey(KeyCode.LeftControl))
             {
-                jumpApex = charController.velocity.y;
+                charController.height = crouchingHeight;
+                movementSpeed = crouchingSpeed;
             }
 
-            //// If we jumped and reached the apex
-            if (!canJump && jumpApex > charController.velocity.y)
+            if (Input.GetKeyUp(KeyCode.LeftControl))
             {
-                canPush = true;
+                charController.height = standingHeight;
+                movementSpeed = standingSpeed;
             }
 
-            //// If on air and jumped again, this makes sure we will push even if we pressed it earlier
-            if (jumpApex > 1f && Input.GetKeyDown(KeyCode.Space))
+            // PUSH //
+
+            if (!hasPushed)
             {
-                willPush = true;
+                //// Calculating the apex
+                if (jumpApex < charController.velocity.y && !canJump)
+                {
+                    jumpApex = charController.velocity.y;
+                }
+
+                //// If we jumped and reached the apex
+                if (!canJump && jumpApex > charController.velocity.y)
+                {
+                    canPush = true;
+                }
+
+                //// If on air and jumped again, this makes sure we will push even if we pressed it earlier
+                if (jumpApex > 1f && Input.GetKeyDown(KeyCode.Space))
+                {
+                    willPush = true;
+                }
+
+                //// Finally push
+                if (canPush && willPush)
+                {
+                    currentPushSpeed = pushSpeed;
+
+                    willPush = false;
+                    canPush = false;
+                    jumpApex = 0f;
+
+                    hasPushed = true;
+
+                    PlayRandomSound(audioSource, pushClips, pitchRandomness);
+                }
             }
 
-            //// Finally push
-            if (canPush && willPush)
-            {
-                currentPushSpeed = pushSpeed;
+            //// Decrease the push over time
+            currentPushSpeed -= Time.deltaTime * pushSpeedDiminish;
+            currentPushSpeed = Mathf.Clamp(currentPushSpeed, 0f, pushSpeed);
 
-                willPush = false;
+
+            // GRAVITY
+            currentGravity += gravity * Time.deltaTime;
+
+            //// Jump
+            if (canJump && Input.GetKey(KeyCode.Space))
+            {
+                canJump = false;
+                hasPushed = false;
+
+                currentGravity += movementSpeed.y;
+
+                PlayRandomSound(audioSource, jumpClips, pitchRandomness);
+            }
+
+            float verticalMovement, horizontalMovement;
+
+            if (charController.isGrounded)
+            {
+                currentGravity = 0f;
+
+                canJump = true;
                 canPush = false;
                 jumpApex = 0f;
 
-                hasPushed = true;
+                horizontalMovement = Input.GetAxis("Horizontal") * movementSpeed.x;
+                verticalMovement = Input.GetAxis("Vertical") * movementSpeed.z;
 
-                PlayRandomSound(audioSource, pushClips, pitchRandomness);
+                preHorizontalMovement = horizontalMovement;
+                preVerticalMovement = verticalMovement;
             }
-        }       
+            else
+            {
+                canJump = false;
 
-        //// Decrease the push over time
-        currentPushSpeed -= Time.deltaTime * pushSpeedDiminish;
-        currentPushSpeed = Mathf.Clamp(currentPushSpeed, 0f, pushSpeed);
+                preHorizontalMovement += (Input.GetAxis("Horizontal") / 2f) * movementSpeed.x * Time.deltaTime;
+                preVerticalMovement += (Input.GetAxis("Vertical") / 2f) * movementSpeed.z * Time.deltaTime;
 
+                horizontalMovement = preHorizontalMovement;
+                verticalMovement = preVerticalMovement;
+                //horizontalMovement = (Input.GetAxis("Horizontal") / 40f) * movementSpeed.z;
+            }
 
-        // GRAVITY
-        currentGravity += gravity * Time.deltaTime;
-
-        //// Jump
-        if (canJump && Input.GetKey(KeyCode.Space))
-        {
-            canJump = false;
-            hasPushed = false;
-
-            currentGravity += movementSpeed.y;
-
-            PlayRandomSound(audioSource, jumpClips, pitchRandomness);
-        }
-
-        float verticalMovement, horizontalMovement;
-        
-        if (charController.isGrounded)
-        {
-            currentGravity = 0f;
-
-            canJump = true;
-            canPush = false;
-            jumpApex = 0f;
-
-            horizontalMovement = Input.GetAxis("Horizontal") * movementSpeed.x;
-            verticalMovement = Input.GetAxis("Vertical") * movementSpeed.z;
-
-            preHorizontalMovement = horizontalMovement;
-            preVerticalMovement = verticalMovement;
-        }
-        else
-        {
-            canJump = false;
-
-            preHorizontalMovement += (Input.GetAxis("Horizontal") / 2f) * movementSpeed.x * Time.deltaTime;
-            preVerticalMovement += (Input.GetAxis("Vertical") / 2f) * movementSpeed.z * Time.deltaTime;
-
-            horizontalMovement = preHorizontalMovement;
-            verticalMovement = preVerticalMovement;
-            //horizontalMovement = (Input.GetAxis("Horizontal") / 40f) * movementSpeed.z;
-        }
-
-        charController.Move(((horizontalMovement * transform.right) + ((verticalMovement + currentPushSpeed) * transform.forward) + (Vector3.up * currentGravity)) * Time.deltaTime);
+            charController.Move(((horizontalMovement * transform.right) + ((verticalMovement + currentPushSpeed) * transform.forward) + (Vector3.up * currentGravity)) * Time.deltaTime);
+        }    
     }
 }

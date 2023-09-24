@@ -13,14 +13,18 @@ public class AmmoMeter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ammoText.text = $"{gun.currentAmmo} / {gun.maxAmmo}";
+        if (!GameManager.isPaused)
+        {
+            ammoText.text = $"{gun.currentAmmo} / {gun.maxAmmo}";
 
-        if (gun.currentAmmo <= 0)
-        {
-            ammoText.color = depletedColor;
-        } else
-        {
-            ammoText.color = normalColor;
-        }
+            if (gun.currentAmmo <= 0)
+            {
+                ammoText.color = depletedColor;
+            }
+            else
+            {
+                ammoText.color = normalColor;
+            }
+        }  
     }
 }

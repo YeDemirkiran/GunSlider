@@ -19,15 +19,18 @@ public class CameraFollow : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        offsetMultiplier += Time.deltaTime * Input.GetAxis("Shift Camera") * offsetTransitionSpeed;
-        offsetMultiplier = Mathf.Clamp(offsetMultiplier, -1f, 1f);
+        if (!GameManager.isPaused)
+        {
+            offsetMultiplier += Time.deltaTime * Input.GetAxis("Shift Camera") * offsetTransitionSpeed;
+            offsetMultiplier = Mathf.Clamp(offsetMultiplier, -1f, 1f);
 
-        currentOffset.z = offset.z * offsetMultiplier;
+            currentOffset.z = offset.z * offsetMultiplier;
 
-        Vector3 smoothPosition = Vector3.Lerp(transform.position, target.position + currentOffset, smoothSpeed * Time.deltaTime);
-        transform.position = smoothPosition;
+            Vector3 smoothPosition = Vector3.Lerp(transform.position, target.position + currentOffset, smoothSpeed * Time.deltaTime);
+            transform.position = smoothPosition;
 
 
-        if (lookAtTarget) transform.LookAt(target.position + (lookAtOffset));
+            if (lookAtTarget) transform.LookAt(target.position + (lookAtOffset));
+        }
     }
 }

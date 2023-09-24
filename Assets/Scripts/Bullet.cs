@@ -31,18 +31,21 @@ public class Bullet : MonoBehaviour
 
     private void Update()
     {
-        if (currentHit >= maxHit || Vector3.Distance(parentOnReset.position, transform.position) > maxDistanceFromParent)
+        if (!GameManager.isPaused)
         {
-            transform.SetParent(parentOnReset);
-            transform.localPosition = localPositionOnReset;
-            transform.localEulerAngles = localRotationOnReset;
+            if (currentHit >= maxHit || Vector3.Distance(parentOnReset.position, transform.position) > maxDistanceFromParent)
+            {
+                transform.SetParent(parentOnReset);
+                transform.localPosition = localPositionOnReset;
+                transform.localEulerAngles = localRotationOnReset;
 
-            hasFired = false;
-            currentHit = 0;
-            rb.velocity = Vector3.zero;
+                hasFired = false;
+                currentHit = 0;
+                rb.velocity = Vector3.zero;
 
-            gameObject.SetActive(false);
-        }
+                gameObject.SetActive(false);
+            }
+        }  
     }
 
     public void Shoot(Vector3 direction)

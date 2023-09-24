@@ -11,8 +11,11 @@ public class HealthMeter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        healthText.text = $"{health.currentHealth}";
+        if (!GameManager.isPaused)
+        {
+            healthText.text = $"{health.currentHealth}";
 
-        healthText.color = Color.Lerp(normalColor, depletedColor, 1f - (health.currentHealth / health.maxHealth));
+            healthText.color = Color.Lerp(normalColor, depletedColor, 1f - (health.currentHealth / health.maxHealth));
+        }      
     }
 }

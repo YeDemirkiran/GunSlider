@@ -46,65 +46,66 @@ public class GunController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Time.timeScale = 0.1f;
-
-        rotation.x += (invertY ? -1 : 1) * Input.GetAxis("Mouse Y") * sensitivity;
-        rotation.x = Mathf.Clamp(rotation.x, angleClamp.x, angleClamp.y);
-        
-        rotation.y += Input.GetAxis("Mouse X") * sensitivity;
-
-        transform.localEulerAngles = rotation;
-
-        if (canShoot)
+        if (!GameManager.isPaused)
         {
-            if (Input.GetKey(KeyCode.Mouse0) && currentAmmo > 0)
+            rotation.x += (invertY ? -1 : 1) * Input.GetAxis("Mouse Y") * sensitivity;
+            rotation.x = Mathf.Clamp(rotation.x, angleClamp.x, angleClamp.y);
+
+            rotation.y += Input.GetAxis("Mouse X") * sensitivity;
+
+            transform.localEulerAngles = rotation;
+
+            if (canShoot)
             {
-                for (int i = 0; i < bullets.Length; i++)
+                if (Input.GetKey(KeyCode.Mouse0) && currentAmmo > 0)
                 {
-                    if (!bullets[currentBullet].hasFired)
+                    for (int i = 0; i < bullets.Length; i++)
                     {
-                        canShoot = false;
+                        if (!bullets[currentBullet].hasFired)
+                        {
+                            canShoot = false;
 
-                        bullets[currentBullet].transform.SetParent(null);
-                        bullets[currentBullet].gameObject.SetActive(true);
-                        bullets[currentBullet].Shoot(transform.forward * bulletForce);
-                        //bullets[currentBullet].Shoot(transform.forward * bulletForce, false);
+                            bullets[currentBullet].transform.SetParent(null);
+                            bullets[currentBullet].gameObject.SetActive(true);
+                            bullets[currentBullet].Shoot(transform.forward * bulletForce);
+                            //bullets[currentBullet].Shoot(transform.forward * bulletForce, false);
 
-                        currentBullet++;
+                            currentBullet++;
 
-                        if (currentBullet >= bullets.Length) currentBullet = 0;
+                            if (currentBullet >= bullets.Length) currentBullet = 0;
 
-                        // EFFECTS
-                        CameraEffects.Instance.Shake(shootShakeDuration, shootShakeAmplitude, shootShakeFrequency);
+                            // EFFECTS
+                            CameraEffects.Instance.Shake(shootShakeDuration, shootShakeAmplitude, shootShakeFrequency);
 
-                        //audioSource.pitch = Random.Range(pitchRandomness.x, pitchRandomness.y);
-                        //audioSource.PlayOneShot(shotClips[Random.Range(0, shotClips.Length)]);
-                        PlayRandomSound(audioSource, shotClips, pitchRandomness);
+                            //audioSource.pitch = Random.Range(pitchRandomness.x, pitchRandomness.y);
+                            //audioSource.PlayOneShot(shotClips[Random.Range(0, shotClips.Length)]);
+                            PlayRandomSound(audioSource, shotClips, pitchRandomness);
 
-                        break;
+                            break;
+                        }
                     }
-                }
 
-                currentAmmo--;
-            }
-        }
-        else
-        {
-            if (shootingTimer < shootingCooldown)
-            {
-                shootingTimer += Time.deltaTime;
+                    currentAmmo--;
+                }
             }
             else
             {
-                canShoot = true;
-                shootingTimer = 0;
+                if (shootingTimer < shootingCooldown)
+                {
+                    shootingTimer += Time.deltaTime;
+                }
+                else
+                {
+                    canShoot = true;
+                    shootingTimer = 0;
+                }
             }
-        }
 
-        if (Input.GetKeyDown(KeyCode.R) && currentAmmo < maxAmmo)
-        {
-            currentAmmo = maxAmmo;
-            PlayRandomSound(audioSource, reloadClips, pitchRandomness);
+            if (Input.GetKeyDown(KeyCode.R) && currentAmmo < maxAmmo)
+            {
+                currentAmmo = maxAmmo;
+                PlayRandomSound(audioSource, reloadClips, pitchRandomness);
+            }
         }
     }
 }
