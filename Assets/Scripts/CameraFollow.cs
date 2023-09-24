@@ -19,14 +19,20 @@ public class CameraFollow : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if (!GameManager.isPaused)
-        {
+        // This script was planned to be runned only if the game is running.
+        // I changed my mind and too lazy to move the function out of the block.
+        // I realized writing these comments took more time than it would take to take these 
+        // out of the block, but writing comments are more fun.
+
+        //if (!GameManager.isPaused)
+        if (true)
+        { 
             offsetMultiplier += Time.deltaTime * Input.GetAxis("Shift Camera") * offsetTransitionSpeed;
             offsetMultiplier = Mathf.Clamp(offsetMultiplier, -1f, 1f);
 
             currentOffset.z = offset.z * offsetMultiplier;
 
-            Vector3 smoothPosition = Vector3.Lerp(transform.position, target.position + currentOffset, smoothSpeed * Time.deltaTime);
+            Vector3 smoothPosition = Vector3.Lerp(transform.position, target.position + currentOffset, smoothSpeed * Time.unscaledDeltaTime);
             transform.position = smoothPosition;
 
 
