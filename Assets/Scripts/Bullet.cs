@@ -65,10 +65,27 @@ public class Bullet : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         GameObject collider = collision.gameObject;
-        Material mat = collider.GetComponent<Renderer>().material;
-        Mesh mesh = collider.GetComponent<MeshFilter>().mesh;
 
-        currentHit++;
+        Material mat = collider.GetComponent<Renderer>().material;
+        Mesh mesh = null;
+
+        if (!collider.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+        {
+            mesh = collider.GetComponent<MeshFilter>().mesh;
+        }
+
+            //if (collider.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+            //{
+            //    mat = meshRenderer.material;
+            //    mesh = meshRenderer.sharedMesh;
+            //}
+            //else if (collider.TryGetComponent(out Renderer renderer))
+            //{
+            //    mat = renderer.material;
+            //    mesh = collider.GetComponent<MeshFilter>().mesh;
+            //}
+
+            currentHit++;
         GameObject particle = Instantiate(particleOnHit, collision.GetContact(0).point, Quaternion.LookRotation(-transform.forward));
         particle.GetComponent<ParticleSystemRenderer>().material = mat;
         particle.GetComponent<ParticleSystemRenderer>().mesh = mesh;
