@@ -63,11 +63,13 @@ public class Bullet : MonoBehaviour
     {
         GameObject collider = collision.gameObject;
         Material mat = collider.GetComponent<Renderer>().material;
+        Mesh mesh = collider.GetComponent<MeshFilter>().mesh;
 
         currentHit++;
         GameObject particle = Instantiate(particleOnHit, collision.GetContact(0).point, Quaternion.LookRotation(-transform.forward));
         particle.GetComponent<ParticleSystemRenderer>().material = mat;
-        Destroy(particle, particleDestroyTime);
+        particle.GetComponent<ParticleSystemRenderer>().mesh = mesh;
+        //Destroy(particle, particleDestroyTime);
         //Debug.Log("Hit! Current hit left: " + (maxHit - currentHit));
     }
 }
