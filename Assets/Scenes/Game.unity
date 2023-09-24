@@ -154,6 +154,17 @@ PrefabInstance:
       objectReference: {fileID: 2402132750097522963}
     - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
         type: 3}
+      propertyPath: particleOnHit
+      value: 
+      objectReference: {fileID: 529741624865567155, guid: d952ee1eca518764f938c0ab1fffd151,
+        type: 3}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleDestroyTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
       propertyPath: maxDistanceFromParent
       value: 120
       objectReference: {fileID: 0}
@@ -478,6 +489,17 @@ PrefabInstance:
       propertyPath: parentOnReset
       value: 
       objectReference: {fileID: 2402132750097522963}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleOnHit
+      value: 
+      objectReference: {fileID: 529741624865567155, guid: d952ee1eca518764f938c0ab1fffd151,
+        type: 3}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleDestroyTime
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
         type: 3}
       propertyPath: maxDistanceFromParent
@@ -1054,6 +1076,17 @@ PrefabInstance:
       objectReference: {fileID: 2402132750097522963}
     - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
         type: 3}
+      propertyPath: particleOnHit
+      value: 
+      objectReference: {fileID: 529741624865567155, guid: d952ee1eca518764f938c0ab1fffd151,
+        type: 3}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleDestroyTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
       propertyPath: maxDistanceFromParent
       value: 120
       objectReference: {fileID: 0}
@@ -1447,6 +1480,17 @@ PrefabInstance:
       objectReference: {fileID: 2402132750097522963}
     - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
         type: 3}
+      propertyPath: particleOnHit
+      value: 
+      objectReference: {fileID: 529741624865567155, guid: d952ee1eca518764f938c0ab1fffd151,
+        type: 3}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleDestroyTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
       propertyPath: maxDistanceFromParent
       value: 120
       objectReference: {fileID: 0}
@@ -1806,6 +1850,17 @@ PrefabInstance:
       propertyPath: parentOnReset
       value: 
       objectReference: {fileID: 2402132750097522963}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleOnHit
+      value: 
+      objectReference: {fileID: 529741624865567155, guid: d952ee1eca518764f938c0ab1fffd151,
+        type: 3}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleDestroyTime
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
         type: 3}
       propertyPath: maxDistanceFromParent
@@ -2391,6 +2446,17 @@ PrefabInstance:
       propertyPath: parentOnReset
       value: 
       objectReference: {fileID: 2402132750097522963}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleOnHit
+      value: 
+      objectReference: {fileID: 529741624865567155, guid: d952ee1eca518764f938c0ab1fffd151,
+        type: 3}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleDestroyTime
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
         type: 3}
       propertyPath: maxDistanceFromParent
@@ -3512,6 +3578,17 @@ PrefabInstance:
       objectReference: {fileID: 2402132750097522963}
     - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
         type: 3}
+      propertyPath: particleOnHit
+      value: 
+      objectReference: {fileID: 529741624865567155, guid: d952ee1eca518764f938c0ab1fffd151,
+        type: 3}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
+      propertyPath: particleDestroyTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1227320010962193696, guid: 606f4607f8511df4ea20fa584e97fd47,
+        type: 3}
       propertyPath: maxDistanceFromParent
       value: 120
       objectReference: {fileID: 0}
@@ -4523,6 +4600,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1447661788}
     m_Modifications:
+    - target: {fileID: 2263511248548757343, guid: 1e00ca40e46d38440a35d2d6a91ff9fa,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 38207a1df7dd9e748b5f9d68f4835585, type: 2}
     - target: {fileID: 5646785833816474220, guid: 1e00ca40e46d38440a35d2d6a91ff9fa,
         type: 3}
       propertyPath: m_LocalPosition.x

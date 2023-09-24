@@ -7,6 +7,7 @@ public class Bullet : MonoBehaviour
 {
     private Rigidbody rb;
 
+    [Header("GENERAL")]
     [SerializeField] private Transform parentOnReset;
     [SerializeField] private Vector3 localPositionOnReset;
     [SerializeField] private Vector3 localRotationOnReset;
@@ -16,6 +17,10 @@ public class Bullet : MonoBehaviour
     private int currentHit = 0;
 
     [SerializeField] private float shakeOnHit, shakeOnEnemyHit;
+
+    [Header("COLLISION")]
+    [SerializeField] private GameObject particleOnHit;
+    [SerializeField] private float particleDestroyTime;
 
     [HideInInspector] public bool hasFired = false;
 
@@ -56,7 +61,13 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        GameObject collider = collision.gameObject;
+        Material mat = collider.GetComponent<Renderer>().material;
+
         currentHit++;
+        GameObject particle = Instantiate(particleOnHit, collision.GetContact(0).point, Quaternion.Euler(-transform.forward));
+        particle.GetComponent<ParticleSystemRenderer>().material = mat;
+        Destroy(particle, particleDestroyTime);
         //Debug.Log("Hit! Current hit left: " + (maxHit - currentHit));
     }
 }
