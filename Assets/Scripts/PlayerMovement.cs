@@ -21,6 +21,8 @@ public class PlayerMovement : MonoBehaviour
     private bool canPush = false, willPush = false, hasPushed = false;
     private float jumpApex = 0f;
 
+    [Header("ANIMATION")]
+    [SerializeField] private Animator animator;
 
     [Header("CROUCH")]
     [SerializeField] private float standingHeight, crouchingHeight;
@@ -140,6 +142,9 @@ public class PlayerMovement : MonoBehaviour
             }
 
             charController.Move(((horizontalMovement * transform.right) + ((verticalMovement + currentPushSpeed) * transform.forward) + (Vector3.up * currentGravity)) * Time.deltaTime);
+
+            animator.SetFloat("Vertical Speed", Input.GetAxis("Vertical"));
+            animator.SetFloat("Horizontal Speed", Input.GetAxis("Horizontal"));
         }    
     }
 }

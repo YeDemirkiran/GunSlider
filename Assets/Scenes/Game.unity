@@ -2894,6 +2894,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2143768003}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1013733559 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 55ae54eede7c8b24aba2f55cae3391f1,
+    type: 3}
+  m_PrefabInstance: {fileID: 15873373}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1031965801
 GameObject:
   m_ObjectHideFlags: 0
@@ -6133,6 +6139,7 @@ MonoBehaviour:
   crouchingSpeed: {x: 5, y: 2.5, z: 5}
   pushSpeed: 7.5
   pushSpeedDiminish: 5
+  animator: {fileID: 1013733559}
   standingHeight: 2
   crouchingHeight: 1
   audioSource: {fileID: 7272066086535292493}
