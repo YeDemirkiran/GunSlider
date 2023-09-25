@@ -26,6 +26,9 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("CROUCH")]
     [SerializeField] private float standingHeight, crouchingHeight;
+    [SerializeField] private float crouchingTransitionSeconds;
+    private bool isCrouching = false;
+    private float crouchingTimer = 0f, crouchingDirection = 0f, previousHeight = 0f;
 
 
     [Header("SFX")]
@@ -45,17 +48,51 @@ public class PlayerMovement : MonoBehaviour
         if (!GameManager.isPaused)
         {
             // CROUCH //
-            if (Input.GetKey(KeyCode.LeftControl))
+            if (Input.GetKeyDown(KeyCode.LeftControl))
             {
                 charController.height = crouchingHeight;
                 movementSpeed = crouchingSpeed;
+                isCrouching = true;
+
+                crouchingTimer = 0f;
             }
 
             if (Input.GetKeyUp(KeyCode.LeftControl))
             {
                 charController.height = standingHeight;
                 movementSpeed = standingSpeed;
+                isCrouching = false;
+
+                crouchingTimer = 1f;
             }
+
+            //if (charController.height > crouchingHeight)
+            //{
+            //    crouchingDirection = 1f;
+            //}
+            //else
+            //{
+            //    crouchingDirection = -1f;
+            //}
+
+            if (isCrouching)
+            {
+                if (charController.height > crouchingHeight)
+                {
+                    crouchingTimer += Time.deltaTime / crouchingTransitionSeconds;
+                }
+            }
+            else
+            {
+                if (charController.height < standingHeight)
+                {
+                    crouchingTimer -= Time.deltaTime / crouchingTransitionSeconds;
+                }
+            }
+
+            charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchingTimer);
+            movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchingTimer);
+
 
             // PUSH //
 
@@ -143,8 +180,11 @@ public class PlayerMovement : MonoBehaviour
 
             charController.Move(((horizontalMovement * transform.right) + ((verticalMovement + currentPushSpeed) * transform.forward) + (Vector3.up * currentGravity)) * Time.deltaTime);
 
+            // ANIMATION PARAMETERS
+
             animator.SetFloat("Vertical Speed", Input.GetAxis("Vertical"));
             animator.SetFloat("Horizontal Speed", Input.GetAxis("Horizontal"));
+            animator.SetBool("Crouching", isCrouching);
         }    
     }
 }
