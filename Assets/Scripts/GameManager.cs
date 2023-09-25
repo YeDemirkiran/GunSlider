@@ -65,9 +65,9 @@ public class GameManager : MonoBehaviour
 
         SetUI(gameState, pauseState);
 
-        Debug.Log("CURRENT GAME STATE: " + gameState);
-        Debug.Log("CURRENT PAUSE STATE: " + pauseState);
-        Debug.Log("TIMESCALE: " + Time.timeScale);
+        //Debug.Log("CURRENT GAME STATE: " + gameState);
+        //Debug.Log("CURRENT PAUSE STATE: " + pauseState);
+        //Debug.Log("TIMESCALE: " + Time.timeScale);
     }
 
     // GAME STATE // 
@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
     {
         SetCursor(false);
         Time.timeScale = 1f;
-        Debug.Log("ANNA");
+        //Debug.Log("ANNA");
     }
 
     private void OnPause()

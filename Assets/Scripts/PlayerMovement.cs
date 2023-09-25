@@ -23,12 +23,14 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("ANIMATION")]
     [SerializeField] private Animator animator;
+    [SerializeField] private Transform animatorMesh;
 
     [Header("CROUCH")]
     [SerializeField] private float standingHeight, crouchingHeight;
     [SerializeField] private float crouchingTransitionSeconds;
     private bool isCrouching = false;
     private float crouchingTimer = 0f, crouchingDirection = 0f, previousHeight = 0f;
+    private Vector3 meshStandingPosition, meshCrouchingPosition;
 
 
     [Header("SFX")]
@@ -40,6 +42,12 @@ public class PlayerMovement : MonoBehaviour
     {
         movementSpeed = standingSpeed;
         charController.height = standingHeight;
+    }
+
+    private void Start()
+    {
+        meshStandingPosition = animatorMesh.transform.localPosition;
+        meshCrouchingPosition = animatorMesh.transform.localPosition + ((standingHeight - crouchingHeight) * Vector3.up / 2f);
     }
 
     // Update is called once per frame
@@ -80,6 +88,14 @@ public class PlayerMovement : MonoBehaviour
                 if (charController.height > crouchingHeight)
                 {
                     crouchingTimer += Time.deltaTime / crouchingTransitionSeconds;
+                    charController.Move(Vector3.up * -2f * Time.deltaTime);
+                    //animatorMesh.localPosition += Vector3.up * (standingHeight - crouchingHeight) * Time.deltaTime;
+                }
+                else
+                {
+                    charController.height = crouchingHeight;
+                    animatorMesh.localPosition = meshCrouchingPosition;
+                    movementSpeed = crouchingSpeed;
                 }
             }
             else
@@ -87,10 +103,19 @@ public class PlayerMovement : MonoBehaviour
                 if (charController.height < standingHeight)
                 {
                     crouchingTimer -= Time.deltaTime / crouchingTransitionSeconds;
+                    charController.Move(Vector3.up * 2f * Time.deltaTime);
+                    animatorMesh.position -= Vector3.up * (standingHeight - crouchingHeight) * Time.deltaTime;
+                }
+                else
+                {
+                    charController.height = standingHeight;
+                    animatorMesh.localPosition = meshStandingPosition;
+                    movementSpeed = standingSpeed;
                 }
             }
 
             charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchingTimer);
+            animatorMesh.localPosition = Vector3.Lerp(meshStandingPosition, meshCrouchingPosition, crouchingTimer);
             movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchingTimer);
 
 
@@ -178,6 +203,7 @@ public class PlayerMovement : MonoBehaviour
                 //horizontalMovement = (Input.GetAxis("Horizontal") / 40f) * movementSpeed.z;
             }
 
+            
             charController.Move(((horizontalMovement * transform.right) + ((verticalMovement + currentPushSpeed) * transform.forward) + (Vector3.up * currentGravity)) * Time.deltaTime);
 
             // ANIMATION PARAMETERS
