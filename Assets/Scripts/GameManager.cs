@@ -42,11 +42,6 @@ public class GameManager : MonoBehaviour
                 if (pauseState != PauseState.MainMenu)
                 {
                     ResumeGame();
-                    Debug.Log("hh");
-                }
-                else
-                {
-                    Debug.Log("vv");
                 }
             }
 

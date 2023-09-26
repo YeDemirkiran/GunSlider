@@ -1,195 +1,143 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Unity.AI;
 using UnityEngine.AI;
-using TMPro;
-using UnityEngine.UIElements;
 
 public class EnemyController : MonoBehaviour
-{ 
-    private enum EnemyBehaviour { Offensive, Defensive }
-
-    // PATROLLING: The BOT will patrol on the area the player is last seen
-    // CHASING: Chasing the PLAYER when it spots
-    // ATTACKING: Attacking the player when within the radius
-
-    private enum OffensiveState { Patrolling, Chasing, Attacking }
-
-    // ESCAPING: The BOT escapes and tries to evade the PLAYER's projectiles
-    //           while trying to find a spot to hide.
-    //
-    // HIDING: Well, obvious.
-    //
-    // ESCAPEATTACKING: It runs backwards and attacks as it escapes.
-
-    private enum DefensiveState { Escaping, Hiding, EscapeAttacking }
-
-    private EnemyBehaviour currentBehaviour;
-
-    //[SerializeField] private NavMeshAgent agent; 
-    [SerializeField] private BotMovement bot; 
+{
+    [SerializeField] private BotMovement bot;
     [SerializeField] private Transform target;
-    [SerializeField] private float pathCalculateCooldown = 5f;
-    private float calculationTimer = 0f;
+    [SerializeField] private float turningSpeed = 1f, recalculateCooldown;
+    private float calculateTimer;
     private NavMeshPath path;
 
-    private Vector3 currentTarget;
-    private Vector2 primaryPosition, secondaryPosition;
-    private int currentTargetIndex = 0;
+    private Coroutine currentDestinating = null;
+    private bool canTurn = true, completedTurn = false;
 
-    [SerializeField] private float rotationSpeed;
-    private float rotationLerp = 0f;
+    private int currentIndex;
+    private Vector3 currentDestination;
+    private Vector3 previousTargetPosition;
+
+    private float currentDistanceCheck = 0f, normalDistanceCheck = 0.25f, playerDistanceCheck = 2f;
 
     private void Start()
     {
-        currentBehaviour = EnemyBehaviour.Offensive;
-
         path = new NavMeshPath();
-
         NavMesh.CalculatePath(transform.position, target.position, NavMesh.AllAreas, path);
 
-        //foreach (Vector3 corner in path.corners)
-        //{
-        //    Debug.Log(corner);
-        //}
+        currentIndex = 0;
+        currentDestination = path.corners[currentIndex];
+        canTurn = true;
+        completedTurn = false;
 
-        //Vector2 position = new Vector2(transform.position.x, transform.position.z);
-        //Vector2 targetPosition = new Vector2(currentTarget.x, currentTarget.z);
-        //Vector2 direction = (position - targetPosition).normalized;
-
-        //currentTargetIndex = 1;
-        currentTarget = path.corners[currentTargetIndex];
-        //transform.rotation = Quaternion.LookRotation(-direction);
+        currentDistanceCheck = normalDistanceCheck;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (currentBehaviour == EnemyBehaviour.Offensive)
+        if (calculateTimer < recalculateCooldown)
         {
-            Vector2 position = new Vector2(transform.position.x, transform.position.z);
-            Vector2 targetPosition = new Vector2(currentTarget.x, currentTarget.z);
-
-            if (Vector2.Distance(position, targetPosition) < 1f)
+            calculateTimer += Time.deltaTime;
+        }
+        else
+        {
+            if (Vector3.Distance(previousTargetPosition, target.position) > playerDistanceCheck)
             {
-                Debug.Log("1");
+                calculateTimer = 0f;
 
-                if (currentTargetIndex + 1 < path.corners.Length)
+                NavMesh.CalculatePath(transform.position, target.position, NavMesh.AllAreas, path);
+
+                currentIndex = 0;
+                currentDestination = path.corners[currentIndex];
+                canTurn = true;
+                completedTurn = false;
+
+                bot.Move(0f, 0f);
+                bot.AnimatorAssigns(0f, 0f, false);
+
+                previousTargetPosition = target.position;
+            }
+        }
+
+        Vector2 transformPosVec2 = new Vector2(transform.position.x, transform.position.z);
+        Vector2 targetPosVec2 = new Vector2(currentDestination.x, currentDestination.z);
+        float distance = Vector2.Distance(transformPosVec2, targetPosVec2);
+
+        if (distance < currentDistanceCheck)
+        {
+            if (currentIndex + 1 < path.corners.Length)
+            {
+                if (path.corners.Length - 2 > currentIndex)
                 {
-                    currentTargetIndex++;
-
-                    currentTarget = path.corners[currentTargetIndex];
-
-                    if (Mathf.Abs(transform.position.x - currentTarget.x) < Mathf.Abs(transform.position.z - currentTarget.z))
-                    {
-                        primaryPosition = new Vector2(currentTarget.x, transform.position.z);
-                    }
-                    else
-                    {
-                        primaryPosition = new Vector2(transform.position.x, currentTarget.z);
-                    }
-
-                    secondaryPosition = new Vector2(currentTarget.x, currentTarget.z);
-
-                    Debug.Log("FULL TARGET: " + currentTarget);
-                    Debug.Log("CURRENT POSITION: " + transform.position);
-                    Debug.Log("X ABS: " + Mathf.Abs(transform.position.x - currentTarget.x));
-                    Debug.Log("Y ABS: " + Mathf.Abs(transform.position.z - currentTarget.z));
-                    Debug.Log("PRIMARY: " + primaryPosition);
-                    Debug.Log("SECONDARY: " + secondaryPosition);
+                    currentDistanceCheck = normalDistanceCheck;
                 }
                 else
                 {
+                    currentDistanceCheck = playerDistanceCheck;                    
+                }
+
+                currentIndex++;
+                currentDestination = path.corners[currentIndex];                
+            }
+            else
+            {
+                bot.Move(0f, 0f);
+                bot.AnimatorAssigns(0f, 0f, false);
+            }
+
+            canTurn = true;
+            completedTurn = false;
+        }
+        else
+        {
+            if (!completedTurn)
+            {
+                if (canTurn)
+                {
+                    if (currentDestinating != null)
+                    {
+                        StopCoroutine(currentDestinating);
+                    }
+
+                    currentDestinating = StartCoroutine(RotateToDestination(path.corners[1]));
+
+                    canTurn = false;
+
+                    bot.Move(0f, 0f);
                     bot.AnimatorAssigns(0f, 0f, false);
-                    return;
                 }
             }
             else
             {
-                Debug.Log("2");
-                float primaryDistance = Vector2.Distance(position, primaryPosition);
-
-                Vector3 direction = (primaryPosition - position).normalized;
-
-                if (primaryDistance > 0.1f)
-                {
-                    Debug.Log("2.1");
-
-                    if (Vector3.Distance(transform.forward, direction) > 0.1f)
-                    {
-                        Debug.Log("2.1.1");
-
-                        rotationLerp += Time.deltaTime * rotationSpeed;
-                        Vector3 lookRotation = Vector3.Scale(Quaternion.LookRotation(direction).eulerAngles, Vector3.up);
-                        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(lookRotation), rotationLerp);
-
-                        //Debug.Log(rotationLerp);
-                    }
-                    else
-                    {
-                        rotationLerp = 0f;
-
-                        Debug.Log("2.1.2");
-
-                        bot.Move(direction.x, direction.y);
-                        bot.AnimatorAssigns(direction.x, -direction.y, false);
-                        bot.Gravity();
-                    } 
-                }
-                else
-                {
-                    Debug.Log("2.2");
-                    primaryPosition = secondaryPosition;
-                }
-            }
+                Debug.Log("MOVE TO TARGET");
+                bot.Move(1f, 0f);
+                bot.AnimatorAssigns(1f, 0f, false);
+            }    
         }
-        
 
-        //if (calculationTimer < pathCalculateCooldown)
-        //{
-        //    calculationTimer += Time.deltaTime;
+        Debug.Log("HEHEHHEEH: " + currentDistanceCheck);
 
-        //    Vector2 position = new Vector2(transform.position.x, transform.position.z);
-        //    Vector2 targetPosition = new Vector2(currentTarget.x, currentTarget.z);
-        //    Vector2 direction = (position - targetPosition).normalized;
+        bot.Gravity();
+    }
 
-        //    if (Vector2.Distance(position, targetPosition) < 2f)
-        //    {
-        //        if (currentTargetIndex + 1 < path.corners.Length)
-        //        {
-        //            currentTargetIndex++;
+    public IEnumerator RotateToDestination(Vector3 destination)
+    {
+        float turningLerp = 0f;
+        Quaternion initialRotation = transform.rotation;
 
-        //            currentTarget = path.corners[currentTargetIndex];
-                    
-        //            Debug.Log("hohohoh");
-        //        }
-        //        else
-        //        {
-        //            bot.AnimatorAssigns(0f, 0f, false);
-        //            return;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        bot.Move(1f, 0f);
-        //        bot.Gravity();
-        //        bot.AnimatorAssigns(1f, 0f, false);
+        Vector3 direction = (destination - transform.position).normalized;
+        Quaternion targetDirection = Quaternion.LookRotation(direction);
+        targetDirection = Quaternion.Euler(Vector3.Scale(targetDirection.eulerAngles, Vector3.up));
 
-        //        Debug.Log("CURRENT DISTANCE: " + Vector3.Distance(transform.position, currentTarget));
-        //        Debug.Log("CURRENT TARGET: " + currentTarget);
-        //        Debug.Log("CURRENT DIRECTION: " + direction);
-        //    }
+        while (turningLerp < 1f)
+        {
+            transform.rotation = Quaternion.Lerp(initialRotation, targetDirection, turningLerp);
 
-        //    transform.rotation = Quaternion.LookRotation(-direction);
-        //    transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, transform.eulerAngles.z);
-        //}
-        //else
-        //{
-        //    calculationTimer = 0;
-        //    currentTargetIndex = 0;
+            turningLerp += Time.deltaTime * turningSpeed;
 
-        //    NavMesh.CalculatePath(transform.position, target.position, NavMesh.AllAreas, path);
-        //}
+            yield return null;
+        }
+
+        canTurn = false;
+        completedTurn = true;
     }
 }

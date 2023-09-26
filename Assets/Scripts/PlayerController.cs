@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
 
             bot.Gravity();
 
-            bot.AnimatorAssigns(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), Input.GetKeyDown(KeyCode.LeftControl));
+            bot.AnimatorAssigns(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), Input.GetKey(KeyCode.LeftControl));
         }
     }
 }
