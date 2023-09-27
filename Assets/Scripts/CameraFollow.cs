@@ -4,7 +4,8 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     [SerializeField] private Transform target;
-    [SerializeField] private Vector3 offset, lookAtOffset;
+    [SerializeField] private Vector3 offset = new Vector3(-2.5f, 0.75f, -4f),
+        lookAtOffset = new Vector3(0f, 0f, 10f);
     [SerializeField] private float offsetTransitionSpeed = 5f;
     [SerializeField] private float smoothSpeed = 10f;
     [SerializeField] private bool lookAtTarget = true;
@@ -18,7 +19,7 @@ public class CameraFollow : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
         // This script was planned to be runned only if the game is running.
         // I changed my mind and too lazy to move the function out of the block.
@@ -28,32 +29,29 @@ public class CameraFollow : MonoBehaviour
         //if (!GameManager.isPaused)
         if (true)
         {
-            //offsetMultiplier += Time.deltaTime * Input.GetAxis("Shift Camera") * offsetTransitionSpeed;
-            //offsetMultiplier = Mathf.Clamp(offsetMultiplier, -1f, 1f);
+            // CONTROL ON THE X AXIS
+            offsetMultiplier -= Input.GetAxis("Shift Camera") *  Time.deltaTime * offsetTransitionSpeed;
+            offsetMultiplier = Mathf.Clamp(offsetMultiplier, -1f, 1f);
 
-            //currentOffset.z = offset.z * offsetMultiplier;
+            currentOffset.x = offset.x * offsetMultiplier;
 
             //Vector3 m_Offset = Vector3.Scale(offset, target.forward);
 
-            Vector3 m_Offset = target.forward * offset.z;
-            m_Offset += target.right * offset.x;
-            m_Offset.y = offset.y;
+            Vector3 directionalOffset = new Vector3();
+            directionalOffset += target.forward * currentOffset.z;
+            directionalOffset += target.right * currentOffset.x;
+            directionalOffset.y = offset.y;
 
-            Vector3 smoothPosition = Vector3.Lerp(transform.position, target.position + m_Offset, smoothSpeed * Time.unscaledDeltaTime);
+            Vector3 directionalLookOffset = target.position;
+            directionalLookOffset += target.forward * lookAtOffset.z;
+            directionalLookOffset += target.right * lookAtOffset.x;
+            directionalLookOffset.y = lookAtOffset.y;
+
+            Vector3 smoothPosition = Vector3.Lerp(transform.position, target.position + directionalOffset, smoothSpeed * Time.unscaledDeltaTime);
             transform.position = smoothPosition;
 
             //if (lookAtTarget) transform.LookAt(target.position + (Vector3.Scale(target.forward, lookAtOffset)));
-            if (lookAtTarget) transform.LookAt(target.position);
-
+            if (lookAtTarget) transform.LookAt(directionalLookOffset);
         }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        //Vector3 m_Offset = Vector3.Scale(offset, target.forward);
-        Vector3 m_Offset = target.forward * 5f;
-        //m_Offset.y = offset.y;
-
-        Gizmos.DrawWireCube(target.position + Vector3.Scale(offset, m_Offset), Vector3.one);
     }
 }
