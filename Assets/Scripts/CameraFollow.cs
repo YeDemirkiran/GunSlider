@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void LateUpdate()
     {
         // This script was planned to be runned only if the game is running.
         // I changed my mind and too lazy to move the function out of the block.
