@@ -5,7 +5,7 @@ public class GunController : MonoBehaviour
 {
     [Header("GENERAL")]
     [SerializeField] private float sensitivity;
-    [SerializeField] private Vector2 angleClamp;
+    [SerializeField] private Vector2 xAngleClamp, yAngleClamp;
     [SerializeField] private bool invertY = true;
 
     [SerializeField] private Bullet[] bullets;
@@ -49,9 +49,10 @@ public class GunController : MonoBehaviour
         if (!GameManager.isPaused)
         {
             rotation.x += (invertY ? -1 : 1) * Input.GetAxis("Mouse Y") * sensitivity;
-            rotation.x = Mathf.Clamp(rotation.x, angleClamp.x, angleClamp.y);
+            rotation.x = Mathf.Clamp(rotation.x, xAngleClamp.x, xAngleClamp.y);
 
             rotation.y += Input.GetAxis("Mouse X") * sensitivity;
+            rotation.y = Mathf.Clamp(rotation.y, yAngleClamp.x, yAngleClamp.y);
 
             transform.localEulerAngles = rotation;
 
