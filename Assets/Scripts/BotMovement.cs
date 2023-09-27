@@ -52,6 +52,11 @@ public class BotMovement : MonoBehaviour
         meshCrouchingPosition = animatorMesh.transform.localPosition + ((standingHeight - crouchingHeight) * Vector3.up / 2f);
     }
 
+    private void Update()
+    {
+        Gravity();
+    }
+
     // CROUCH
 
     public void Crouch(KeyCode[] crouchKeys)
@@ -209,7 +214,7 @@ public class BotMovement : MonoBehaviour
     }
 
     // GRAVITY
-    public void Gravity()
+    private void Gravity()
     {
         currentGravity += gravity * Time.deltaTime;
 
@@ -256,7 +261,7 @@ public class BotMovement : MonoBehaviour
     }
 
     // ANIMATOR
-    public void AnimatorAssigns(float normalizedVerticalSpeed, float normalizedHorizontalSpeed, bool isCrouching)
+    public void AnimatorAssignValues(float normalizedVerticalSpeed, float normalizedHorizontalSpeed, bool isCrouching)
     {
         animator.SetFloat("Vertical Speed", normalizedVerticalSpeed);
         animator.SetFloat("Horizontal Speed", normalizedHorizontalSpeed);

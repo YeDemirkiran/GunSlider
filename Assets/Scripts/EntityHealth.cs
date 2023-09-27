@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
+public class EntityHealth : MonoBehaviour
 {
     public float maxHealth;
     [HideInInspector] public float currentHealth;

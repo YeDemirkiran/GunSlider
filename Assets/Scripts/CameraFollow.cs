@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
@@ -26,17 +27,33 @@ public class CameraFollow : MonoBehaviour
 
         //if (!GameManager.isPaused)
         if (true)
-        { 
-            offsetMultiplier += Time.deltaTime * Input.GetAxis("Shift Camera") * offsetTransitionSpeed;
-            offsetMultiplier = Mathf.Clamp(offsetMultiplier, -1f, 1f);
+        {
+            //offsetMultiplier += Time.deltaTime * Input.GetAxis("Shift Camera") * offsetTransitionSpeed;
+            //offsetMultiplier = Mathf.Clamp(offsetMultiplier, -1f, 1f);
 
-            currentOffset.z = offset.z * offsetMultiplier;
+            //currentOffset.z = offset.z * offsetMultiplier;
 
-            Vector3 smoothPosition = Vector3.Lerp(transform.position, target.position + currentOffset, smoothSpeed * Time.unscaledDeltaTime);
+            //Vector3 m_Offset = Vector3.Scale(offset, target.forward);
+
+            Vector3 m_Offset = target.forward * offset.z;
+            m_Offset += target.right * offset.x;
+            m_Offset.y = offset.y;
+
+            Vector3 smoothPosition = Vector3.Lerp(transform.position, target.position + m_Offset, smoothSpeed * Time.unscaledDeltaTime);
             transform.position = smoothPosition;
 
+            //if (lookAtTarget) transform.LookAt(target.position + (Vector3.Scale(target.forward, lookAtOffset)));
+            if (lookAtTarget) transform.LookAt(target.position);
 
-            if (lookAtTarget) transform.LookAt(target.position + (lookAtOffset));
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        //Vector3 m_Offset = Vector3.Scale(offset, target.forward);
+        Vector3 m_Offset = target.forward * 5f;
+        //m_Offset.y = offset.y;
+
+        Gizmos.DrawWireCube(target.position + Vector3.Scale(offset, m_Offset), Vector3.one);
     }
 }

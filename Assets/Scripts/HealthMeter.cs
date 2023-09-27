@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class HealthMeter : MonoBehaviour
 {
-    [SerializeField] private PlayerHealth health;
+    [SerializeField] private EntityHealth health;
     [SerializeField] private TMP_Text healthText;
 
     [SerializeField] private Color normalColor, depletedColor;
