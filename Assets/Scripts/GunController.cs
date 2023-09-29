@@ -10,6 +10,8 @@ public class GunController : MonoBehaviour
 
     [SerializeField] private Bullet[] bullets;
     [SerializeField] private float bulletForce;
+
+    [SerializeField] private ParticleSystem muzzleFlash;
     private int currentBullet = 0;
 
     [Header("SHOOTING SETTINGS")]
@@ -76,6 +78,7 @@ public class GunController : MonoBehaviour
                             if (currentBullet >= bullets.Length) currentBullet = 0;
 
                             // EFFECTS
+                            muzzleFlash.Play();
                             CameraEffects.Instance.Shake(shootShakeDuration, shootShakeAmplitude, shootShakeFrequency);
 
                             //audioSource.pitch = Random.Range(pitchRandomness.x, pitchRandomness.y);
