@@ -6,12 +6,29 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private BotMovement bot;
 
+    [SerializeField] KeyCode[] crouchKeys;
+
+    private bool isCrouching = false;
+
     // Update is called once per frame
     void Update()
     {
         if (!GameManager.isPaused)
         {
-            bot.Crouch(new KeyCode[] { KeyCode.LeftControl, KeyCode.RightControl });
+            foreach (KeyCode key in crouchKeys)
+            {
+                if (Input.GetKey(key))
+                {
+                    isCrouching = true;
+                    break;
+                }
+                else
+                {
+                    isCrouching = false;
+                }
+            }
+
+            bot.Crouch(isCrouching);
 
             bot.Push(Input.GetKeyDown(KeyCode.Space));
 
@@ -19,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
             bot.Move(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
 
-            bot.AnimatorAssignValues(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), Input.GetKey(KeyCode.LeftControl));
+            bot.AnimatorAssignValues(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), Input.GetKeyDown(KeyCode.Space), isCrouching);
         }
     }
 }

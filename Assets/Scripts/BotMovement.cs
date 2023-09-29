@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using static GeneralUtilities;
 
@@ -40,6 +41,9 @@ public class BotMovement : MonoBehaviour
     [SerializeField] private AudioClip[] jumpClips, pushClips;
     [SerializeField] private Vector2 pitchRandomness;
 
+    private Coroutine currentCrouchLerp, currentJumpLerp;
+    private bool crouchLerpStarted, jumpLerpStarted;
+
     private void Awake()
     {
         movementSpeed = standingSpeed;
@@ -59,27 +63,27 @@ public class BotMovement : MonoBehaviour
 
     // CROUCH
 
-    public void Crouch(KeyCode[] crouchKeys)
-    {
-        foreach (KeyCode key in crouchKeys)
-        {
-            if (Input.GetKeyDown(key))
-            {
-                CrouchInput(true);
+    //public void Crouch(KeyCode[] crouchKeys)
+    //{
+    //    foreach (KeyCode key in crouchKeys)
+    //    {
+    //        if (Input.GetKeyDown(key))
+    //        {
+    //            CrouchInput(true);
 
-                break;
-            }
+    //            break;
+    //        }
 
-            if (Input.GetKeyUp(key))
-            {
-                CrouchInput(false);
+    //        if (Input.GetKeyUp(key))
+    //        {
+    //            CrouchInput(false);
 
-                break;
-            }
-        }
+    //            break;
+    //        }
+    //    }
 
-        CrouchCheck();
-    }
+    //    CrouchCheck();
+    //}
     
     public void Crouch(bool crouch)
     {
@@ -89,7 +93,7 @@ public class BotMovement : MonoBehaviour
 
     private void CrouchInput(bool crouch)
     {
-        if (crouch)
+        if (crouch && !isCrouching)
         {
             isCrouching = true;
 
@@ -99,7 +103,7 @@ public class BotMovement : MonoBehaviour
             crouchLerp = 0f;
         }
 
-        else
+        else if (!crouch && isCrouching)
         {
             isCrouching = false;
 
@@ -231,9 +235,12 @@ public class BotMovement : MonoBehaviour
         {
             currentGravity = 0f;
 
-            canJump = true;
-            canPush = false;
-            jumpApex = 0f;
+            if (charController.velocity.y <= jumpApex)
+            {
+                canJump = true;
+                canPush = false;
+                jumpApex = 0f;
+            }
 
             preVerticalMovement = verticalMovement;
             preHorizontalMovement = horizontalMovement;
@@ -261,10 +268,124 @@ public class BotMovement : MonoBehaviour
     }
 
     // ANIMATOR
-    public void AnimatorAssignValues(float normalizedVerticalSpeed, float normalizedHorizontalSpeed, bool isCrouching)
+    public void AnimatorAssignValues(float normalizedVerticalSpeed, float normalizedHorizontalSpeed, bool hasJumped, bool isCrouching)
     {
         animator.SetFloat("Vertical Speed", normalizedVerticalSpeed);
         animator.SetFloat("Horizontal Speed", normalizedHorizontalSpeed);
-        animator.SetBool("Crouching", isCrouching);
+
+        if (hasJumped)
+        {
+            if (animator.GetFloat("JumpingPose") < 1f)
+            {
+                if (!jumpLerpStarted)
+                {
+                    if (currentJumpLerp != null)
+                    {
+                        StopCoroutine(currentJumpLerp);
+                    }
+
+                    currentJumpLerp = StartCoroutine(LerpJumpingFloat(1f, 0.1f, "JumpingPose"));
+                    //StopCoroutine(currentCrouchLerp);
+                }
+            }       
+        }
+        else
+        {
+            if (animator.GetFloat("JumpingPose") > 0f)
+            {
+                if (!jumpLerpStarted)
+                {
+                    if (currentJumpLerp != null)
+                    {
+                        StopCoroutine(currentJumpLerp);
+                    }
+
+                    currentJumpLerp = StartCoroutine(LerpJumpingFloat(0f, 0.1f, "JumpingPose"));
+                    //StopCoroutine(currentCrouchLerp);
+                }
+            }
+
+            animator.SetFloat("JumpingPose", 0f);
+        }
+
+        if (canJump && hasJumped)
+        {
+            animator.SetBool("Has Jumped", hasJumped);
+        }
+
+        if (isCrouching)
+        {
+            if (animator.GetFloat("CrouchingPose") < 1f)
+            {
+                if (!crouchLerpStarted)
+                {
+                    if (currentCrouchLerp != null)
+                    {
+                        StopCoroutine(currentCrouchLerp);
+                    }
+
+                    currentCrouchLerp = StartCoroutine(LerpCrouchingFloat(1f, crouchingTransitionSeconds, "CrouchingPose"));
+                    //StopCoroutine(currentCrouchLerp);
+                }
+            }
+            
+
+            //animator.SetFloat("CrouchingPose", 1f);
+        }
+        else
+        {
+            if (animator.GetFloat("CrouchingPose") > 0f)
+            {
+                if (!crouchLerpStarted)
+                {
+                    if (currentCrouchLerp != null)
+                    {
+                        StopCoroutine(currentCrouchLerp);
+                    }
+
+                    currentCrouchLerp = StartCoroutine(LerpCrouchingFloat(0f, crouchingTransitionSeconds, "CrouchingPose"));
+                }
+            }
+            //animator.SetFloat("CrouchingPose", 0f);
+        }
+
+        animator.SetBool("Is Crouching", isCrouching);
+    }
+
+    private IEnumerator LerpCrouchingFloat(float target, float duration, string variableName)
+    {
+        float timer = 0f;
+        float original = animator.GetFloat(variableName);
+        crouchLerpStarted = true;
+
+        while (timer < 1)
+        {
+            timer += Time.deltaTime / duration;
+
+            animator.SetFloat(variableName, Mathf.Lerp(original, target, timer));
+            Debug.Log(animator.GetFloat(variableName));
+
+            yield return null;
+        }
+
+        crouchLerpStarted = false;
+    }
+
+    private IEnumerator LerpJumpingFloat(float target, float duration, string variableName)
+    {
+        float timer = 0f;
+        float original = animator.GetFloat(variableName);
+        jumpLerpStarted = true;
+
+        while (timer < 1)
+        {
+            timer += Time.deltaTime / duration;
+
+            animator.SetFloat(variableName, Mathf.Lerp(original, target, timer));
+
+            yield return null;
+        }
+
+        jumpLerpStarted = false;
     }
 }
