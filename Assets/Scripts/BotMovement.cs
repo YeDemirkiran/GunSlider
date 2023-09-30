@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static GeneralUtilities;
+using static AudioUtilities;
+using static AnimationUtilities;
 
 public class BotMovement : MonoBehaviour
 {
@@ -32,8 +32,7 @@ public class BotMovement : MonoBehaviour
     [SerializeField] private float standingHeight;
     [SerializeField] private float crouchingHeight;
     [SerializeField] private float crouchTransitionDuration;
-    private bool isCrouching = false;
-    private float crouchLerp = 0f;
+    private LerpFloat crouchLerp = new LerpFloat(0f);
     private Vector3 meshStandingPosition, meshCrouchingPosition;
 
     [Header("GENERAL ANIMATION")]
@@ -103,11 +102,11 @@ public class BotMovement : MonoBehaviour
             spineBone.localEulerAngles = rifleRotation;
         }
 
-        charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchLerp);
-        animatorMesh.localPosition = Vector3.Lerp(meshStandingPosition, meshCrouchingPosition, crouchLerp);
-        movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchLerp);
+        charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchLerp.value);
+        animatorMesh.localPosition = Vector3.Lerp(meshStandingPosition, meshCrouchingPosition, crouchLerp.value);
+        movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchLerp.value);
 
-        AnimatorAssignValues(verticalInput, horizontalInput, false, crouchLerp);
+        AnimatorAssignValues(verticalInput, horizontalInput, false, crouchLerp.value);
     }
 
     // CROUCH
@@ -249,36 +248,36 @@ public class BotMovement : MonoBehaviour
     //// Crouch
     public void Crouch(bool crouch)
     {
-        isCrouching = crouch;
+        crouchLerp.Lerp(this, crouch ? 1f : 0f, crouchTransitionDuration);
 
-        if (currentCrouchLerp != null)
-        {
-            StopCoroutine(currentCrouchLerp);
-        }
+        //if (currentCrouchLerp != null)
+        //{
+        //    StopCoroutine(currentCrouchLerp);
+        //}
 
-        currentCrouchLerp = StartCoroutine(CrouchLerp(crouch ? 1f : 0f, crouchTransitionDuration));
+        //currentCrouchLerp = StartCoroutine(CrouchLerp(crouch ? 1f : 0f, crouchTransitionDuration));
     }
 
-    private IEnumerator CrouchLerp(float target, float duration)
-    {
-        float original = crouchLerp;
-        float timer = 0f;
-        float direction = Mathf.Sign(original - target);
+    //private IEnumerator CrouchLerp(float target, float duration)
+    //{
+    //    float original = crouchLerp;
+    //    float timer = 0f;
+    //    float direction = Mathf.Sign(original - target);
 
-        while (timer < 1.1f)
-        {
-            timer  += Time.deltaTime / duration;
+    //    while (timer < 1.1f)
+    //    {
+    //        timer  += Time.deltaTime / duration;
 
-            crouchLerp = Mathf.Lerp(original, target, timer);
-            charController.Move(Vector3.up * direction * 2f * Time.deltaTime);
+    //        crouchLerp = Mathf.Lerp(original, target, timer);
+    //        charController.Move(Vector3.up * direction * 2f * Time.deltaTime);
 
-            //Debug.Log("LERP: " + crouchLerp);
+    //        //Debug.Log("LERP: " + crouchLerp);
 
-            yield return null;
-        }
+    //        yield return null;
+    //    }
 
-        crouchLerp = target;
-    }
+    //    crouchLerp = target;
+    //}
     
 
     // ANIMATOR
@@ -348,6 +347,8 @@ public class BotMovement : MonoBehaviour
 
         jumpLerpStarted = false;
     }
+
+    
 
     // Ranged Mode 
     public void RotateSpine(float deltaX, float deltaY, bool invertY)

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GeneralUtilities;
+using static AudioUtilities;
 
 public class GunController : MonoBehaviour
 {
