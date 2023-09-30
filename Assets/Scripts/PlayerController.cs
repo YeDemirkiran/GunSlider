@@ -17,26 +17,43 @@ public class PlayerController : MonoBehaviour
         {
             foreach (KeyCode key in crouchKeys)
             {
-                if (Input.GetKey(key))
+                if (Input.GetKeyDown(key))
                 {
+                    bot.Crouch(true);
                     isCrouching = true;
+
+                    Debug.Log("Crouched");
                     break;
                 }
-                else
+                else if (Input.GetKeyUp(key))
                 {
+                    bot.Crouch(false);
                     isCrouching = false;
+
+                    Debug.Log("Stood up");
+                    break;
                 }
             }
 
-            bot.Crouch(isCrouching);
+            
+
+
+            if (Input.GetKey(KeyCode.Mouse1))
+            {
+                bot.Punch();
+            }
+
 
             bot.Push(Input.GetKeyDown(KeyCode.Space));
 
             bot.Jump(Input.GetKey(KeyCode.Space));
 
             bot.Move(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
+            
 
-            bot.AnimatorAssignValues(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), Input.GetKeyDown(KeyCode.Space), isCrouching);
+            bot.RotateSpine(Input.GetAxis("Mouse X") * 100f, Input.GetAxis("Mouse Y") * 100f, true);
+
+            //bot.AnimatorAssignValues(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), Input.GetKeyDown(KeyCode.Space), isCrouching);
         }
     }
 }

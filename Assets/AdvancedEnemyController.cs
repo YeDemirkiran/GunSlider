@@ -175,7 +175,7 @@ public class AdvancedEnemyController : MonoBehaviour
 
         if (enemyBehaviour == EnemyBehaviour.Idle)
         {
-            bot.AnimatorAssignValues(0f, 0f, false, false);
+            //bot.AnimatorAssignValues(0f, 0f, false, false);
         }
 
         if (enemyBehaviour == EnemyBehaviour.Offensive)

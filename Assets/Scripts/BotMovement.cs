@@ -1,15 +1,20 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static GeneralUtilities;
 
 public class BotMovement : MonoBehaviour
 {
+    public enum AnimationType { Melee, Rifle }
+
     [Header("GENERAL")]
     [SerializeField] private CharacterController charController;
 
     // SPEEDS
     [SerializeField] private Vector3 standingSpeed, crouchingSpeed;
     private Vector3 movementSpeed;
+
+    private float verticalInput, horizontalInput;
     private float preVerticalMovement = 0f, preHorizontalMovement = 0f;
 
     [SerializeField] private float gravity = -9.81f;
@@ -26,23 +31,29 @@ public class BotMovement : MonoBehaviour
     [Header("CROUCH")]
     [SerializeField] private float standingHeight;
     [SerializeField] private float crouchingHeight;
-    [SerializeField] private float crouchingTransitionSeconds;
+    [SerializeField] private float crouchTransitionDuration;
     private bool isCrouching = false;
     private float crouchLerp = 0f;
     private Vector3 meshStandingPosition, meshCrouchingPosition;
 
-    [Header("ANIMATION")]
+    [Header("GENERAL ANIMATION")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform animatorMesh;
+    private Coroutine currentCrouchLerp, currentJumpLerp;
+    private bool crouchLerpStarted, jumpLerpStarted;
 
+    [Header("ANIMATION MODE")]
+    [SerializeField] private AnimationType currentAnimationType = AnimationType.Melee;
+    [SerializeField] private Transform spineBone;
+    [SerializeField] private Vector3 rifleSensitivity, rifleClamp;
+    [SerializeField] private bool invertRifleY;
+    private Vector3 rifleRotation;
 
     [Header("SFX")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip[] jumpClips, pushClips;
     [SerializeField] private Vector2 pitchRandomness;
 
-    private Coroutine currentCrouchLerp, currentJumpLerp;
-    private bool crouchLerpStarted, jumpLerpStarted;
 
     private void Awake()
     {
@@ -54,11 +65,49 @@ public class BotMovement : MonoBehaviour
     {
         meshStandingPosition = animatorMesh.transform.localPosition;
         meshCrouchingPosition = animatorMesh.transform.localPosition + ((standingHeight - crouchingHeight) * Vector3.up / 2f);
+
+        rifleRotation = spineBone.localEulerAngles;
     }
 
     private void Update()
     {
         Gravity();
+
+        // ANIMATOR MODE
+        switch (currentAnimationType)
+        {
+            case AnimationType.Melee:
+                if (animator.GetCurrentAnimatorStateInfo(2).normalizedTime >= 1.0f)
+                {
+                    animator.Play("None", 2, 0f);
+                    animator.SetLayerWeight(2, 0f); 
+                }
+
+                animator.SetLayerWeight(1, 0f);
+                break;
+            case AnimationType.Rifle:
+                animator.SetLayerWeight(1, 1f);
+                break;
+        }
+
+        
+
+        Debug.Log("VERT: " + verticalInput / movementSpeed.z);
+        Debug.Log("ZORT: " + horizontalInput / movementSpeed.x);
+    }
+
+    private void LateUpdate()
+    {
+        if (currentAnimationType == AnimationType.Rifle)
+        {
+            spineBone.localEulerAngles = rifleRotation;
+        }
+
+        charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchLerp);
+        animatorMesh.localPosition = Vector3.Lerp(meshStandingPosition, meshCrouchingPosition, crouchLerp);
+        movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchLerp);
+
+        AnimatorAssignValues(verticalInput, horizontalInput, false, crouchLerp);
     }
 
     // CROUCH
@@ -84,83 +133,77 @@ public class BotMovement : MonoBehaviour
 
     //    CrouchCheck();
     //}
-    
-    public void Crouch(bool crouch)
+
+    // GENERAL MOVEMENT
+
+    // Movement
+    public void Move(float verticalInput, float horizontalInput, float airMovementDivider = 2f)
     {
-        CrouchInput(crouch);
-        CrouchCheck();
-    }
+        this.verticalInput = verticalInput;
+        this.horizontalInput = horizontalInput;
 
-    private void CrouchInput(bool crouch)
-    {
-        if (crouch && !isCrouching)
+        float verticalMovement = verticalInput * movementSpeed.z;
+        float horizontalMovement = horizontalInput * movementSpeed.x;
+
+        if (charController.isGrounded)
         {
-            isCrouching = true;
+            currentGravity = 0f;
 
-            //charController.height = crouchingHeight;
-            //movementSpeed = crouchingSpeed;
-
-            crouchLerp = 0f;
-        }
-
-        else if (!crouch && isCrouching)
-        {
-            isCrouching = false;
-
-            //charController.height = standingHeight;
-            //movementSpeed = standingSpeed;
-
-            crouchLerp = 1f;
-        }
-    }
-
-    private void CrouchCheck()
-    {
-        if (isCrouching)
-        {
-            //if (charController.height > crouchingHeight)
-            if (crouchLerp < 1f)
+            if (charController.velocity.y <= jumpApex)
             {
-                crouchLerp += Time.deltaTime / crouchingTransitionSeconds;
-
-                // Move the root downward so the lowest point of the collider never loses touch with the ground
-                charController.Move(Vector3.up * -2f * Time.deltaTime);
+                canJump = true;
+                canPush = false;
+                jumpApex = 0f;
             }
-            //else
-            //{
-            //    // If for some reason the lerp is 1 but the height and speed are not equal to the intended values
 
-            //    charController.height = crouchingHeight;
-            //    animatorMesh.localPosition = meshCrouchingPosition;
-            //    movementSpeed = crouchingSpeed;
-            //}
+            preVerticalMovement = verticalMovement;
+            preHorizontalMovement = horizontalMovement;
         }
         else
         {
-            //if (charController.height < standingHeight)
-            if (crouchLerp > 0f)
-            {
-                crouchLerp -= Time.deltaTime / crouchingTransitionSeconds;
+            canJump = false;
 
-                // Move the root upward so the lowest point of the collider never intersects the ground
-                charController.Move(Vector3.up * 2f * Time.deltaTime);
-            }
-            //else
-            //{
-            //    // If for some reason the lerp is 0 but the height and speed are not equal to the intended values
+            preVerticalMovement += verticalMovement / airMovementDivider * Time.deltaTime;
+            preHorizontalMovement += horizontalMovement / airMovementDivider * Time.deltaTime;
 
-            //    charController.height = standingHeight;
-            //    animatorMesh.localPosition = meshStandingPosition;
-            //    movementSpeed = standingSpeed;
-            //}
+            verticalMovement = preVerticalMovement;
+            horizontalMovement = preHorizontalMovement;
         }
 
-        charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchLerp);
-        animatorMesh.localPosition = Vector3.Lerp(meshStandingPosition, meshCrouchingPosition, crouchLerp);
-        movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchLerp);
+        // Created a Vector3 for readibility
+        Vector3 movement = Vector3.zero;
+
+        movement += (verticalMovement + currentPushSpeed) * transform.forward;
+        movement += horizontalMovement * transform.right;
+        //movement += Vector3.up * currentGravity;
+
+        //charController.Move(((horizontalMovement * transform.right) + ((verticalMovement + currentPushSpeed) * transform.forward) + (Vector3.up * currentGravity)) * Time.deltaTime);
+        charController.Move(movement * Time.deltaTime);
     }
 
-    // PUSH
+    //// GRAVITY
+    private void Gravity()
+    {
+        currentGravity += gravity * Time.deltaTime;
+
+        charController.Move(Vector3.up * currentGravity * Time.deltaTime);
+    }
+
+    //// Jump
+    public void Jump(bool jump)
+    {
+        if (canJump && jump)
+        {
+            canJump = false;
+            hasPushed = false;
+
+            currentGravity += movementSpeed.y;
+
+            PlayRandomSound(audioSource, jumpClips, pitchRandomness);
+        }
+    }
+
+    //// Push
     public void Push(bool push)
     {
         if (!hasPushed)
@@ -203,72 +246,43 @@ public class BotMovement : MonoBehaviour
         currentPushSpeed = Mathf.Clamp(currentPushSpeed, 0f, pushSpeed);
     }
 
-    // JUMP
-    public void Jump(bool jump)
+    //// Crouch
+    public void Crouch(bool crouch)
     {
-        if (canJump && jump)
+        isCrouching = crouch;
+
+        if (currentCrouchLerp != null)
         {
-            canJump = false;
-            hasPushed = false;
-
-            currentGravity += movementSpeed.y;
-
-            PlayRandomSound(audioSource, jumpClips, pitchRandomness);
-        }
-    }
-
-    // GRAVITY
-    private void Gravity()
-    {
-        currentGravity += gravity * Time.deltaTime;
-
-        charController.Move(Vector3.up * currentGravity * Time.deltaTime);
-    }
-
-    // MOVEMENT
-    public void Move(float verticalInput, float horizontalInput, float airMovementDivider = 2f)
-    {
-        float verticalMovement = verticalInput * movementSpeed.z;
-        float horizontalMovement = horizontalInput * movementSpeed.x;
-
-        if (charController.isGrounded)
-        {
-            currentGravity = 0f;
-
-            if (charController.velocity.y <= jumpApex)
-            {
-                canJump = true;
-                canPush = false;
-                jumpApex = 0f;
-            }
-
-            preVerticalMovement = verticalMovement;
-            preHorizontalMovement = horizontalMovement;
-        }
-        else
-        {
-            canJump = false;
-
-            preVerticalMovement += verticalMovement / airMovementDivider * Time.deltaTime;
-            preHorizontalMovement += horizontalMovement / airMovementDivider * Time.deltaTime;
-
-            verticalMovement = preVerticalMovement;
-            horizontalMovement = preHorizontalMovement;
+            StopCoroutine(currentCrouchLerp);
         }
 
-        // Created a Vector3 for readibility
-        Vector3 movement = Vector3.zero;
-
-        movement += (verticalMovement + currentPushSpeed) * transform.forward;
-        movement += horizontalMovement * transform.right;
-        //movement += Vector3.up * currentGravity;
-
-        //charController.Move(((horizontalMovement * transform.right) + ((verticalMovement + currentPushSpeed) * transform.forward) + (Vector3.up * currentGravity)) * Time.deltaTime);
-        charController.Move(movement * Time.deltaTime);
+        currentCrouchLerp = StartCoroutine(CrouchLerp(crouch ? 1f : 0f, crouchTransitionDuration));
     }
+
+    private IEnumerator CrouchLerp(float target, float duration)
+    {
+        float original = crouchLerp;
+        float timer = 0f;
+        float direction = Mathf.Sign(original - target);
+
+        while (timer < 1.1f)
+        {
+            timer  += Time.deltaTime / duration;
+
+            crouchLerp = Mathf.Lerp(original, target, timer);
+            charController.Move(Vector3.up * direction * 2f * Time.deltaTime);
+
+            //Debug.Log("LERP: " + crouchLerp);
+
+            yield return null;
+        }
+
+        crouchLerp = target;
+    }
+    
 
     // ANIMATOR
-    public void AnimatorAssignValues(float normalizedVerticalSpeed, float normalizedHorizontalSpeed, bool hasJumped, bool isCrouching)
+    public void AnimatorAssignValues(float normalizedVerticalSpeed, float normalizedHorizontalSpeed, bool hasJumped, float crouchingValue)
     {
         animator.SetFloat("Vertical Speed", normalizedVerticalSpeed);
         animator.SetFloat("Horizontal Speed", normalizedHorizontalSpeed);
@@ -313,62 +327,8 @@ public class BotMovement : MonoBehaviour
             animator.SetBool("Has Jumped", hasJumped);
         }
 
-        if (isCrouching)
-        {
-            if (animator.GetFloat("CrouchingPose") < 1f)
-            {
-                if (!crouchLerpStarted)
-                {
-                    if (currentCrouchLerp != null)
-                    {
-                        StopCoroutine(currentCrouchLerp);
-                    }
-
-                    currentCrouchLerp = StartCoroutine(LerpCrouchingFloat(1f, crouchingTransitionSeconds, "CrouchingPose"));
-                    //StopCoroutine(currentCrouchLerp);
-                }
-            }
-            
-
-            //animator.SetFloat("CrouchingPose", 1f);
-        }
-        else
-        {
-            if (animator.GetFloat("CrouchingPose") > 0f)
-            {
-                if (!crouchLerpStarted)
-                {
-                    if (currentCrouchLerp != null)
-                    {
-                        StopCoroutine(currentCrouchLerp);
-                    }
-
-                    currentCrouchLerp = StartCoroutine(LerpCrouchingFloat(0f, crouchingTransitionSeconds, "CrouchingPose"));
-                }
-            }
-            //animator.SetFloat("CrouchingPose", 0f);
-        }
-
-        animator.SetBool("Is Crouching", isCrouching);
-    }
-
-    private IEnumerator LerpCrouchingFloat(float target, float duration, string variableName)
-    {
-        float timer = 0f;
-        float original = animator.GetFloat(variableName);
-        crouchLerpStarted = true;
-
-        while (timer < 1)
-        {
-            timer += Time.deltaTime / duration;
-
-            animator.SetFloat(variableName, Mathf.Lerp(original, target, timer));
-            Debug.Log(animator.GetFloat(variableName));
-
-            yield return null;
-        }
-
-        crouchLerpStarted = false;
+        animator.SetFloat("CrouchingPose", crouchingValue);
+        //animator.SetBool("Is Crouching", isCrouching);
     }
 
     private IEnumerator LerpJumpingFloat(float target, float duration, string variableName)
@@ -387,5 +347,29 @@ public class BotMovement : MonoBehaviour
         }
 
         jumpLerpStarted = false;
+    }
+
+    // Ranged Mode 
+    public void RotateSpine(float deltaX, float deltaY, bool invertY)
+    {
+        if (currentAnimationType == AnimationType.Rifle)
+        {
+            rifleRotation.x += (invertY ? -1f : 1f) * deltaY * Time.deltaTime;
+            rifleRotation.x = Mathf.Clamp(rifleRotation.x, rifleClamp.x, rifleClamp.y);
+
+            rifleRotation.y += deltaX * Time.deltaTime;
+
+            Debug.Log("ROTATING");
+        }
+    }
+
+    // Melee Mode
+    public void Punch()
+    {
+        if (animator.GetLayerWeight(2) < 1f)
+        {
+            animator.SetLayerWeight(2, 1f);
+            animator.SetTrigger("Jab");
+        }
     }
 }
