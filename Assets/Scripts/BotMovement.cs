@@ -41,12 +41,21 @@ public class BotMovement : MonoBehaviour
     private Coroutine currentCrouchLerp, currentJumpLerp;
     private bool crouchLerpStarted, jumpLerpStarted;
 
-    [Header("ANIMATION MODE")]
+    [Header("ANIMATION MODES")]
     [SerializeField] private AnimationType currentAnimationType = AnimationType.Melee;
+    [SerializeField] private int meleeIndex, rangedIndex;
+
+    [Header("Melee Attack Mode")]
+    private LerpFloat meleeLayerWeight = new LerpFloat(0f);
+    private sbyte currentPunchIndex = -1; 
+
+
+    [Header("Ranged Weapon Mode")]
     [SerializeField] private Transform spineBone;
-    [SerializeField] private Vector3 rifleSensitivity, rifleClamp;
-    [SerializeField] private bool invertRifleY;
-    private Vector3 rifleRotation;
+    [SerializeField] private Vector3 spineSensitivity, spineClampX, spineClampY;
+    [SerializeField] private bool invertSpineX, invertSpineY;
+    private Vector3 spineeRotation;
+
 
     [Header("SFX")]
     [SerializeField] private AudioSource audioSource;
@@ -65,7 +74,7 @@ public class BotMovement : MonoBehaviour
         meshStandingPosition = animatorMesh.transform.localPosition;
         meshCrouchingPosition = animatorMesh.transform.localPosition + ((standingHeight - crouchingHeight) * Vector3.up / 2f);
 
-        rifleRotation = spineBone.localEulerAngles;
+        spineeRotation = spineBone.localEulerAngles;
     }
 
     private void Update()
@@ -76,37 +85,49 @@ public class BotMovement : MonoBehaviour
         switch (currentAnimationType)
         {
             case AnimationType.Melee:
-                if (animator.GetCurrentAnimatorStateInfo(2).normalizedTime >= 1.0f)
+                AnimatorStateInfo meleeInfo = animator.GetCurrentAnimatorStateInfo(meleeIndex);
+
+                //Debug.Log("BANAN: " + meleeInfo[0].clip.name);
+                //Debug.Log("BANAN: " + animator.GetCurrentAnimatorClipInfo(meleeIndex)[0].clip.name);
+
+                if (meleeInfo.IsTag("Punch"))
                 {
-                    animator.Play("None", 2, 0f);
-                    animator.SetLayerWeight(2, 0f); 
+                    //Debug.Log(meleeInfo.normalizedTime);
                 }
 
-                animator.SetLayerWeight(1, 0f);
+                if (meleeInfo.IsTag("Punch")
+                    && meleeInfo.normalizedTime >= 0.75f && !meleeLayerWeight.isLerping)
+                {
+
+                     Debug.Log("Woo");
+                //    animator.Play("None", meleeIndex, 0f);
+                    meleeLayerWeight.Lerp(this, 0f, 0.25f);
+                    currentPunchIndex = -1;
+                }
+
+                animator.SetLayerWeight(meleeIndex, meleeLayerWeight);
+
                 break;
             case AnimationType.Rifle:
-                animator.SetLayerWeight(1, 1f);
+                //animator.SetLayerWeight(rangedIndex, 1f);
                 break;
         }
 
-        
-
-        Debug.Log("VERT: " + verticalInput / movementSpeed.z);
-        Debug.Log("ZORT: " + horizontalInput / movementSpeed.x);
+        //Debug.Log("CURRENT MELEE WEIGHT: " + animator.GetLayerWeight(meleeIndex));
     }
 
     private void LateUpdate()
     {
         if (currentAnimationType == AnimationType.Rifle)
         {
-            spineBone.localEulerAngles = rifleRotation;
+            spineBone.localEulerAngles = spineeRotation;
         }
 
-        charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchLerp.value);
-        animatorMesh.localPosition = Vector3.Lerp(meshStandingPosition, meshCrouchingPosition, crouchLerp.value);
-        movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchLerp.value);
+        charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchLerp);
+        animatorMesh.localPosition = Vector3.Lerp(meshStandingPosition, meshCrouchingPosition, crouchLerp);
+        movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchLerp);
 
-        AnimatorAssignValues(verticalInput, horizontalInput, false, crouchLerp.value);
+        AnimatorAssignValues(verticalInput, horizontalInput, false, crouchLerp);
     }
 
     // CROUCH
@@ -355,10 +376,10 @@ public class BotMovement : MonoBehaviour
     {
         if (currentAnimationType == AnimationType.Rifle)
         {
-            rifleRotation.x += (invertY ? -1f : 1f) * deltaY * Time.deltaTime;
-            rifleRotation.x = Mathf.Clamp(rifleRotation.x, rifleClamp.x, rifleClamp.y);
+            spineeRotation.x += (invertY ? -1f : 1f) * deltaY * Time.deltaTime;
+            spineeRotation.x = Mathf.Clamp(spineeRotation.x, spineClampX.x, spineClampX.y);
 
-            rifleRotation.y += deltaX * Time.deltaTime;
+            spineeRotation.y += deltaX * Time.deltaTime;
 
             Debug.Log("ROTATING");
         }
@@ -367,10 +388,15 @@ public class BotMovement : MonoBehaviour
     // Melee Mode
     public void Punch()
     {
-        if (animator.GetLayerWeight(2) < 1f)
+        if (meleeLayerWeight < 1f && !meleeLayerWeight.isLerping)
         {
-            animator.SetLayerWeight(2, 1f);
+            animator.Play("None", meleeIndex, 0f);
+            //animator.Play("None", meleeIndex, 0f);
+            meleeLayerWeight.Lerp(this, 1f, 0.1f);
             animator.SetTrigger("Jab");
+            currentPunchIndex = 0;
+
+            Debug.Log("JABBBBBB");
         }
     }
 }

@@ -15525,10 +15525,14 @@ MonoBehaviour:
   animator: {fileID: 1978311687}
   animatorMesh: {fileID: 1978311686}
   currentAnimationType: 0
+  meleeIndex: 0
+  rangedIndex: 0
   spineBone: {fileID: 0}
-  rifleSensitivity: {x: 0, y: 0, z: 0}
-  rifleClamp: {x: 0, y: 0, z: 0}
-  invertRifleY: 0
+  spineSensitivity: {x: 0, y: 0, z: 0}
+  spineClampX: {x: 0, y: 0, z: 0}
+  spineClampY: {x: 0, y: 0, z: 0}
+  invertSpineX: 0
+  invertSpineY: 0
   audioSource: {fileID: 1931200537}
   jumpClips:
   - {fileID: 8300000, guid: 62b7596edceed7a4da77d1c62f81f424, type: 3}
@@ -17419,9 +17423,24 @@ PrefabInstance:
       objectReference: {fileID: 912858890}
     - target: {fileID: 2160122303998184994, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2160122303998184994, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
       propertyPath: spineBone
       value: 
       objectReference: {fileID: 1823184638}
+    - target: {fileID: 2160122303998184994, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
+      propertyPath: meleeIndex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2160122303998184994, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
+      propertyPath: rangedIndex
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2160122303998184994, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
       propertyPath: animatorMesh
