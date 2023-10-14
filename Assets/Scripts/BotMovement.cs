@@ -14,6 +14,12 @@ public class BotMovement : MonoBehaviour
     [SerializeField] private Vector3 standingSpeed, crouchingSpeed;
     private Vector3 movementSpeed;
 
+    private LerpFloat movementLerp = new LerpFloat(0f);
+
+    [SerializeField] private float accelerationSpeed;
+
+    private bool moveMethodCalled = false;
+
     private float verticalInput, horizontalInput;
     private float preVerticalMovement = 0f, preHorizontalMovement = 0f;
 
@@ -34,12 +40,13 @@ public class BotMovement : MonoBehaviour
     [SerializeField] private float crouchTransitionDuration;
     private LerpFloat crouchLerp = new LerpFloat(0f);
     private Vector3 meshStandingPosition, meshCrouchingPosition;
+    private bool isCrouching = false;
 
     [Header("GENERAL ANIMATION")]
     [SerializeField] private Animator animator;
     [SerializeField] private Transform animatorMesh;
-    private Coroutine currentCrouchLerp, currentJumpLerp;
-    private bool crouchLerpStarted, jumpLerpStarted;
+    private Coroutine currentJumpLerp;
+    private bool jumpLerpStarted;
 
     [Header("ANIMATION MODES")]
     [SerializeField] private AnimationType currentAnimationType = AnimationType.Melee;
@@ -54,14 +61,13 @@ public class BotMovement : MonoBehaviour
     [SerializeField] private Transform spineBone;
     [SerializeField] private Vector3 spineSensitivity, spineClampX, spineClampY;
     [SerializeField] private bool invertSpineX, invertSpineY;
-    private Vector3 spineeRotation;
+    private Vector3 spineRotation;
 
 
     [Header("SFX")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip[] jumpClips, pushClips;
     [SerializeField] private Vector2 pitchRandomness;
-
 
     private void Awake()
     {
@@ -74,12 +80,18 @@ public class BotMovement : MonoBehaviour
         meshStandingPosition = animatorMesh.transform.localPosition;
         meshCrouchingPosition = animatorMesh.transform.localPosition + ((standingHeight - crouchingHeight) * Vector3.up / 2f);
 
-        spineeRotation = spineBone.localEulerAngles;
+        if (currentAnimationType == AnimationType.Rifle)
+        {
+            spineRotation = spineBone.localEulerAngles;
+        }
     }
 
     private void Update()
     {
+        Debug.Log($"Move Method Called: {moveMethodCalled}");
+
         Gravity();
+        PushInternal();
 
         // ANIMATOR MODE
         switch (currentAnimationType)
@@ -87,20 +99,9 @@ public class BotMovement : MonoBehaviour
             case AnimationType.Melee:
                 AnimatorStateInfo meleeInfo = animator.GetCurrentAnimatorStateInfo(meleeIndex);
 
-                //Debug.Log("BANAN: " + meleeInfo[0].clip.name);
-                //Debug.Log("BANAN: " + animator.GetCurrentAnimatorClipInfo(meleeIndex)[0].clip.name);
-
-                if (meleeInfo.IsTag("Punch"))
-                {
-                    //Debug.Log(meleeInfo.normalizedTime);
-                }
-
                 if (meleeInfo.IsTag("Punch")
                     && meleeInfo.normalizedTime >= 0.75f && !meleeLayerWeight.isLerping)
                 {
-
-                     Debug.Log("Woo");
-                //    animator.Play("None", meleeIndex, 0f);
                     meleeLayerWeight.Lerp(this, 0f, 0.25f);
                     currentPunchIndex = -1;
                 }
@@ -112,58 +113,155 @@ public class BotMovement : MonoBehaviour
                 //animator.SetLayerWeight(rangedIndex, 1f);
                 break;
         }
-
-        //Debug.Log("CURRENT MELEE WEIGHT: " + animator.GetLayerWeight(meleeIndex));
     }
 
     private void LateUpdate()
     {
+        // We need to animate the bone at the late update
         if (currentAnimationType == AnimationType.Rifle)
         {
-            spineBone.localEulerAngles = spineeRotation;
+            spineBone.localEulerAngles = spineRotation;
         }
 
         charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchLerp);
         animatorMesh.localPosition = Vector3.Lerp(meshStandingPosition, meshCrouchingPosition, crouchLerp);
         movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchLerp);
 
-        AnimatorAssignValues(verticalInput, horizontalInput, false, crouchLerp);
+        MoveInternal();
+        moveMethodCalled = false;
+
+        AnimatorAssignValues(verticalInput * movementLerp, horizontalInput * movementLerp, false, crouchLerp);
     }
 
-    // CROUCH
+    // Ranged Mode 
+    public void RotateSpine(float deltaX, float deltaY, bool invertY)
+    {
+        if (currentAnimationType == AnimationType.Rifle)
+        {
+            spineRotation.x += (invertY ? -1f : 1f) * deltaY * Time.deltaTime;
+            spineRotation.x = Mathf.Clamp(spineRotation.x, spineClampX.x, spineClampX.y);
 
-    //public void Crouch(KeyCode[] crouchKeys)
-    //{
-    //    foreach (KeyCode key in crouchKeys)
-    //    {
-    //        if (Input.GetKeyDown(key))
-    //        {
-    //            CrouchInput(true);
+            spineRotation.y += deltaX * Time.deltaTime;
+        }
+    }
 
-    //            break;
-    //        }
+    // Melee Mode
+    public void Punch()
+    {
+        if (meleeLayerWeight < 1f && !meleeLayerWeight.isLerping)
+        {
+            animator.Play("None", meleeIndex, 0f);
+            meleeLayerWeight.Lerp(this, 1f, 0.1f);
+            animator.SetTrigger("Jab");
+            currentPunchIndex = 0;
+        }
+    }
 
-    //        if (Input.GetKeyUp(key))
-    //        {
-    //            CrouchInput(false);
+    #region PUBLIC
 
-    //            break;
-    //        }
-    //    }
-
-    //    CrouchCheck();
-    //}
-
-    // GENERAL MOVEMENT
-
-    // Movement
-    public void Move(float verticalInput, float horizontalInput, float airMovementDivider = 2f)
+    public void Move(float verticalInput, float horizontalInput)
     {
         this.verticalInput = verticalInput;
-        this.horizontalInput = horizontalInput;
+        this.horizontalInput = horizontalInput;     
+
+        moveMethodCalled = true;
+    }
+
+    public void MoveInternal()
+    {
+        if (moveMethodCalled)
+        {
+            if (!movementLerp.isLerping)
+            {
+                movementLerp.Lerp(this, 1f, accelerationSpeed);
+            }
+        }
+        else
+        {
+            if (!movementLerp.isLerping)
+            {
+                movementLerp.Lerp(this, 0f, accelerationSpeed);
+            }
+        }
 
         float verticalMovement = verticalInput * movementSpeed.z;
         float horizontalMovement = horizontalInput * movementSpeed.x;
+
+        if (charController.isGrounded)
+        {
+            preVerticalMovement = verticalMovement;
+            preHorizontalMovement = horizontalMovement;
+        }
+        else
+        {
+            preVerticalMovement += verticalMovement / 2f * Time.deltaTime;
+            preHorizontalMovement += horizontalMovement / 2f * Time.deltaTime;
+
+            verticalMovement = preVerticalMovement;
+            horizontalMovement = preHorizontalMovement;
+        }
+
+        // Created a Vector3 for readibility
+        Vector3 movement = Vector3.zero;
+
+        movement += (verticalMovement + currentPushSpeed) * transform.forward;
+        movement += horizontalMovement * transform.right;
+
+        charController.Move(movement * movementLerp * Time.deltaTime);
+    }
+
+    public void Jump()
+    {
+        if (canJump)
+        {
+            canJump = false;
+            hasPushed = false;
+
+            currentGravity += movementSpeed.y;
+
+            PlayRandomSound(audioSource, jumpClips, pitchRandomness);
+        }
+    }
+
+    public void Push()
+    {
+        if (!hasPushed)
+        {
+            //// If on air and jumped again, this makes sure we will push even if we pressed it earlier
+            if (jumpApex > 1f)
+            {
+                willPush = true;
+            }
+        }
+    }
+
+    public void Crouch()
+    {
+        if (!isCrouching)
+        {
+            crouchLerp.Lerp(this, 1f, crouchTransitionDuration);
+            isCrouching = true;
+        }
+
+        //        charController.Move(Vector3.up * direction * 2f * Time.deltaTime);
+    }
+
+    public void StandUp()
+    {
+        crouchLerp.Lerp(this, 0f, crouchTransitionDuration);
+        isCrouching = false;
+    }
+
+    #endregion
+
+    #region INTERNAL
+
+    #region General
+
+    private void Gravity()
+    {
+        currentGravity += gravity * Time.deltaTime;
+        charController.Move(Vector3.up * currentGravity * Time.deltaTime);
 
         if (charController.isGrounded)
         {
@@ -175,75 +273,32 @@ public class BotMovement : MonoBehaviour
                 canPush = false;
                 jumpApex = 0f;
             }
-
-            preVerticalMovement = verticalMovement;
-            preHorizontalMovement = horizontalMovement;
         }
         else
         {
             canJump = false;
-
-            preVerticalMovement += verticalMovement / airMovementDivider * Time.deltaTime;
-            preHorizontalMovement += horizontalMovement / airMovementDivider * Time.deltaTime;
-
-            verticalMovement = preVerticalMovement;
-            horizontalMovement = preHorizontalMovement;
-        }
-
-        // Created a Vector3 for readibility
-        Vector3 movement = Vector3.zero;
-
-        movement += (verticalMovement + currentPushSpeed) * transform.forward;
-        movement += horizontalMovement * transform.right;
-        //movement += Vector3.up * currentGravity;
-
-        //charController.Move(((horizontalMovement * transform.right) + ((verticalMovement + currentPushSpeed) * transform.forward) + (Vector3.up * currentGravity)) * Time.deltaTime);
-        charController.Move(movement * Time.deltaTime);
-    }
-
-    //// GRAVITY
-    private void Gravity()
-    {
-        currentGravity += gravity * Time.deltaTime;
-
-        charController.Move(Vector3.up * currentGravity * Time.deltaTime);
-    }
-
-    //// Jump
-    public void Jump(bool jump)
-    {
-        if (canJump && jump)
-        {
-            canJump = false;
-            hasPushed = false;
-
-            currentGravity += movementSpeed.y;
-
-            PlayRandomSound(audioSource, jumpClips, pitchRandomness);
         }
     }
 
-    //// Push
-    public void Push(bool push)
+    private void PushInternal()
     {
         if (!hasPushed)
         {
-            //// Calculating the apex
-            if (jumpApex < charController.velocity.y && !canJump)
+            // If we jumped
+            if (!canJump)
             {
-                jumpApex = charController.velocity.y;
-            }
+                // Calculating the apex
+                if (jumpApex < charController.velocity.y)
+                {
+                    jumpApex = charController.velocity.y;
+                    canPush = false;
+                }
 
-            //// If we jumped and reached the apex
-            if (!canJump && jumpApex > charController.velocity.y)
-            {
-                canPush = true;
-            }
-
-            //// If on air and jumped again, this makes sure we will push even if we pressed it earlier
-            if (jumpApex > 1f && push)
-            {
-                willPush = true;
+                //// If we jumped and reached the apex
+                else
+                {
+                    canPush = true;
+                }
             }
 
             //// Finally push
@@ -266,43 +321,10 @@ public class BotMovement : MonoBehaviour
         currentPushSpeed = Mathf.Clamp(currentPushSpeed, 0f, pushSpeed);
     }
 
-    //// Crouch
-    public void Crouch(bool crouch)
-    {
-        crouchLerp.Lerp(this, crouch ? 1f : 0f, crouchTransitionDuration);
+    #endregion
 
-        //if (currentCrouchLerp != null)
-        //{
-        //    StopCoroutine(currentCrouchLerp);
-        //}
-
-        //currentCrouchLerp = StartCoroutine(CrouchLerp(crouch ? 1f : 0f, crouchTransitionDuration));
-    }
-
-    //private IEnumerator CrouchLerp(float target, float duration)
-    //{
-    //    float original = crouchLerp;
-    //    float timer = 0f;
-    //    float direction = Mathf.Sign(original - target);
-
-    //    while (timer < 1.1f)
-    //    {
-    //        timer  += Time.deltaTime / duration;
-
-    //        crouchLerp = Mathf.Lerp(original, target, timer);
-    //        charController.Move(Vector3.up * direction * 2f * Time.deltaTime);
-
-    //        //Debug.Log("LERP: " + crouchLerp);
-
-    //        yield return null;
-    //    }
-
-    //    crouchLerp = target;
-    //}
-    
-
-    // ANIMATOR
-    public void AnimatorAssignValues(float normalizedVerticalSpeed, float normalizedHorizontalSpeed, bool hasJumped, float crouchingValue)
+    #region Animator
+    private void AnimatorAssignValues(float normalizedVerticalSpeed, float normalizedHorizontalSpeed, bool hasJumped, float crouchingValue)
     {
         animator.SetFloat("Vertical Speed", normalizedVerticalSpeed);
         animator.SetFloat("Horizontal Speed", normalizedHorizontalSpeed);
@@ -319,10 +341,10 @@ public class BotMovement : MonoBehaviour
                     }
 
                     currentJumpLerp = StartCoroutine(LerpJumpingFloat(1f, 0.1f, "JumpingPose"));
-                    //StopCoroutine(currentCrouchLerp);
                 }
             }       
         }
+
         else
         {
             if (animator.GetFloat("JumpingPose") > 0f)
@@ -368,35 +390,7 @@ public class BotMovement : MonoBehaviour
 
         jumpLerpStarted = false;
     }
+    #endregion
 
-    
-
-    // Ranged Mode 
-    public void RotateSpine(float deltaX, float deltaY, bool invertY)
-    {
-        if (currentAnimationType == AnimationType.Rifle)
-        {
-            spineeRotation.x += (invertY ? -1f : 1f) * deltaY * Time.deltaTime;
-            spineeRotation.x = Mathf.Clamp(spineeRotation.x, spineClampX.x, spineClampX.y);
-
-            spineeRotation.y += deltaX * Time.deltaTime;
-
-            Debug.Log("ROTATING");
-        }
-    }
-
-    // Melee Mode
-    public void Punch()
-    {
-        if (meleeLayerWeight < 1f && !meleeLayerWeight.isLerping)
-        {
-            animator.Play("None", meleeIndex, 0f);
-            //animator.Play("None", meleeIndex, 0f);
-            meleeLayerWeight.Lerp(this, 1f, 0.1f);
-            animator.SetTrigger("Jab");
-            currentPunchIndex = 0;
-
-            Debug.Log("JABBBBBB");
-        }
-    }
+    #endregion
 }

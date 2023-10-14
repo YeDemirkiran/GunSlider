@@ -1,14 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private PlayerInput playerInput;
+
     [SerializeField] private BotMovement bot;
 
     [SerializeField] KeyCode[] crouchKeys;
 
-    private bool isCrouching = false;
+    private void Awake()
+    {
+        playerInput = new PlayerInput();
+    }
+
+    private void OnEnable()
+    {
+        playerInput.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerInput.Disable();
+    }
 
     // Update is called once per frame
     void Update()
@@ -19,36 +32,34 @@ public class PlayerController : MonoBehaviour
             {
                 if (Input.GetKeyDown(key))
                 {
-                    bot.Crouch(true);
-                    isCrouching = true;
+                    bot.Crouch();
 
                     Debug.Log("Crouched");
                     break;
                 }
                 else if (Input.GetKeyUp(key))
                 {
-                    bot.Crouch(false);
-                    isCrouching = false;
+                    bot.StandUp();
 
                     Debug.Log("Stood up");
                     break;
                 }
             }
 
-            
-
-
             if (Input.GetKey(KeyCode.Mouse1))
             {
                 bot.Punch();
             }
 
+            if (Input.GetKey(KeyCode.Space)) bot.Jump();
+            if (Input.GetKeyDown(KeyCode.Space)) bot.Push();
 
-            bot.Push(Input.GetKeyDown(KeyCode.Space));
+            Vector2 movementInput = playerInput.Default.Move.ReadValue<Vector2>();
 
-            bot.Jump(Input.GetKey(KeyCode.Space));
-
-            bot.Move(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
+            if (Mathf.Abs(movementInput.x) + Mathf.Abs(movementInput.y) > 0.01f)
+            {
+                bot.Move(movementInput.y, movementInput.x);
+            }
             
 
             bot.RotateSpine(Input.GetAxis("Mouse X") * 100f, Input.GetAxis("Mouse Y") * 100f, true);

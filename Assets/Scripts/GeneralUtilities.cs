@@ -31,17 +31,19 @@ public class AnimationUtilities
             return lerpFloat.value;
         }
 
-        public void Lerp(MonoBehaviour callingScript, float target, float duration, bool unscaled = false)
+        public void Lerp(MonoBehaviour callingScript, float target, float duration, bool unscaledTime = false)
         {
+            if (value == target) { return; }
+
             if (currentCoroutine != null)
             {
                 callingScript.StopCoroutine(currentCoroutine);
             }
 
-            currentCoroutine = callingScript.StartCoroutine(LerpCoroutine(target, duration, unscaled));
+            currentCoroutine = callingScript.StartCoroutine(LerpCoroutine(target, duration, unscaledTime));
         }
 
-        private IEnumerator LerpCoroutine(float target, float duration, bool unscaled = false)
+        private IEnumerator LerpCoroutine(float target, float duration, bool unscaledTime = false)
         {
             isLerping = true;
 
@@ -50,7 +52,7 @@ public class AnimationUtilities
 
             while (timer < 1.1f)
             {
-                timer += (unscaled ? Time.unscaledDeltaTime : Time.deltaTime) / duration;
+                timer += (unscaledTime ? Time.unscaledDeltaTime : Time.deltaTime) / duration;
                 //timer += Time.deltaTime / duration;
 
                 value = Mathf.Lerp(originalValue, target, timer);
