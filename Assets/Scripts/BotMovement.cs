@@ -14,11 +14,9 @@ public class BotMovement : MonoBehaviour
     [SerializeField] private Vector3 standingSpeed, crouchingSpeed;
     private Vector3 movementSpeed;
 
-    private LerpFloat movementLerp = new LerpFloat(0f);
+    private float movementLerpX, movementLerpY;
 
     [SerializeField] private float accelerationSpeed;
-
-    private bool moveMethodCalled = false;
 
     private float verticalInput, horizontalInput;
     private float preVerticalMovement = 0f, preHorizontalMovement = 0f;
@@ -88,8 +86,6 @@ public class BotMovement : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log($"Move Method Called: {moveMethodCalled}");
-
         Gravity();
         PushInternal();
 
@@ -128,9 +124,9 @@ public class BotMovement : MonoBehaviour
         movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchLerp);
 
         MoveInternal();
-        moveMethodCalled = false;
 
-        AnimatorAssignValues(verticalInput * movementLerp, horizontalInput * movementLerp, false, crouchLerp);
+        Debug.Log(System.Math.Sign(verticalInput) * movementLerpY);
+        AnimatorAssignValues(Mathf.Sign(verticalInput) * movementLerpY, Mathf.Sign(horizontalInput) * movementLerpX, false, crouchLerp);
     }
 
     // Ranged Mode 
@@ -163,29 +159,33 @@ public class BotMovement : MonoBehaviour
     {
         this.verticalInput = verticalInput;
         this.horizontalInput = horizontalInput;     
-
-        moveMethodCalled = true;
     }
 
     public void MoveInternal()
     {
-        if (moveMethodCalled)
-        {
-            if (!movementLerp.isLerping)
-            {
-                movementLerp.Lerp(this, 1f, accelerationSpeed);
-            }
-        }
-        else
-        {
-            if (!movementLerp.isLerping)
-            {
-                movementLerp.Lerp(this, 0f, accelerationSpeed);
-            }
-        }
+        if (Mathf.Abs(verticalInput) > 0f) movementLerpY += Time.deltaTime / accelerationSpeed;
+        else movementLerpY -= Time.deltaTime / accelerationSpeed;
+        movementLerpY = Mathf.Clamp(movementLerpY, 0f, 1f);
 
-        float verticalMovement = verticalInput * movementSpeed.z;
-        float horizontalMovement = horizontalInput * movementSpeed.x;
+        if (Mathf.Abs(horizontalInput) > 0f) movementLerpX += Time.deltaTime / accelerationSpeed;
+        else movementLerpX -= Time.deltaTime / accelerationSpeed;
+
+        //Debug.Log("X BEFORE: " + movementLerpX);
+
+        movementLerpX = Mathf.Clamp(movementLerpX, 0f, 1f);
+
+        //Debug.Log("X AFTER: " + movementLerpX);
+        //Debug.Log("LERP Y: " + movementLerpY);
+        //Debug.Log("LERP X: " + movementLerpX);
+
+        //Debug.Log("ABS Y: " + Mathf.Abs(verticalInput));
+        //Debug.Log("ABS X: " + Mathf.Abs(horizontalInput));
+
+        //Debug.Log("SIGN Y: " + System.Math.Sign(verticalInput));
+        //Debug.Log("SIGN X: " + System.Math.Sign(horizontalInput));
+
+        float verticalMovement = Mathf.Sign(verticalInput) * movementLerpY * movementSpeed.z;
+        float horizontalMovement = Mathf.Sign(horizontalInput) * movementLerpX * movementSpeed.x;
 
         if (charController.isGrounded)
         {
@@ -207,7 +207,7 @@ public class BotMovement : MonoBehaviour
         movement += (verticalMovement + currentPushSpeed) * transform.forward;
         movement += horizontalMovement * transform.right;
 
-        charController.Move(movement * movementLerp * Time.deltaTime);
+        charController.Move(movement * Time.deltaTime);
     }
 
     public void Jump()

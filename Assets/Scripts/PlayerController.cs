@@ -56,11 +56,7 @@ public class PlayerController : MonoBehaviour
 
             Vector2 movementInput = playerInput.Default.Move.ReadValue<Vector2>();
 
-            if (Mathf.Abs(movementInput.x) + Mathf.Abs(movementInput.y) > 0.01f)
-            {
-                bot.Move(movementInput.y, movementInput.x);
-            }
-            
+            bot.Move(movementInput.y, movementInput.x);
 
             bot.RotateSpine(Input.GetAxis("Mouse X") * 100f, Input.GetAxis("Mouse Y") * 100f, true);
 
