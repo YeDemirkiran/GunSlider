@@ -62,12 +62,10 @@ public class GunController : MonoBehaviour
     {
         if (!GameManager.isPaused)
         {
-            Rotate(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), invertY);
-
-            if (Input.GetKey(KeyCode.Mouse0))
-            {
-                Shoot();
-            }
+            //if (Input.GetKey(KeyCode.Mouse0))
+            //{
+            //    Shoot();
+            //}
 
             if (Input.GetKeyDown(KeyCode.R))
             {
@@ -78,10 +76,10 @@ public class GunController : MonoBehaviour
 
     public void Rotate(float deltaX, float deltaY, bool invertY)
     {
-        rotation.x += (invertY ? -1 : 1) * deltaX * sensitivity;
+        rotation.x += (invertY ? -1 : 1) * deltaX * sensitivity * Time.deltaTime;
         rotation.x = Mathf.Clamp(rotation.x, xAngleClamp.x, xAngleClamp.y);
 
-        rotation.y += deltaY * sensitivity;
+        rotation.y += deltaY * sensitivity * Time.deltaTime;
         rotation.y = Mathf.Clamp(rotation.y, yAngleClamp.x, yAngleClamp.y);
 
         transform.localEulerAngles = rotation;
@@ -121,6 +119,11 @@ public class GunController : MonoBehaviour
                 }
 
                 currentAmmo--;
+
+                if (!isCooldownRunning)
+                {
+                    StartCoroutine(ShootingCooldown());
+                }
             }
 
             else

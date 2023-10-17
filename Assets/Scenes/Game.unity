@@ -7172,7 +7172,7 @@ GameObject:
   - component: {fileID: 410093594}
   - component: {fileID: 410093593}
   m_Layer: 0
-  m_Name: CameraPivot
+  m_Name: CameraController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18683,6 +18683,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8198484863536322882, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
+      propertyPath: gunController
+      value: 
+      objectReference: {fileID: 2031066286}
+    - target: {fileID: 8198484863536322882, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
+      propertyPath: cameraController
+      value: 
+      objectReference: {fileID: 410093593}
     - target: {fileID: 8198484863536322882, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
       propertyPath: crouchKeys.Array.size

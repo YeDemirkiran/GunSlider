@@ -5,6 +5,8 @@ public class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
 
     [SerializeField] private BotMovement bot;
+    [SerializeField] private CameraController cameraController;
+    [SerializeField] private GunController gunController;
 
     [SerializeField] KeyCode[] crouchKeys;
 
@@ -16,11 +18,15 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         playerInput.Enable();
+
+        playerInput.Default.Shoot.performed += ctx => gunController.Shoot();
     }
 
     private void OnDisable()
     {
         playerInput.Disable();
+
+        playerInput.Default.Shoot.performed -= ctx => gunController.Shoot();
     }
 
     // Update is called once per frame
@@ -55,12 +61,14 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space)) bot.Push();
 
             Vector2 movementInput = playerInput.Default.Move.ReadValue<Vector2>();
-
             bot.Move(movementInput.y, movementInput.x);
 
-            bot.RotateSpine(Input.GetAxis("Mouse X") * 100f, Input.GetAxis("Mouse Y") * 100f, true);
+            cameraController.MoveCamera(playerInput.Default.MoveCamera.ReadValue<Vector2>().x);
 
-            //bot.AnimatorAssignValues(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"), Input.GetKeyDown(KeyCode.Space), isCrouching);
+            Vector2 weaponInput = playerInput.Default.MoveWeapon.ReadValue<Vector2>();
+            gunController.Rotate(weaponInput.y, weaponInput.x, true);
+
+            bot.RotateSpine(Input.GetAxis("Mouse X") * 100f, Input.GetAxis("Mouse Y") * 100f, true);
         }
     }
 }
