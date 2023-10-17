@@ -6843,10 +6843,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charController: {fileID: 383104215}
+  gravity: -9.81
+  accelerationSpeed: 1
   standingSpeed: {x: 3, y: 2.5, z: 3}
   crouchingSpeed: {x: 2.5, y: 1.125, z: 2.5}
-  accelerationSpeed: 1
-  gravity: -9.81
+  xDirection: 0
+  yDirection: 0
   pushSpeed: 7.5
   pushSpeedDiminish: 5
   standingHeight: 1.8
@@ -11201,7 +11203,7 @@ MonoBehaviour:
     type: 3}
   m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018,
     type: 3}
-  m_DeselectOnBackgroundClick: 1
+  m_DeselectOnBackgroundClick: 0
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
 --- !u!1 &1032141724
@@ -13791,6 +13793,7 @@ GameObject:
   - component: {fileID: 1388981540}
   - component: {fileID: 1388981539}
   - component: {fileID: 1388981538}
+  - component: {fileID: 1388981541}
   m_Layer: 5
   m_Name: PlayButton
   m_TagString: Untagged
@@ -13912,6 +13915,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1388981536}
   m_CullTransparentMesh: 1
+--- !u!114 &1388981541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388981536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3d92122f3bc2ab438f6042bc5fde662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonInput: {fileID: -5341741417596909737, guid: 947974d4b21d94d4a901037df39dbd39,
+    type: 3}
+  button: {fileID: 1388981538}
 --- !u!4 &1395235731
 Transform:
   m_ObjectHideFlags: 0
@@ -16560,10 +16578,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charController: {fileID: 1931200538}
+  gravity: -9.81
+  accelerationSpeed: 0
   standingSpeed: {x: 5, y: 2.5, z: 5}
   crouchingSpeed: {x: 2.5, y: 1.125, z: 2.5}
-  accelerationSpeed: 0
-  gravity: -9.81
+  xDirection: 0
+  yDirection: 0
   pushSpeed: 7.5
   pushSpeedDiminish: 5
   standingHeight: 1.8

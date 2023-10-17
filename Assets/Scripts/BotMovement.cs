@@ -9,19 +9,20 @@ public class BotMovement : MonoBehaviour
 
     [Header("GENERAL")]
     [SerializeField] private CharacterController charController;
+    [SerializeField] private float gravity = -9.81f;
 
-    // SPEEDS
+    [Header("MOVEMENT")]
+    [SerializeField] private float accelerationSpeed;
     [SerializeField] private Vector3 standingSpeed, crouchingSpeed;
     private Vector3 movementSpeed;
 
     private float movementLerpX, movementLerpY;
+    public int xDirection, yDirection;
 
-    [SerializeField] private float accelerationSpeed;
 
     private float verticalInput, horizontalInput;
     private float preVerticalMovement = 0f, preHorizontalMovement = 0f;
 
-    [SerializeField] private float gravity = -9.81f;
 
     private float currentGravity;
     private bool canJump = false;
@@ -125,8 +126,7 @@ public class BotMovement : MonoBehaviour
 
         MoveInternal();
 
-        Debug.Log(System.Math.Sign(verticalInput) * movementLerpY);
-        AnimatorAssignValues(Mathf.Sign(verticalInput) * movementLerpY, Mathf.Sign(horizontalInput) * movementLerpX, false, crouchLerp);
+        AnimatorAssignValues(yDirection * movementLerpY, xDirection * movementLerpX, false, crouchLerp);
     }
 
     // Ranged Mode 
@@ -163,17 +163,61 @@ public class BotMovement : MonoBehaviour
 
     public void MoveInternal()
     {
-        if (Mathf.Abs(verticalInput) > 0f) movementLerpY += Time.deltaTime / accelerationSpeed;
-        else movementLerpY -= Time.deltaTime / accelerationSpeed;
-        movementLerpY = Mathf.Clamp(movementLerpY, 0f, 1f);
+        // FUCK UNITY AND THE NEW INPUT SYSTEM IT DOESN'T HAVE SMOOTHING
+        // YOU LAZY FUCKS
+        // SO WE HAVE TO DO IT
 
-        if (Mathf.Abs(horizontalInput) > 0f) movementLerpX += Time.deltaTime / accelerationSpeed;
-        else movementLerpX -= Time.deltaTime / accelerationSpeed;
-
-        //Debug.Log("X BEFORE: " + movementLerpX);
-
+        // HORIZONTAL MOVEMENT WITH SMOOTHING
+        if (horizontalInput != 0)
+        {
+            if (xDirection != System.Math.Sign(horizontalInput))
+            {
+                if (movementLerpX > 0f)
+                {
+                    movementLerpX -= Time.deltaTime / accelerationSpeed * 2f;
+                }
+                else
+                {
+                    xDirection = System.Math.Sign(horizontalInput);
+                }
+            }
+            else
+            {
+                movementLerpX += Time.deltaTime / accelerationSpeed;
+            }    
+        }
+        else
+        {
+            movementLerpX -= Time.deltaTime / accelerationSpeed;
+        }
         movementLerpX = Mathf.Clamp(movementLerpX, 0f, 1f);
 
+        // VERTICAL MOVEMENT WITH SMOOTHING
+        if (verticalInput != 0)
+        {
+            if (yDirection != System.Math.Sign(verticalInput))
+            {
+                if (movementLerpY > 0f)
+                {
+                    movementLerpY -= Time.deltaTime / accelerationSpeed * 2f;
+                }
+                else
+                {
+                    yDirection = System.Math.Sign(verticalInput);
+                }
+            }
+            else
+            {
+                movementLerpY += Time.deltaTime / accelerationSpeed;
+            }
+        }
+        else
+        {
+            movementLerpY -= Time.deltaTime / accelerationSpeed;
+        }
+        movementLerpY = Mathf.Clamp(movementLerpY, 0f, 1f);
+
+        //Debug.Log("X BEFORE: " + movementLerpX);
         //Debug.Log("X AFTER: " + movementLerpX);
         //Debug.Log("LERP Y: " + movementLerpY);
         //Debug.Log("LERP X: " + movementLerpX);
@@ -184,8 +228,8 @@ public class BotMovement : MonoBehaviour
         //Debug.Log("SIGN Y: " + System.Math.Sign(verticalInput));
         //Debug.Log("SIGN X: " + System.Math.Sign(horizontalInput));
 
-        float verticalMovement = Mathf.Sign(verticalInput) * movementLerpY * movementSpeed.z;
-        float horizontalMovement = Mathf.Sign(horizontalInput) * movementLerpX * movementSpeed.x;
+        float verticalMovement = yDirection * movementLerpY * movementSpeed.z;
+        float horizontalMovement = xDirection * movementLerpX * movementSpeed.x;
 
         if (charController.isGrounded)
         {

@@ -182,6 +182,34 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "UI",
+            "id": "b0617b02-f917-48ea-b384-0d645b954a6f",
+            "actions": [
+                {
+                    "name": "Enter",
+                    "type": "Button",
+                    "id": "1876ce5e-9374-48e2-ae02-a8d8444c50c0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "212ca901-f1fd-4045-ab1e-40293fb603a0",
+                    "path": "*/{Submit}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
