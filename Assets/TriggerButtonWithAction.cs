@@ -12,7 +12,9 @@ public class TriggerButtonWithAction : MonoBehaviour
     {
         buttonInput.action.Enable();
         buttonInput.action.performed += ctx => button.onClick.Invoke();
+        
         Debug.Log("Branch test");
+        Debug.Log("Lol");
     }
 
     private void OnDisable()
