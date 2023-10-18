@@ -39,7 +39,7 @@ public class BotMovement : MonoBehaviour
     [SerializeField] private float crouchTransitionDuration;
     private LerpFloat crouchLerp = new LerpFloat(0f);
     private Vector3 meshStandingPosition, meshCrouchingPosition;
-    private bool isCrouching = false;
+    [HideInInspector] public bool isCrouching = false;
 
     [Header("GENERAL ANIMATION")]
     [SerializeField] private Animator animator;
