@@ -24,9 +24,6 @@ public class EnemyController : MonoBehaviour
     
     [SerializeField] bool changePositionOnHit;
 
-    private int query = 0;
-    private float timer = 0f;
-
     // Start is called before the first frame update
     void Awake()
     {
@@ -36,22 +33,6 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (timer > 2f)
-        {
-            timer = 0;
-
-            if (query == 1)
-            {
-                query = 0;
-                botMovement.StandUp();
-            } 
-            else if (query == 0)
-            {
-                query = 1;
-                botMovement.Crouch();
-            }
-        } else { timer += Time.deltaTime; }
-
         if (player != null)
         {
             Debug.Log($"Bot named '{gameObject}' is within the player");
@@ -69,13 +50,11 @@ public class EnemyController : MonoBehaviour
             if (distance > rangedAttackMaxDistance)
             {
                 botMovement.Move(1f, 0f);
-                //botMovement.AnimatorAssignValues(1f, 0f, false, 0f);
             }
             else
             {
                 botMovement.Move(0f, 0f);
                 Debug.Log("Ranged Attack within the range. Shooting at the player!");
-                //botMovement.AnimatorAssignValues(0f, 0f, false, 0f);
             }
         }
         else
