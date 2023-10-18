@@ -1,7 +1,6 @@
-using TMPro;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     [SerializeField] private Transform target;
     [SerializeField] private Vector3 offset = new Vector3(-2.5f, 0.75f, -4f),
@@ -29,14 +28,6 @@ public class CameraFollow : MonoBehaviour
         //if (!GameManager.isPaused)
         if (true)
         {
-            // CONTROL ON THE X AXIS
-            offsetMultiplier -= Input.GetAxis("Shift Camera") *  Time.deltaTime * offsetTransitionSpeed;
-            offsetMultiplier = Mathf.Clamp(offsetMultiplier, -1f, 1f);
-
-            currentOffset.x = offset.x * offsetMultiplier;
-
-            //Vector3 m_Offset = Vector3.Scale(offset, target.forward);
-
             Vector3 directionalOffset = new Vector3();
             directionalOffset += target.forward * currentOffset.z;
             directionalOffset += target.right * currentOffset.x;
@@ -53,5 +44,14 @@ public class CameraFollow : MonoBehaviour
             //if (lookAtTarget) transform.LookAt(target.position + (Vector3.Scale(target.forward, lookAtOffset)));
             if (lookAtTarget) transform.LookAt(directionalLookOffset);
         }
+    }
+
+    public void MoveCamera(float delta)
+    {
+        // CONTROL ON THE X AXIS
+        offsetMultiplier -= delta * Time.deltaTime * offsetTransitionSpeed;
+        offsetMultiplier = Mathf.Clamp(offsetMultiplier, -1f, 1f);
+
+        currentOffset.x = offset.x * offsetMultiplier;
     }
 }

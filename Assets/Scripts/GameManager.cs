@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
     public enum GameState { Running, Paused, Interrupted }
     public enum PauseState { MainMenu, PauseMenu }
 
@@ -20,6 +22,15 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
         gameState = GameState.Paused;
         pauseState = PauseState.MainMenu;
     }
@@ -35,21 +46,21 @@ public class GameManager : MonoBehaviour
         // Reset the counters so an object can call one of these
         startCounter = pauseCounter = resumeCounter = mainMenuCounter = 0;
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (isPaused)
-            {
-                if (pauseState != PauseState.MainMenu)
-                {
-                    ResumeGame();
-                }
-            }
+        //if (Input.GetKeyDown(KeyCode.Escape))
+        //{
+        //    if (isPaused)
+        //    {
+        //        if (pauseState != PauseState.MainMenu)
+        //        {
+        //            ResumeGame();
+        //        }
+        //    }
 
-            else
-            {
-                PauseGame(PauseState.PauseMenu);
-            }
-        }
+        //    else
+        //    {
+        //        PauseGame(PauseState.PauseMenu);
+        //    }
+        //}
 
         OnGameStateChange();
 
@@ -206,7 +217,23 @@ public class GameManager : MonoBehaviour
     }
 
     // Can't call this from Unity events on the UI due to the parameter being an enum
-    // Refer to the GoToMainMenu() for this
+    // Refer to the GoToMainMenu() if you want to go to the main menu
+    public void PauseGame()
+    {
+        if (isPaused)
+        {
+            if (pauseState != PauseState.MainMenu)
+            {
+                ResumeGame();
+            }
+        }
+
+        else
+        {
+            PauseGame(PauseState.PauseMenu);
+        }
+    }
+
     public void PauseGame(PauseState pausedState)
     {
         if (pauseCounter == 0)

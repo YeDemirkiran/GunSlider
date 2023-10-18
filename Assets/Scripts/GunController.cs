@@ -62,26 +62,26 @@ public class GunController : MonoBehaviour
     {
         if (!GameManager.isPaused)
         {
-            Rotate(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), invertY);
+            //if (Input.GetKey(KeyCode.Mouse0))
+            //{
+            //    Shoot();
+            //}
 
-            if (Input.GetKey(KeyCode.Mouse0))
-            {
-                Shoot();
-            }
-
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Reload();
-            }
+            //if (Input.GetKeyDown(KeyCode.R))
+            //{
+            //    Reload();
+            //}
         }
     }
 
     public void Rotate(float deltaX, float deltaY, bool invertY)
     {
-        rotation.x += (invertY ? -1 : 1) * deltaX * sensitivity;
+        if (GameManager.isPaused) return;
+
+        rotation.x += (invertY ? -1 : 1) * deltaX * sensitivity * Time.deltaTime;
         rotation.x = Mathf.Clamp(rotation.x, xAngleClamp.x, xAngleClamp.y);
 
-        rotation.y += deltaY * sensitivity;
+        rotation.y += deltaY * sensitivity * Time.deltaTime;
         rotation.y = Mathf.Clamp(rotation.y, yAngleClamp.x, yAngleClamp.y);
 
         transform.localEulerAngles = rotation;
@@ -89,6 +89,8 @@ public class GunController : MonoBehaviour
 
     public void Shoot()
     {
+        if (GameManager.isPaused) return; 
+
         if (canShoot)
         {
             if (currentAmmo > 0)
@@ -121,6 +123,11 @@ public class GunController : MonoBehaviour
                 }
 
                 currentAmmo--;
+
+                if (!isCooldownRunning)
+                {
+                    StartCoroutine(ShootingCooldown());
+                }
             }
 
             else
@@ -143,6 +150,8 @@ public class GunController : MonoBehaviour
 
     public void Reload()
     {
+        if (GameManager.isPaused) return;
+
         if (currentAmmo < maxAmmo)
         {
             currentAmmo = maxAmmo;
