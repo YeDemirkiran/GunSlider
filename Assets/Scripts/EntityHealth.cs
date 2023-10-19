@@ -4,6 +4,12 @@ public class EntityHealth : MonoBehaviour
 {
     public float maxHealth;
     [HideInInspector] public float currentHealth;
+    [HideInInspector] public bool isDead = false;
+
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip[] soundsOnHit, soundsOnDeath;
+
+    [SerializeField] private Behaviour[] componentsDisabledAtDeath;
 
     // Start is called before the first frame update
     void Awake()
@@ -16,9 +22,10 @@ public class EntityHealth : MonoBehaviour
     {
         if (!GameManager.isPaused)
         {
-            if (currentHealth <= 0f)
+            if (!isDead & currentHealth <= 0f)
             {
                 OnDeath();
+                isDead = true;
             }
         }  
     }
@@ -26,6 +33,16 @@ public class EntityHealth : MonoBehaviour
     public void OnDeath()
     {
         Debug.Log("ded xp");
+
+        if (audioSource != null && soundsOnDeath.Length > 0)
+        {
+            AudioUtilities.PlayRandomSound(audioSource, soundsOnDeath, Vector2.one);
+        }
+
+        foreach (var component in componentsDisabledAtDeath)
+        {
+            component.enabled = false;
+        }
     }
 
     public void AddHealth(float amount)
@@ -37,10 +54,26 @@ public class EntityHealth : MonoBehaviour
     public void ResetHealth()
     {
         currentHealth = maxHealth;
+
+        foreach (var component in componentsDisabledAtDeath)
+        {
+            component.enabled = true;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        
+        Debug.Log("SOMETHING HIT");
+
+        if(collision.transform.CompareTag("Bullet"))
+        {
+            Debug.Log("WE'RE HIT!");
+            AddHealth(-10f);
+
+            if (audioSource != null && soundsOnHit.Length > 0)
+            {
+                AudioUtilities.PlayRandomSound(audioSource, soundsOnHit, Vector2.one);
+            }
+        }
     }
 }
