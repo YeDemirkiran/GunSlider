@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EntityHealth : MonoBehaviour
 {
@@ -39,5 +37,10 @@ public class EntityHealth : MonoBehaviour
     public void ResetHealth()
     {
         currentHealth = maxHealth;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
     }
 }

@@ -20,7 +20,10 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private BotMovement botMovement;
 
     [Header("Ranged Attack")]
+    [SerializeField] private GunController gunController;
     [SerializeField] float rangedAttackMaxDistance;
+    [SerializeField] private float takeActionTime = 1f;
+    private float actionTimer = 0f;
     
     [SerializeField] bool changePositionOnHit;
 
@@ -54,7 +57,26 @@ public class EnemyController : MonoBehaviour
             else
             {
                 botMovement.Move(0f, 0f);
-                Debug.Log("Ranged Attack within the range. Shooting at the player!");
+
+                gunController.LookAtTarget(player.position);
+
+                if (actionTimer > takeActionTime)
+                {
+                    actionTimer = 0f;
+
+                    if (gunController.currentAmmo <= 0)
+                    {
+                        gunController.Reload();
+                    }
+                    else
+                    {
+                        gunController.Shoot();
+                    }
+                }
+                else
+                {
+                    actionTimer += Time.deltaTime;
+                }    
             }
         }
         else

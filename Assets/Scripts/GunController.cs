@@ -37,9 +37,11 @@ public class GunController : MonoBehaviour
 
     private bool clicked = false;
 
+    private Coroutine currentLookRoutine;
+
     private void Start()
     {
-        rotation = transform.localEulerAngles;
+        rotation = transform.eulerAngles;
 
         foreach (Transform item in bulletHolder)
         {
@@ -57,21 +59,9 @@ public class GunController : MonoBehaviour
         currentAmmo = maxAmmo;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (!GameManager.isPaused)
-        {
-            //if (Input.GetKey(KeyCode.Mouse0))
-            //{
-            //    Shoot();
-            //}
-
-            //if (Input.GetKeyDown(KeyCode.R))
-            //{
-            //    Reload();
-            //}
-        }
+        transform.eulerAngles = rotation;
     }
 
     public void Rotate(float deltaX, float deltaY, bool invertY)
@@ -84,7 +74,47 @@ public class GunController : MonoBehaviour
         rotation.y += deltaY * sensitivity * Time.deltaTime;
         rotation.y = Mathf.Clamp(rotation.y, yAngleClamp.x, yAngleClamp.y);
 
-        transform.localEulerAngles = rotation;
+        transform.eulerAngles = rotation;
+    }
+
+    // FOR AUTO-AIM && AI
+    public void LookAtTarget(Vector3 point, float errorMargin = 0f)
+    {
+        if (GameManager.isPaused) return;
+
+        if (currentLookRoutine != null)
+        {
+            StopCoroutine(currentLookRoutine);
+            currentLookRoutine = null;
+        }
+
+        currentLookRoutine = StartCoroutine(LookTarget());
+
+        IEnumerator LookTarget()
+        {
+            Vector3 currentDirection = transform.forward;
+            Vector3 targetDirection = (point - transform.position).normalized;
+
+            currentDirection = Vector3.MoveTowards(currentDirection, targetDirection, sensitivity * Time.deltaTime);
+            rotation = Quaternion.LookRotation(currentDirection).eulerAngles;
+
+            yield return null;
+
+            //float timer = 0f;
+
+            //Vector3 currentDirection = transform.forward;
+            //Vector3 targetDirection = (point - transform.position).normalized;
+
+            //while (timer < 1f)
+            //{
+            //    timer += Time.deltaTime * sensitivity;
+
+            //    currentDirection = Vector3.MoveTowards(currentDirection, targetDirection, sensitivity * Time.deltaTime);
+            //    rotation = Quaternion.LookRotation(currentDirection).eulerAngles;
+
+            //    yield return null;
+            //}
+        }
     }
 
     public void Shoot()
