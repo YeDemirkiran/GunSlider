@@ -85,20 +85,24 @@ public class GunController : MonoBehaviour
         if (currentLookRoutine != null)
         {
             StopCoroutine(currentLookRoutine);
-            currentLookRoutine = null;
         }
 
         currentLookRoutine = StartCoroutine(LookTarget());
 
         IEnumerator LookTarget()
         {
+            Debug.Log("yarrrrak");
+
             Vector3 currentDirection = transform.forward;
-            Vector3 targetDirection = (point - transform.position).normalized;
+            Vector3 targetDirection = (point + (Random.insideUnitSphere * errorMargin) - transform.position).normalized;
 
-            currentDirection = Vector3.MoveTowards(currentDirection, targetDirection, sensitivity * Time.deltaTime);
-            rotation = Quaternion.LookRotation(currentDirection).eulerAngles;
+            while (true)
+            {               
+                currentDirection = Vector3.MoveTowards(currentDirection, targetDirection, sensitivity * Time.deltaTime);
+                rotation = Quaternion.LookRotation(currentDirection).eulerAngles;
 
-            yield return null;
+                yield return null;
+            }
 
             //float timer = 0f;
 

@@ -85,6 +85,12 @@ public class BotMovement : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        Move(0f, 0f);
+        AnimatorAssignValues(0f, 0f, false, 0f);
+    }
+
     private void Update()
     {
         Gravity();
@@ -433,6 +439,11 @@ public class BotMovement : MonoBehaviour
         }
 
         jumpLerpStarted = false;
+    }
+
+    public void Pray(bool pray)
+    {
+        animator.SetBool("isPraying", pray);
     }
     #endregion
 

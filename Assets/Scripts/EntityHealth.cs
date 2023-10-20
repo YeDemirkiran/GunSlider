@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class EntityHealth : MonoBehaviour
 {
@@ -32,8 +33,6 @@ public class EntityHealth : MonoBehaviour
 
     public void OnDeath()
     {
-        Debug.Log("ded xp");
-
         if (audioSource != null && soundsOnDeath.Length > 0)
         {
             AudioUtilities.PlayRandomSound(audioSource, soundsOnDeath, Vector2.one);
@@ -65,15 +64,18 @@ public class EntityHealth : MonoBehaviour
     {
         Debug.Log("SOMETHING HIT");
 
-        if(collision.transform.CompareTag("Bullet"))
+        if (!isDead)
         {
-            Debug.Log("WE'RE HIT!");
-            AddHealth(-10f);
-
-            if (audioSource != null && soundsOnHit.Length > 0)
+            if (collision.transform.CompareTag("Bullet"))
             {
-                AudioUtilities.PlayRandomSound(audioSource, soundsOnHit, Vector2.one);
+                Debug.Log("WE'RE HIT!");
+                AddHealth(-10f);
+
+                if (audioSource != null && soundsOnHit.Length > 0)
+                {
+                    AudioUtilities.PlayRandomSound(audioSource, soundsOnHit, Vector2.one, true);
+                }
             }
-        }
+        }    
     }
 }

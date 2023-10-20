@@ -5,10 +5,22 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class AudioUtilities
 {
-    public static void PlayRandomSound(AudioSource source, AudioClip[] clips, Vector2 pitchRandomness)
+    public static void PlayRandomSound(AudioSource source, AudioClip[] clips, Vector2 pitchRandomness, bool interrupt = false)
     {
         source.pitch = Random.Range(pitchRandomness.x, pitchRandomness.y);
-        source.PlayOneShot(clips[Random.Range(0, clips.Length)]);
+
+        if (interrupt)
+        {
+            source.Stop();
+
+            source.clip = clips[Random.Range(0, clips.Length)];
+
+            source.Play();
+        }
+        else
+        {
+            source.PlayOneShot(clips[Random.Range(0, clips.Length)]);
+        }
     }
 }
 

@@ -7632,7 +7632,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 2
+  MinDistance: 10
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -7742,7 +7742,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 383104212}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.9944546, z: -0, w: -0.1051666}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -8.411896, y: 0.955, z: 11.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7750,7 +7750,7 @@ Transform:
   - {fileID: 1039413066}
   - {fileID: 1791252678}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 192.074, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &383104217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7764,13 +7764,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 1
-  enemyState: 0
+  enemyState: 2
   attackType: 1
-  botMovement: {fileID: 383104213}
+  bot: {fileID: 383104213}
+  meleeAttackRadius: 0
   gunController: {fileID: 498707278}
-  rangedAttackMaxDistance: 12.5
-  takeActionTime: 1
+  rangedAttackRadius: 0
+  actionTimeMinMax: {x: 1, y: 2}
+  aimIntervalMinMax: {x: 0.5, y: 1}
+  aimErrorMargin: 1
   changePositionOnHit: 1
+  maxAngleDifference: 30
+  escapingMinDistance: 5
 --- !u!114 &383104218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7801,11 +7806,14 @@ MonoBehaviour:
   isDead: 0
   audioSource: {fileID: 383104214}
   soundsOnHit:
-  - {fileID: 8300000, guid: 1b0c2cab93bacfc42b5e018d0fdcbe32, type: 3}
+  - {fileID: 8300000, guid: c374cff37d2822f449b0cc3b24975c29, type: 3}
+  - {fileID: 8300000, guid: 0e0197cbd22ed8841acf7fdc4ebbaa01, type: 3}
   soundsOnDeath:
   - {fileID: 8300000, guid: 24aba45689219244781e63e5a4263730, type: 3}
+  - {fileID: 8300000, guid: 6ceb4512429f7e049b2bc867fe55be27, type: 3}
   componentsDisabledAtDeath:
   - {fileID: 383104217}
+  - {fileID: 383104213}
 --- !u!65 &383104220
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13394,7 +13402,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -16175,7 +16183,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -25995,11 +26003,16 @@ MonoBehaviour:
   enemyType: 0
   enemyState: 0
   attackType: 1
-  botMovement: {fileID: 0}
+  bot: {fileID: 0}
+  meleeAttackRadius: 0
   gunController: {fileID: 0}
-  rangedAttackMaxDistance: 10
-  takeActionTime: 1
+  rangedAttackRadius: 0
+  actionTimeMinMax: {x: 0, y: 0}
+  aimIntervalMinMax: {x: 0, y: 0}
+  aimErrorMargin: 0.25
   changePositionOnHit: 0
+  maxAngleDifference: 0
+  escapingMinDistance: 0
 --- !u!82 &1931200537
 AudioSource:
   m_ObjectHideFlags: 0
@@ -29135,18 +29148,28 @@ PrefabInstance:
     - target: {fileID: 906489047065032082, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
       propertyPath: soundsOnHit.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 906489047065032082, guid: 5682fdf8f476972468cc968545918d04,
-        type: 3}
-      propertyPath: soundsOnDeath.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 906489047065032082, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
+      propertyPath: soundsOnDeath.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 906489047065032082, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
+      propertyPath: soundsOnHit.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 1b0c2cab93bacfc42b5e018d0fdcbe32, type: 3}
+    - target: {fileID: 906489047065032082, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
       propertyPath: soundsOnDeath.Array.data[0]
       value: 
-      objectReference: {fileID: 8300000, guid: 24aba45689219244781e63e5a4263730, type: 3}
+      objectReference: {fileID: 8300000, guid: fe309e102d65990408bf1ee1b5772faa, type: 3}
+    - target: {fileID: 906489047065032082, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
+      propertyPath: soundsOnDeath.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 60161d67e2604824980440e606c0b0af, type: 3}
     - target: {fileID: 906489047065032082, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
       propertyPath: componentsDisabledAtDeath.Array.size
@@ -29405,9 +29428,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 8549187569415896803}
   - {fileID: 410093594}
+  - {fileID: 383104216}
   - {fileID: 410087041}
   - {fileID: 634337936}
   - {fileID: 2091280995}
   - {fileID: 1345147286}
   - {fileID: 1931200539}
-  - {fileID: 383104216}
