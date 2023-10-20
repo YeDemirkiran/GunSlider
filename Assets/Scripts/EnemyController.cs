@@ -87,16 +87,23 @@ public class EnemyController : MonoBehaviour
             // We're on the same Y axis so strip that away
             Vector2 transformPosVec2 = transform.position.ToVector2(Axis.y);
             Vector2 transformForwardVec2 = transform.forward.ToVector2(Axis.y);
+            Vector2 transformSideVec2 = transform.right.ToVector2(Axis.y);
+
             Vector2 playerPosVec2 = player.position.ToVector2(Axis.y);
 
-            Vector2 direction = (playerPosVec2 - transformPosVec2).normalized;
             float distance = Vector2.Distance(transformPosVec2, playerPosVec2);
+            Vector2 direction = (playerPosVec2 - transformPosVec2).normalized;
 
-            float dot = Vector2.Dot(direction, transformForwardVec2);
-            float cos = Mathf.Acos(dot / (direction.magnitude * transformForwardVec2.magnitude));
+            float verticalDot = Vector2.Dot(direction, transformForwardVec2);
+            float verticalAngle = Mathf.Acos(verticalDot / (direction.magnitude * transformForwardVec2.magnitude));
+
+            float horizontalDot = Vector2.Dot(direction, transformSideVec2);
 
             // Turn to degrees
-            cos *= Mathf.Rad2Deg;
+            verticalAngle *= Mathf.Rad2Deg;
+
+            //Debug.Log("DOT: " + horizontalDot);
+            //return;
 
             if (enemyType == EnemyType.Aggressive)
             {
@@ -159,40 +166,29 @@ public class EnemyController : MonoBehaviour
 
             else if (enemyType == EnemyType.Defensive)
             {
-                
-                
-
-                //Debug.DrawLine(transform.position, transform.position + transform.forward, Color.green);
-                //Debug.DrawLine(transform.position, transform.position + direction.ToVector3(Axis.y, 0f), Color.red);
-                //Debug.DrawLine(transform.position, transform.position + (transform.forward * dot), Color.yellow);
-
                 if (distance > escapingMinDistance)
                 {
                     bot.Pray(false);
 
-                    if (cos < 180f - (maxAngleDifference / 2f))
+                    if (verticalAngle < 180f - (maxAngleDifference / 2f))
                     {
-                        transform.Rotate(Vector3.up * Time.deltaTime * 100f);
+                        transform.Rotate(Vector3.up * Time.deltaTime * 250f * -Mathf.Sign(horizontalDot));
                     }
 
                     bot.Move(1f, 0f);
-
-                    Debug.Log("DOT: " + dot);
-                    Debug.Log(cos);
                 }
                 else
                 {
-                    if (cos > 0f + (maxAngleDifference / 2f))
+                    if (verticalAngle > 0f + (maxAngleDifference / 2f))
                     {
                         bot.Pray(false);
 
-                        transform.Rotate(Vector3.up * Time.deltaTime * 250f);
-                        bot.Move(0.1f, 0f);
+                        transform.Rotate(Vector3.up * Time.deltaTime * 250f * Mathf.Sign(horizontalDot));
+                        bot.Move(0f, 0f);
                     }
                     else
                     {
                         bot.Pray(true);
-                        bot.Move(0f, 0f);
                     }
                 }
 
