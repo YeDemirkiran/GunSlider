@@ -35,7 +35,7 @@ public class EntityHealth : MonoBehaviour
     {
         if (audioSource != null && soundsOnDeath.Length > 0)
         {
-            AudioUtilities.PlayRandomSound(audioSource, soundsOnDeath, Vector2.one);
+            AudioUtilities.PlayRandomSound(audioSource, soundsOnDeath, Vector2.one, true);
         }
 
         foreach (var component in componentsDisabledAtDeath)
@@ -73,7 +73,7 @@ public class EntityHealth : MonoBehaviour
 
                 if (audioSource != null && soundsOnHit.Length > 0)
                 {
-                    AudioUtilities.PlayRandomSound(audioSource, soundsOnHit, Vector2.one, true);
+                    AudioUtilities.PlayRandomSound(audioSource, soundsOnHit, Vector2.one);
                 }
             }
         }    

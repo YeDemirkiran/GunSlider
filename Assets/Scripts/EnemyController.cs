@@ -84,14 +84,19 @@ public class EnemyController : MonoBehaviour
         // NEW 
         if (player != null)
         {
+            // We're on the same Y axis so strip that away
             Vector2 transformPosVec2 = transform.position.ToVector2(Axis.y);
             Vector2 transformForwardVec2 = transform.forward.ToVector2(Axis.y);
-
             Vector2 playerPosVec2 = player.position.ToVector2(Axis.y);
 
             Vector2 direction = (playerPosVec2 - transformPosVec2).normalized;
-
             float distance = Vector2.Distance(transformPosVec2, playerPosVec2);
+
+            float dot = Vector2.Dot(direction, transformForwardVec2);
+            float cos = Mathf.Acos(dot / (direction.magnitude * transformForwardVec2.magnitude));
+
+            // Turn to degrees
+            cos *= Mathf.Rad2Deg;
 
             if (enemyType == EnemyType.Aggressive)
             {
@@ -155,11 +160,7 @@ public class EnemyController : MonoBehaviour
             else if (enemyType == EnemyType.Defensive)
             {
                 
-                float dot = Vector2.Dot(direction, transformForwardVec2);
-                float cos = Mathf.Acos(dot / (direction.magnitude * transformForwardVec2.magnitude));
-
-                // Turn to degrees
-                cos *= Mathf.Rad2Deg;
+                
 
                 //Debug.DrawLine(transform.position, transform.position + transform.forward, Color.green);
                 //Debug.DrawLine(transform.position, transform.position + direction.ToVector3(Axis.y, 0f), Color.red);
