@@ -126,16 +126,65 @@ public class EnemyController : MonoBehaviour
 
                 else if (attackType == AttackType.Ranged)
                 {
+                    if (verticalAngle > 0f + (maxAngleDifference / 2f))
+                    {
+                        transform.Rotate(Vector3.up * Time.deltaTime * 250f * Mathf.Sign(horizontalDot));
+                    }
+
                     if (distance > rangedAttackRadius)
                     {
                         // If there is an attack still happening, cut it
-                        // Play a short version of the attack to give an immersion of the AI changing its mind mid-attack
+                        // Maybe you can play a short version of the attack to give an immersion of the AI changing its mind mid-attack
 
                         // Approach the player
+                        
+
+                        bot.Move(1f, 0f);
                     }
 
                     else
                     {
+                        if (!inRange)
+                        {
+                            inRange = true;
+
+                            bot.Move(0f, 0f);
+
+                            currentAimTime = Random.Range(aimIntervalMinMax.x, aimIntervalMinMax.y);
+                            currentActionTime = Random.Range(actionTimeMinMax.x, actionTimeMinMax.y);
+                        }
+
+                        if (aimTimer > currentAimTime)
+                        {
+                            gunController.LookAtTarget(player.position, aimErrorMargin);
+
+                            aimTimer = 0f;
+                            currentAimTime = Random.Range(aimIntervalMinMax.x, aimIntervalMinMax.y);
+                        }
+                        else
+                        {
+                            aimTimer += Time.deltaTime;
+                        }
+
+                        if (actionTimer > currentActionTime)
+                        {
+                            if (gunController.currentAmmo <= 0)
+                            {
+                                gunController.Reload();
+                            }
+                            else
+                            {
+                                gunController.Shoot();
+                            }
+
+                            actionTimer = 0f;
+                            currentActionTime = Random.Range(actionTimeMinMax.x, actionTimeMinMax.y);
+                        }
+                        else
+                        {
+                            actionTimer += Time.deltaTime;
+                        }
+
                         if (true) //if the player is aiming at you A.K.A compare directions
                         {
                             if (true) // if you don't have a cover

@@ -91,8 +91,6 @@ public class GunController : MonoBehaviour
 
         IEnumerator LookTarget()
         {
-            Debug.Log("yarrrrak");
-
             Vector3 currentDirection = transform.forward;
             Vector3 targetDirection = (point + (Random.insideUnitSphere * errorMargin) - transform.position).normalized;
 

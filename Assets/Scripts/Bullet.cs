@@ -92,9 +92,9 @@ public class Bullet : MonoBehaviour
                 mat = renderer.material;
             }
 
-            if (!collider.TryGetComponent(out SkinnedMeshRenderer skinnedRenderer))
+            if (collider.TryGetComponent(out MeshFilter meshFilter))
             {
-                mesh = collider.GetComponent<MeshFilter>().mesh;
+                mesh = meshFilter.mesh;
             }
         }
 

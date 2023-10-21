@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class EntityHealth : MonoBehaviour
 {
@@ -11,6 +11,8 @@ public class EntityHealth : MonoBehaviour
     [SerializeField] private AudioClip[] soundsOnHit, soundsOnDeath;
 
     [SerializeField] private Behaviour[] componentsDisabledAtDeath;
+
+    [SerializeField] private UnityEvent onDeath;
 
     // Start is called before the first frame update
     void Awake()
@@ -42,6 +44,8 @@ public class EntityHealth : MonoBehaviour
         {
             component.enabled = false;
         }
+
+        onDeath.Invoke();
     }
 
     public void AddHealth(float amount)
@@ -60,22 +64,22 @@ public class EntityHealth : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log("SOMETHING HIT");
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    //Debug.Log("SOMETHING HIT");
 
-        if (!isDead)
-        {
-            if (collision.transform.CompareTag("Bullet"))
-            {
-                Debug.Log("WE'RE HIT!");
-                AddHealth(-10f);
+    //    if (!isDead)
+    //    {
+    //        if (collision.transform.CompareTag("Bullet"))
+    //        {
+    //            //Debug.Log("WE'RE HIT!");
+    //            AddHealth(-10f);
 
-                if (audioSource != null && soundsOnHit.Length > 0)
-                {
-                    AudioUtilities.PlayRandomSound(audioSource, soundsOnHit, Vector2.one);
-                }
-            }
-        }    
-    }
+    //            if (audioSource != null && soundsOnHit.Length > 0)
+    //            {
+    //                AudioUtilities.PlayRandomSound(audioSource, soundsOnHit, Vector2.one);
+    //            }
+    //        }
+    //    }    
+    //}
 }
