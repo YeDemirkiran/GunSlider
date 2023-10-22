@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -69,39 +67,13 @@ public class Bullet : MonoBehaviour
 
         GameObject collider = collision.gameObject;
 
-        Material mat = null;
-        Mesh mesh = defaultParticleMesh;
-
-        // IF THE COLLIDED OBJECT HAS A DATA COLLISION COMPONENT, THAT MEANS WE ARE GUARANTEED TO HAVE A MESH IN RETURN
-
         if (collider.TryGetComponent(out CollisionData data))
         {
-            mat = data.meshHolder.GetComponent<Renderer>().material;
-
-            if (!data.meshHolder.TryGetComponent(out SkinnedMeshRenderer skinnedRenderer))
+            foreach (Debris debris in data.debrises)
             {
-                mesh = data.meshHolder.GetComponent<MeshFilter>().mesh;
+                int randomParticle = Random.Range(0, debris.debrisParticles.Length);
+                GameObject particle = Instantiate(debris.debrisParticles[randomParticle], collision.GetContact(0).point, Quaternion.LookRotation(transform.forward));
             }
         }
-        // BUT IF IT DOESN'T HAVE IT AND THE COLLIDER AND THE MESH RENDERER AREN'T ON THE SAME GAMEOBJECT
-        // THEN WE HAVE TO GUARANTEE IT OURSELVES
-        else
-        {
-            if (collider.TryGetComponent(out Renderer renderer))
-            {
-                mat = renderer.material;
-            }
-
-            if (collider.TryGetComponent(out MeshFilter meshFilter))
-            {
-                mesh = meshFilter.mesh;
-            }
-        }
-
-        GameObject particle = Instantiate(particleOnHit, collision.GetContact(0).point, Quaternion.LookRotation(-transform.forward));
-        particle.GetComponent<ParticleSystemRenderer>().material = mat;
-        particle.GetComponent<ParticleSystemRenderer>().mesh = mesh;
-        //Destroy(particle, particleDestroyTime);
-        //Debug.Log("Hit! Current hit left: " + (maxHit - currentHit));
     }
 }

@@ -45,7 +45,7 @@ public class BodyHitpoints : MonoBehaviour
         if (collectiveDamageThisFrame > 0f)
         {
             health.AddHealth(-collectiveDamageThisFrame);
-            Debug.Log("Damage this frame:" + collectiveDamageThisFrame);
+            //Debug.Log("Damage this frame:" + collectiveDamageThisFrame);
         }
     }
 }
