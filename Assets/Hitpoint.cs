@@ -30,9 +30,6 @@ public class Hitpoint : MonoBehaviour
             currentCollision = collision;
 
             PlayAudio();
-
-            Debug.Log("HIT THIS FRAME:");
-            Debug.Log(hitThisFrame);
         }
     }
 

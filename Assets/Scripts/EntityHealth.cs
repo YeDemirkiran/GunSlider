@@ -52,6 +52,14 @@ public class EntityHealth : MonoBehaviour
     {
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        if (!isDead && amount <= 0f)
+        {
+            if (audioSource != null && soundsOnHit.Length > 0)
+            {
+                AudioUtilities.PlayRandomSound(audioSource, soundsOnHit, Vector2.one);
+            }
+        }
     }
 
     public void ResetHealth()
