@@ -96,7 +96,11 @@ public class EnemyController : MonoBehaviour
             Vector2 playerPosVec2 = target.position.ToVector2(Axis.y);
 
             float distance = Vector2.Distance(transformPosVec2, playerPosVec2);
+
+            Vector3 direction = (target.position - transform.position).normalized;
             Vector2 directionVec2 = (playerPosVec2 - transformPosVec2).normalized;
+
+            //Debug.Log("CROSS: " + Vector3.Cross(transform.forward, direction));
             
             float verticalAngle = Vector2Extensions.DotAngle(transformForwardVec2, directionVec2);
 
@@ -136,6 +140,7 @@ public class EnemyController : MonoBehaviour
 
                         // Approach the player                       
                         bot.Move(1f, 0f);
+                        inRange = false;
                     }
 
                     else
