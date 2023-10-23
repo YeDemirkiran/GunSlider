@@ -14,14 +14,8 @@ public class Bullet : MonoBehaviour
     [SerializeField] private int maxHit = 2;
     private int currentHit = 0;
 
-    [SerializeField] private float shakeOnHit, shakeOnEnemyHit;
-
-    [Header("COLLISION")]
-    [SerializeField] private GameObject particleOnHit;
-    [SerializeField] private Mesh defaultParticleMesh;
-    [SerializeField] private float particleDestroyTime;
-
     [HideInInspector] public bool hasFired = false;
+    public float damage { get; private set; }
 
     private void Awake()
     {
@@ -47,11 +41,11 @@ public class Bullet : MonoBehaviour
         }  
     }
 
-    public void Shoot(Vector3 direction)
+    public void Shoot(Vector3 direction, float force)
     {
         hasFired = true;
 
-        rb.AddForce(direction, ForceMode.VelocityChange);
+        rb.AddForce(direction * force, ForceMode.VelocityChange);
     }
 
     public void Shoot(float force)
@@ -59,6 +53,11 @@ public class Bullet : MonoBehaviour
         hasFired = true;
 
         rb.AddRelativeForce(Vector3.forward * force, ForceMode.VelocityChange);
+    }
+
+    public void SetDamage(float damage)
+    {
+        this.damage = damage;
     }
 
     private void OnCollisionEnter(Collision collision)

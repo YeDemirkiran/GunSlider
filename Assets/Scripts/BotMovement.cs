@@ -2,10 +2,15 @@ using System.Collections;
 using UnityEngine;
 using static AudioUtilities;
 using static AnimationUtilities;
+using UnityEngine.Animations.Rigging;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class BotMovement : MonoBehaviour
 {
-    public enum AnimationType { Melee, Rifle }
+    public enum AnimationType { Melee, Ranged, None }
 
     [Header("GENERAL")]
     [SerializeField] private CharacterController charController;
@@ -48,19 +53,8 @@ public class BotMovement : MonoBehaviour
     private bool jumpLerpStarted;
 
     [Header("ANIMATION MODES")]
-    [SerializeField] private AnimationType currentAnimationType = AnimationType.Melee;
-    [SerializeField] private int meleeIndex, rangedIndex;
-
-    [Header("Melee Attack Mode")]
-    private LerpFloat meleeLayerWeight = new LerpFloat(0f);
-    private sbyte currentPunchIndex = -1; 
-
-
-    [Header("Ranged Weapon Mode")]
-    [SerializeField] private Transform spineBone;
-    [SerializeField] private Vector3 spineSensitivity, spineClampX, spineClampY;
-    [SerializeField] private bool invertSpineX, invertSpineY;
-    private Vector3 spineRotation;
+    public AnimationType currentAnimationType = AnimationType.Melee;
+    public int meleeLayerIndex, rangedLayerIndex;
 
 
     [Header("SFX")]
@@ -78,11 +72,6 @@ public class BotMovement : MonoBehaviour
     {
         meshStandingPosition = animatorMesh.transform.localPosition;
         meshCrouchingPosition = animatorMesh.transform.localPosition + ((standingHeight - crouchingHeight) * Vector3.up / 2f);
-
-        if (currentAnimationType == AnimationType.Rifle)
-        {
-            spineRotation = spineBone.localEulerAngles;
-        }
     }
 
     private void OnDisable()
@@ -96,35 +85,55 @@ public class BotMovement : MonoBehaviour
         Gravity();
         PushInternal();
 
-        // ANIMATOR MODE
         switch (currentAnimationType)
         {
             case AnimationType.Melee:
-                AnimatorStateInfo meleeInfo = animator.GetCurrentAnimatorStateInfo(meleeIndex);
+                animator.SetLayerWeight(meleeLayerIndex, 1f);
+                animator.SetLayerWeight(rangedLayerIndex, 0f);
+                break;
 
-                if (meleeInfo.IsTag("Punch")
-                    && meleeInfo.normalizedTime >= 0.75f && !meleeLayerWeight.isLerping)
-                {
-                    meleeLayerWeight.Lerp(this, 0f, 0.25f);
-                    currentPunchIndex = -1;
-                }
-
-                animator.SetLayerWeight(meleeIndex, meleeLayerWeight);
+            case AnimationType.Ranged:
+                animator.SetLayerWeight(meleeLayerIndex, 0f);
+                animator.SetLayerWeight(rangedLayerIndex, 1f);
 
                 break;
-            case AnimationType.Rifle:
-                //animator.SetLayerWeight(rangedIndex, 1f);
+
+            default:
+                animator.SetLayerWeight(meleeLayerIndex, 0f);
+                animator.SetLayerWeight(rangedLayerIndex, 0f);
+
                 break;
         }
+
+        //// ANIMATOR MODE
+        //switch (currentAnimationType)
+        //{
+        //    case AnimationType.Melee:
+        //        AnimatorStateInfo meleeInfo = animator.GetCurrentAnimatorStateInfo(meleeLayerIndex);
+
+        //        if (meleeInfo.IsTag("Punch")
+        //            && meleeInfo.normalizedTime >= 0.75f && !meleeLayerWeight.isLerping)
+        //        {
+        //            meleeLayerWeight.Lerp(this, 0f, 0.25f);
+        //            currentPunchIndex = -1;
+        //        }
+
+        //        animator.SetLayerWeight(meleeLayerIndex, meleeLayerWeight);
+
+        //        break;
+        //    case AnimationType.Ranged:
+        //        //animator.SetLayerWeight(rangedIndex, 1f);
+        //        break;
+        //}
     }
 
     private void LateUpdate()
     {
-        // We need to animate the bone at the late update
-        if (currentAnimationType == AnimationType.Rifle)
-        {
-            spineBone.localEulerAngles = spineRotation;
-        }
+        //// We need to animate the bone at the late update
+        //if (currentAnimationType == AnimationType.Ranged)
+        //{
+        //    spineBone.localEulerAngles = spineRotation;
+        //}
 
         charController.height = Mathf.Lerp(standingHeight, crouchingHeight, crouchLerp);
         animatorMesh.localPosition = Vector3.Lerp(meshStandingPosition, meshCrouchingPosition, crouchLerp);
@@ -135,29 +144,29 @@ public class BotMovement : MonoBehaviour
         AnimatorAssignValues(yDirection * movementLerpY, xDirection * movementLerpX, false, crouchLerp);
     }
 
-    // Ranged Mode 
-    public void RotateSpine(float deltaX, float deltaY, bool invertY)
-    {
-        if (currentAnimationType == AnimationType.Rifle)
-        {
-            spineRotation.x += (invertY ? -1f : 1f) * deltaY * Time.deltaTime;
-            spineRotation.x = Mathf.Clamp(spineRotation.x, spineClampX.x, spineClampX.y);
+    //// Ranged Mode 
+    //public void RotateSpine(float deltaX, float deltaY, bool invertY)
+    //{
+    //    if (currentAnimationType == AnimationType.Ranged)
+    //    {
+    //        spineRotation.x += (invertY ? -1f : 1f) * deltaY * Time.deltaTime;
+    //        spineRotation.x = Mathf.Clamp(spineRotation.x, spineClampX.x, spineClampX.y);
 
-            spineRotation.y += deltaX * Time.deltaTime;
-        }
-    }
+    //        spineRotation.y += deltaX * Time.deltaTime;
+    //    }
+    //}
 
-    // Melee Mode
-    public void Punch()
-    {
-        if (meleeLayerWeight < 1f && !meleeLayerWeight.isLerping)
-        {
-            animator.Play("None", meleeIndex, 0f);
-            meleeLayerWeight.Lerp(this, 1f, 0.1f);
-            animator.SetTrigger("Jab");
-            currentPunchIndex = 0;
-        }
-    }
+    //// Melee Mode
+    //public void Punch()
+    //{
+    //    if (meleeLayerWeight < 1f && !meleeLayerWeight.isLerping)
+    //    {
+    //        animator.Play("None", meleeLayerIndex, 0f);
+    //        meleeLayerWeight.Lerp(this, 1f, 0.1f);
+    //        animator.SetTrigger("Jab");
+    //        currentPunchIndex = 0;
+    //    }
+    //}
 
     #region PUBLIC
 
@@ -167,7 +176,12 @@ public class BotMovement : MonoBehaviour
         this.horizontalInput = horizontalInput;     
     }
 
-    public void MoveInternal()
+    public void Rotate(Vector3 axis, float speed)
+    {
+        transform.Rotate(axis * speed * Time.deltaTime);
+    }
+
+    private void MoveInternal()
     {
         // FUCK UNITY AND THE NEW INPUT SYSTEM IT DOESN'T HAVE SMOOTHING
         // YOU LAZY FUCKS
@@ -449,3 +463,48 @@ public class BotMovement : MonoBehaviour
 
     #endregion
 }
+
+//#if UNITY_EDITOR
+
+//[CanEditMultipleObjects][CustomEditor(typeof(BotMovement))]
+//public class BotMovementEditor : Editor
+//{
+//    override public void OnInspectorGUI()
+//    {
+//        serializedObject.Update();
+
+//        BotMovement script = (BotMovement)target;
+
+//        SerializedProperty meleeIndexProperty = serializedObject.FindProperty("meleeLayerIndex");
+//        SerializedProperty rangedIndexProperty = serializedObject.FindProperty("rangedLayerIndex");
+
+//        switch (script.currentAnimationType)
+//        {
+//            case BotMovement.AnimationType.Melee:
+//                DrawPropertiesExcluding(serializedObject, "rangedLayerIndex");
+
+//                break;
+
+//            case BotMovement.AnimationType.Ranged:
+//                DrawPropertiesExcluding(serializedObject, "meleeLayerIndex");
+
+//                break;
+
+//            default:
+//                DrawPropertiesExcluding(serializedObject, "meleeLayerIndex", "rangedLayerIndex");
+
+//                break;
+//        }
+
+//        //script.
+
+//        serializedObject.Update();
+
+        
+
+//        //DrawDefaultInspector();
+//        serializedObject.ApplyModifiedProperties();
+//    }
+//}
+
+//#endif

@@ -1,12 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(LaserColor))]
 public class Laser : MonoBehaviour
 {
-    [SerializeField] private LineRenderer lineRenderer;
+    public LineRenderer lineRenderer;
+    public Transform laserLight;
+
     [SerializeField] private float laserMaxDistance = 500f;
-    [SerializeField] private Transform laserLight;
     [SerializeField] private LayerMask layerMask;
     private RaycastHit laserHit;
 

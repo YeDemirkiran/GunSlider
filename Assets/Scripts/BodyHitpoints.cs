@@ -38,7 +38,7 @@ public class BodyHitpoints : MonoBehaviour
         {
             if (hitpoint.hitThisFrame)
             {
-                collectiveDamageThisFrame += hitpoint.hitDamage;
+                collectiveDamageThisFrame += hitpoint.currentBullet.damage * hitpoint.damageMultiplier;
             }
         }
 

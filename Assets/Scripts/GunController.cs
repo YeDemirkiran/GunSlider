@@ -19,6 +19,7 @@ public class GunController : MonoBehaviour
 
     [Header("SHOOTING SETTINGS")]
     public int maxAmmo = 7;
+    [SerializeField] float bulletDamage = 10f;
     [HideInInspector] public int currentAmmo;
     [SerializeField] private float shootingCooldown = 0.125f;
     private bool canShoot = true, isCooldownRunning = false;
@@ -61,62 +62,50 @@ public class GunController : MonoBehaviour
 
     private void Update()
     {
-        transform.eulerAngles = rotation;
+        //transform.eulerAngles = rotation;
     }
 
     public void Rotate(float deltaX, float deltaY, bool invertY)
     {
-        if (GameManager.isPaused) return;
+        Debug.LogError("Remove the Rotation");
+        //if (GameManager.isPaused) return;
 
-        rotation.x += (invertY ? -1 : 1) * deltaX * sensitivity * Time.deltaTime;
-        rotation.x = Mathf.Clamp(rotation.x, xAngleClamp.x, xAngleClamp.y);
+        //rotation.x += (invertY ? -1 : 1) * deltaX * sensitivity * Time.deltaTime;
+        //rotation.x = Mathf.Clamp(rotation.x, xAngleClamp.x, xAngleClamp.y);
 
-        rotation.y += deltaY * sensitivity * Time.deltaTime;
-        rotation.y = Mathf.Clamp(rotation.y, yAngleClamp.x, yAngleClamp.y);
+        //rotation.y += deltaY * sensitivity * Time.deltaTime;
+        //rotation.y = Mathf.Clamp(rotation.y, yAngleClamp.x, yAngleClamp.y);
 
-        transform.eulerAngles = rotation;
+        //transform.eulerAngles = rotation;
     }
 
     // FOR AUTO-AIM && AI
-    public void LookAtTarget(Vector3 point, float errorMargin = 0f)
+    public void AimAtTarget(Vector3 point, float errorMargin = 0f)
     {
-        if (GameManager.isPaused) return;
+        Debug.LogError("Remove the Aiming");
 
-        if (currentLookRoutine != null)
-        {
-            StopCoroutine(currentLookRoutine);
-        }
+        //if (GameManager.isPaused) return;
 
-        currentLookRoutine = StartCoroutine(LookTarget());
+        //if (currentLookRoutine != null)
+        //{
+        //    StopCoroutine(currentLookRoutine);
+        //}
 
-        IEnumerator LookTarget()
-        {
-            Vector3 currentDirection = transform.forward;
-            Vector3 targetDirection = (point + (Random.insideUnitSphere * errorMargin) - transform.position).normalized;
+        //currentLookRoutine = StartCoroutine(LookTarget());
 
-            while (true)
-            {               
-                currentDirection = Vector3.MoveTowards(currentDirection, targetDirection, sensitivity * Time.deltaTime);
-                rotation = Quaternion.LookRotation(currentDirection).eulerAngles;
+        //IEnumerator LookTarget()
+        //{
+        //    Vector3 currentDirection = transform.forward;
+        //    Vector3 targetDirection = (point + (Random.insideUnitSphere * errorMargin) - transform.position).normalized;
 
-                yield return null;
-            }
+        //    while (true)
+        //    {               
+        //        currentDirection = Vector3.MoveTowards(currentDirection, targetDirection, sensitivity * Time.deltaTime);
+        //        rotation = Quaternion.LookRotation(currentDirection).eulerAngles;
 
-            //float timer = 0f;
-
-            //Vector3 currentDirection = transform.forward;
-            //Vector3 targetDirection = (point - transform.position).normalized;
-
-            //while (timer < 1f)
-            //{
-            //    timer += Time.deltaTime * sensitivity;
-
-            //    currentDirection = Vector3.MoveTowards(currentDirection, targetDirection, sensitivity * Time.deltaTime);
-            //    rotation = Quaternion.LookRotation(currentDirection).eulerAngles;
-
-            //    yield return null;
-            //}
-        }
+        //        yield return null;
+        //    }
+        //}
     }
 
     public void Shoot()
@@ -133,9 +122,11 @@ public class GunController : MonoBehaviour
                     {
                         canShoot = false;
 
+                        bullets[currentBullet].SetDamage(bulletDamage);
+
                         bullets[currentBullet].transform.SetParent(null);
                         bullets[currentBullet].gameObject.SetActive(true);
-                        bullets[currentBullet].Shoot(transform.forward * bulletForce);
+                        bullets[currentBullet].Shoot(transform.forward, bulletForce);
                         //bullets[currentBullet].Shoot(transform.forward * bulletForce, false);
 
                         currentBullet++;

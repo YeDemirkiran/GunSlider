@@ -3,9 +3,9 @@ using UnityEngine;
 public class Hitpoint : MonoBehaviour
 {
     public bool hitThisFrame {  get; private set; }
-    public Collision currentCollision { get; private set; }
+    public Bullet currentBullet{ get; private set; }
 
-    public float hitDamage = 1f;
+    public float damageMultiplier = 1f;
 
     public AudioSource audioSource;
     public AudioClip[] clipsOnHits;
@@ -17,20 +17,27 @@ public class Hitpoint : MonoBehaviour
     void Update()
     {
         // RESET
-        currentCollision = null;
+        currentBullet = null;
         hitThisFrame = false;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-
-        if ((layerMask & (1 << collision.gameObject.layer)) != 0)
+        if (collision.gameObject.TryGetComponent(out Bullet bullet))
         {
             hitThisFrame = true;
-            currentCollision = collision;
+            currentBullet = bullet;
 
             PlayAudio();
         }
+
+        //if ((layerMask & (1 << collision.gameObject.layer)) != 0)
+        //{
+        //    hitThisFrame = true;
+        //    currentCollision = collision;
+
+        //    PlayAudio();
+        //}
     }
 
     public void PlayAudio()

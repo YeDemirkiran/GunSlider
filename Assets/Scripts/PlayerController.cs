@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
         playerInput.Default.Shoot.performed += ctx => gunController.Shoot();
         playerInput.Default.Reload.performed += ctx => gunController.Reload();
 
-        playerInput.Default.Punch.performed += ctx => bot.Punch();
+        //playerInput.Default.Punch.performed += ctx => bot.Punch();
     }
 
     private void OnDisable()
@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
         playerInput.Default.Shoot.performed -= ctx => gunController.Shoot();
         playerInput.Default.Reload.performed -= ctx => gunController.Reload();
 
-        playerInput.Default.Punch.performed -= ctx => bot.Punch();
+        //playerInput.Default.Punch.performed -= ctx => bot.Punch();
     }
 
     // Update is called once per frame
@@ -101,7 +101,7 @@ public class PlayerController : MonoBehaviour
             Vector2 weaponInput = playerInput.Default.MoveWeapon.ReadValue<Vector2>();
             gunController.Rotate(weaponInput.y, weaponInput.x, true);
 
-            bot.RotateSpine(Input.GetAxis("Mouse X") * 100f, Input.GetAxis("Mouse Y") * 100f, true);
+            //bot.RotateSpine(Input.GetAxis("Mouse X") * 100f, Input.GetAxis("Mouse Y") * 100f, true);
         }
     }
 }

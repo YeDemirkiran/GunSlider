@@ -1,8 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAI : MonoBehaviour
+public class Entity
+{
+    public enum EntityType { Player, AI }
+    public enum AIType { Civilian, Soldier }
+}
+
+public class AI : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

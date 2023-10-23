@@ -597,7 +597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 25
+  damageMultiplier: 2.5
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -736,7 +736,6 @@ GameObject:
   - component: {fileID: 4870880689555263124}
   - component: {fileID: 8370040309291692238}
   - component: {fileID: 1897372968543984537}
-  - component: {fileID: 3655272107097127492}
   - component: {fileID: 4963785300854583756}
   m_Layer: 8
   m_Name: Civilian_00
@@ -989,19 +988,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3655272107097127492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1759406724501933791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f43c7ff571e7b45b557d1637f08750, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meshHolder: {fileID: 0}
 --- !u!114 &4963785300854583756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1290,7 +1276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 20
+  damageMultiplier: 2
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -1951,6 +1937,7 @@ GameObject:
   - component: {fileID: 634319180610282865}
   - component: {fileID: 7438039488635604766}
   - component: {fileID: 5598622130197277760}
+  - component: {fileID: 2106804776090816186}
   m_Layer: 0
   m_Name: mixamorig:Head
   m_TagString: Untagged
@@ -2060,7 +2047,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 100
+  damageMultiplier: 10
   audioSource: {fileID: 5002675466691169094}
   clipsOnHits:
   - {fileID: 8300000, guid: 4aee3a867bc98f546b5d19034007b25b, type: 3}
@@ -2068,6 +2055,21 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &2106804776090816186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3635287859623456911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41f43c7ff571e7b45b557d1637f08750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debrises:
+  - debrisParticles:
+    - {fileID: 529741624865567155, guid: 42e9a6fa577068b4da465502be5895aa, type: 3}
 --- !u!1 &3724056366187017351
 GameObject:
   m_ObjectHideFlags: 0
@@ -2254,7 +2256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 15
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -2960,7 +2962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 15
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -3173,7 +3175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 30
+  damageMultiplier: 2.5
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -3637,7 +3639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 10
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -3767,7 +3769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 50
+  damageMultiplier: 5
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0, y: 0}
@@ -4161,7 +4163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 30
+  damageMultiplier: 2.5
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -4353,7 +4355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 10
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -4577,7 +4579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 20
+  damageMultiplier: 2
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -4962,7 +4964,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 30
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}

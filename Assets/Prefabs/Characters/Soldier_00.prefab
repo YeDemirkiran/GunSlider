@@ -381,7 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 100
+  damageMultiplier: 1
   audioSource: {fileID: 8465556957577412514}
   clipsOnHits:
   - {fileID: 8300000, guid: 4aee3a867bc98f546b5d19034007b25b, type: 3}
@@ -443,11 +443,12 @@ MonoBehaviour:
   bulletForce: 1000
   muzzleFlash: {fileID: 9191260970137119578}
   maxAmmo: 7
+  bulletDamage: 10
   currentAmmo: 0
   shootingCooldown: 0.125
-  shootShakeDuration: 0.1
-  shootShakeAmplitude: 0.1
-  shootShakeFrequency: 25
+  shootShakeDuration: 0
+  shootShakeAmplitude: 0
+  shootShakeFrequency: 0
   audioSource: {fileID: 3509047530614225061}
   shotClips:
   - {fileID: 8300000, guid: 9371d30c31bda1e4cb9d78ac2e802f16, type: 3}
@@ -577,7 +578,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 30
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -778,7 +779,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 30
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -1605,7 +1606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 15
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -1793,14 +1794,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2256323334248283668}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000018626453, y: -0.0000004004687, z: -0.000000004190952,
-    w: 1}
-  m_LocalPosition: {x: 0.38399982, y: 0.7799999, z: 0.26799965}
+  m_LocalRotation: {x: 0.06053452, y: -0.0000050127437, z: 0.00004053199, w: 0.99816614}
+  m_LocalPosition: {x: 0.38394046, y: 0.52668256, z: 0.36078984}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7027508724743146186}
-  m_Father: {fileID: 5140550014990324729}
+  m_Father: {fileID: 7875740040619262264}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &8375682794573679661
 MonoBehaviour:
@@ -1968,7 +1968,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 20
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -2148,7 +2148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 25
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -7721,7 +7721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 20
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -8172,7 +8172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 10
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -8524,7 +8524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 10
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -8782,7 +8782,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 50
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0, y: 0}
@@ -8941,7 +8941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 15
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -9069,7 +9069,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitDamage: 30
+  damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
   pitchRandomness: {x: 0.9, y: 1.1}
@@ -9222,11 +9222,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.997153, z: -0, w: -0.0754052}
   m_LocalPosition: {x: -5.0206575, y: 1, z: 0.60945284}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.05, y: 1.05, z: 1.05}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6286190296594097652}
-  - {fileID: 7597268236096456864}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 188.649, z: 0}
 --- !u!143 &8516719533957223054
@@ -9283,14 +9282,8 @@ MonoBehaviour:
   animator: {fileID: 4189417412741316075}
   animatorMesh: {fileID: 6286190296594097652}
   currentAnimationType: 0
-  meleeIndex: 0
-  rangedIndex: 0
-  spineBone: {fileID: 0}
-  spineSensitivity: {x: 0, y: 0, z: 0}
-  spineClampX: {x: 0, y: 0, z: 0}
-  spineClampY: {x: 0, y: 0, z: 0}
-  invertSpineX: 0
-  invertSpineY: 0
+  meleeLayerIndex: 0
+  rangedLayerIndex: 0
   audioSource: {fileID: 6769181616007018647}
   jumpClips:
   - {fileID: 8300000, guid: 62b7596edceed7a4da77d1c62f81f424, type: 3}
@@ -9315,9 +9308,9 @@ MonoBehaviour:
   bot: {fileID: 1817209378042442184}
   meleeAttackRadius: 5
   gunController: {fileID: 3765023510799302772}
-  rangedAttackRadius: 5
-  actionTimeMinMax: {x: 1, y: 2}
-  aimIntervalMinMax: {x: 0.5, y: 1}
+  rangedAttackRadius: 20
+  actionTimeMinMax: {x: 0.25, y: 0.75}
+  aimIntervalMinMax: {x: 0.1, y: 0.5}
   aimErrorMargin: 0.25
   changePositionOnHit: 0
   maxAngleDifference: 0
@@ -9606,6 +9599,7 @@ Transform:
   m_Children:
   - {fileID: 8305875590892703174}
   - {fileID: 8388944501639839278}
+  - {fileID: 7597268236096456864}
   m_Father: {fileID: 5703061159926926419}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8618680427703493934

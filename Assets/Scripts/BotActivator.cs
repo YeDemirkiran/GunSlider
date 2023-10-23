@@ -11,7 +11,7 @@ public class BotActivator : MonoBehaviour
         {
             if (other.TryGetComponent(out EnemyController enemy))
             {
-                enemy.player = player;
+                enemy.target = player;
             }
         }  
     }
@@ -22,7 +22,7 @@ public class BotActivator : MonoBehaviour
         {
             if (other.TryGetComponent(out EnemyController enemy))
             {
-                enemy.player = null;
+                enemy.target = null;
             }
         }
     }
