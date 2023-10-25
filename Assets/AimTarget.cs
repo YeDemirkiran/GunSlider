@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AimTarget : MonoBehaviour
 {
-    [SerializeField] private Transform target, parent;
+    public Transform target, parent;
     [SerializeField] private float aimSpeed, delay;
     private float delayTimer;
 

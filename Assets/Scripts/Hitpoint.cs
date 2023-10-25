@@ -5,6 +5,7 @@ public class Hitpoint : MonoBehaviour
     public bool hitThisFrame {  get; private set; }
     public Bullet currentBullet{ get; private set; }
 
+    public new Collider collider;
     public float damageMultiplier = 1f;
 
     public AudioSource audioSource;

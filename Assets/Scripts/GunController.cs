@@ -67,7 +67,7 @@ public class GunController : MonoBehaviour
 
     public void Rotate(float deltaX, float deltaY, bool invertY)
     {
-        Debug.LogError("Remove the Rotation");
+        //Debug.LogError("Remove the Rotation");
         //if (GameManager.isPaused) return;
 
         //rotation.x += (invertY ? -1 : 1) * deltaX * sensitivity * Time.deltaTime;
@@ -82,7 +82,7 @@ public class GunController : MonoBehaviour
     // FOR AUTO-AIM && AI
     public void AimAtTarget(Vector3 point, float errorMargin = 0f)
     {
-        Debug.LogError("Remove the Aiming");
+        //Debug.LogError("Remove the Aiming");
 
         //if (GameManager.isPaused) return;
 

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bot
   - Bullet
+  - BodyCollider
   layers:
   - Default
   - TransparentFX
