@@ -5,7 +5,9 @@ public class EnemyStates
 {
     public enum EnemyType { Aggressive = 0, Defensive = 1 }
     public enum EnemyState { Idle = 0, Chase = 1, Attack = 2}
+
     public enum AttackType { Melee = 0, Ranged = 1 }
+    public enum AttackState { Aiming = 0, Attacking = 1 }
 }
 
 public class EnemyController : MonoBehaviour

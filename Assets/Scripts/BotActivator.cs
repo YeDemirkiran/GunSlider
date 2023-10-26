@@ -13,6 +13,11 @@ public class BotActivator : MonoBehaviour
             {
                 enemy.target = player;
             }
+
+            if (other.TryGetComponent(out AggressiveAI enemyAI))
+            {
+                enemyAI.target = player;
+            }
         }  
     }
 
@@ -23,6 +28,11 @@ public class BotActivator : MonoBehaviour
             if (other.TryGetComponent(out EnemyController enemy))
             {
                 enemy.target = null;
+            }
+
+            if (other.TryGetComponent(out AggressiveAI enemyAI))
+            {
+                enemyAI.target = null;
             }
         }
     }

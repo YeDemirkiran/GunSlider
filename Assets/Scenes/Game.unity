@@ -1108,17 +1108,17 @@ PrefabInstance:
     - target: {fileID: 772156857161340821, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
       propertyPath: m_Color.b
-      value: 1.8322622
+      value: 0.08235293
       objectReference: {fileID: 0}
     - target: {fileID: 772156857161340821, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.21698117
+      value: 0.7490196
       objectReference: {fileID: 0}
     - target: {fileID: 772156857161340821, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
       propertyPath: m_Color.r
-      value: 2
+      value: 0.33572808
       objectReference: {fileID: 0}
     - target: {fileID: 985957626375648252, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
@@ -1178,17 +1178,17 @@ PrefabInstance:
     - target: {fileID: 3809339912058034796, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
       propertyPath: laserColor.b
-      value: 1.8322622
+      value: 0.08235293
       objectReference: {fileID: 0}
     - target: {fileID: 3809339912058034796, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
       propertyPath: laserColor.g
-      value: 0.21698117
+      value: 0.7490196
       objectReference: {fileID: 0}
     - target: {fileID: 3809339912058034796, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
       propertyPath: laserColor.r
-      value: 2
+      value: 0.33572808
       objectReference: {fileID: 0}
     - target: {fileID: 3809339912058034796, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
@@ -1273,7 +1273,7 @@ PrefabInstance:
     - target: {fileID: 6404315496086497689, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6404315496086497689, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
@@ -1588,6 +1588,10 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1770942898}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8122238809897397089, guid: ab223b1335c49844fb240b34a3def0f0,
+        type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 2120534216}
     - targetCorrespondingSourceObject: {fileID: 1551949298351028694, guid: ab223b1335c49844fb240b34a3def0f0,
         type: 3}
       insertIndex: -1
@@ -11879,9 +11883,9 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 2, g: 0.21698117, b: 1.8322622, a: 0}
-    - _Color: {r: 2, g: 0.21698114, b: 1.8322622, a: 0}
-    - _EmissionColor: {r: 4, g: 0.43396235, b: 3.6645243, a: 0}
+    - _BaseColor: {r: 0.33572808, g: 0.7490196, b: 0.08235293, a: 0}
+    - _Color: {r: 0.33572805, g: 0.7490196, b: 0.0823529, a: 0}
+    - _EmissionColor: {r: 0.67145616, g: 1.4980392, b: 0.16470586, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!1 &767617318
@@ -17373,7 +17377,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1322718923}
   - component: {fileID: 1322718924}
-  - component: {fileID: 1322718925}
   m_Layer: 0
   m_Name: AimTarget
   m_TagString: Untagged
@@ -17408,27 +17411,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 803085da9e364754abff2708307bc9e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1823184638}
   parent: {fileID: 2041324057}
-  aimSpeed: 1
-  delay: 0
---- !u!114 &1322718925
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1322718922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7125eeacbf43dd545a14084448441bda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aim: {fileID: 1322718924}
-  targetHitpoints: {fileID: 7272066086535292502}
-  aimMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  target: {fileID: 1823184638}
+  aimingDone: 1
 --- !u!4 &1328845912 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5646785833816474220, guid: 1e00ca40e46d38440a35d2d6a91ff9fa,
@@ -19233,6 +19218,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 148209997}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1583412562 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3765023510799302772, guid: ab223b1335c49844fb240b34a3def0f0,
+    type: 3}
+  m_PrefabInstance: {fileID: 148209997}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6021f63eb0eb3eb4ea1a71f80433975f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1588330591
 GameObject:
   m_ObjectHideFlags: 0
@@ -23538,6 +23535,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1095743294}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2120534213 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8122238809897397089, guid: ab223b1335c49844fb240b34a3def0f0,
+    type: 3}
+  m_PrefabInstance: {fileID: 148209997}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2120534216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120534213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b561288fa2c113418f0e99b2b3b85d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyType: 0
+  attackType: 1
+  bot: {fileID: 2120534218}
+  turningSpeed: 250
+  aimTarget: {fileID: 1322718924}
+  rangedAttackRadius: 10
+  rangedAngleDifference: 60
+  gunController: {fileID: 1583412562}
+  aimErrorMargin: 0.25
+  runningActionTimeMultiplier: 0.25
+  actionTimeMinMax: {x: 0.25, y: 0.75}
+  aimTimeMinMax: {x: 0.25, y: 0.5}
+  aimSpeed: 0.25
+  attackIntervalMinMax: {x: 0.075, y: 0.1}
+  nextAttackChance: 0.4
+  maxAttackCount: 5
+--- !u!114 &2120534218 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1817209378042442184, guid: ab223b1335c49844fb240b34a3def0f0,
+    type: 3}
+  m_PrefabInstance: {fileID: 148209997}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120534213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 827ebf28915f38144977e5b94a04ba67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2129255502
 GameObject:
   m_ObjectHideFlags: 0
@@ -26170,6 +26213,11 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 3659731959849429208}
+    - target: {fileID: 892355928474138106, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 892355928474138106, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
       propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value

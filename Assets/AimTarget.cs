@@ -1,51 +1,57 @@
 using System.Collections;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class AimTarget : MonoBehaviour
 {
-    public Transform target, parent;
-    [SerializeField] private float aimSpeed, delay;
-    private float delayTimer;
+    public Transform parent;
+    [HideInInspector] public Hitpoint target;
 
-    Vector3 direction;
+    [HideInInspector] public bool aimingDone = true;
 
     private Coroutine aimRoutine;
 
     // Update is called once per frame
     void Update()
     {
-        if (delay > 0f)
-        {
-            if (delayTimer > delay)
-            {
-                if (aimRoutine != null) StopCoroutine(aimRoutine);
+        //if (delay > 0f)
+        //{
+        //    if (delayTimer > delay)
+        //    {
+        //        if (aimRoutine != null) StopCoroutine(aimRoutine);
 
-                aimRoutine = StartCoroutine(Aim());
+        //        aimRoutine = StartCoroutine(AimCoroutine());
 
-                delayTimer = 0f;
-            }
-            else
-            {
-                if (aimRoutine == null) delayTimer += Time.deltaTime;
-            }
-        }
+        //        delayTimer = 0f;
+        //    }
+        //    else
+        //    {
+        //        if (aimRoutine == null) delayTimer += Time.deltaTime;
+        //    }
+        //}
 
-        else
-        {
-            direction = (target.position - parent.position).normalized;
-            transform.position = parent.position + direction;
-        }
+        //else
+        //{
+        //    direction = (target.transform.position - parent.position).normalized;
+        //    transform.position = parent.position + direction;
+        //}
 
-        transform.rotation = Quaternion.LookRotation(direction);
+        //transform.rotation = Quaternion.LookRotation(direction);
     }
 
-    private IEnumerator Aim()
+    public void Aim(bool constant, float aimSpeed)
     {
+        if (aimRoutine != null) StopCoroutine(aimRoutine);
+
+        aimRoutine = StartCoroutine(AimCoroutine(constant, aimSpeed));
+    }
+
+    private IEnumerator AimCoroutine(bool constant, float aimSpeed)
+    {
+        aimingDone = false;
+
         float lerp = 0f;
 
-        direction = (target.position - parent.position).normalized;
+        Vector3 direction = (target.transform.position - parent.position).normalized;
 
         Vector3 initialPosition = transform.position;
         Vector3 targetPosition = parent.position + direction;
@@ -54,12 +60,16 @@ public class AimTarget : MonoBehaviour
 
         while (lerp <= 1f)
         {
-            lerp += Time.deltaTime * (aimSpeed / distance);
+            if (constant) lerp += (aimSpeed / distance) * Time.deltaTime;
+            else lerp += Time.deltaTime / aimSpeed;
+
             transform.position = Vector3.Slerp(initialPosition, targetPosition, lerp);
 
             yield return null;
         }
 
         aimRoutine = null;
+
+        aimingDone = true;
     }
 }
