@@ -1,8 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CollisionData : MonoBehaviour
 {
-    public GameObject meshHolder;
+    public Debris[] debrises;
+}
+
+[System.Serializable]
+public class Debris
+{
+    public GameObject[] debrisParticles;
 }

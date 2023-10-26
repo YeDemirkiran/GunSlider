@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -16,14 +14,8 @@ public class Bullet : MonoBehaviour
     [SerializeField] private int maxHit = 2;
     private int currentHit = 0;
 
-    [SerializeField] private float shakeOnHit, shakeOnEnemyHit;
-
-    [Header("COLLISION")]
-    [SerializeField] private GameObject particleOnHit;
-    [SerializeField] private Mesh defaultParticleMesh;
-    [SerializeField] private float particleDestroyTime;
-
     [HideInInspector] public bool hasFired = false;
+    public float damage { get; private set; }
 
     private void Awake()
     {
@@ -49,11 +41,11 @@ public class Bullet : MonoBehaviour
         }  
     }
 
-    public void Shoot(Vector3 direction)
+    public void Shoot(Vector3 direction, float force)
     {
         hasFired = true;
 
-        rb.AddForce(direction, ForceMode.VelocityChange);
+        rb.AddForce(direction * force, ForceMode.VelocityChange);
     }
 
     public void Shoot(float force)
@@ -63,45 +55,24 @@ public class Bullet : MonoBehaviour
         rb.AddRelativeForce(Vector3.forward * force, ForceMode.VelocityChange);
     }
 
+    public void SetDamage(float damage)
+    {
+        this.damage = damage;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         currentHit++;
 
         GameObject collider = collision.gameObject;
 
-        Material mat = null;
-        Mesh mesh = defaultParticleMesh;
-
-        // IF THE COLLIDED OBJECT HAS A DATA COLLISION COMPONENT, THAT MEANS WE ARE GUARANTEED TO HAVE A MESH IN RETURN
-
         if (collider.TryGetComponent(out CollisionData data))
         {
-            mat = data.meshHolder.GetComponent<Renderer>().material;
-
-            if (!data.meshHolder.TryGetComponent(out SkinnedMeshRenderer skinnedRenderer))
+            foreach (Debris debris in data.debrises)
             {
-                mesh = data.meshHolder.GetComponent<MeshFilter>().mesh;
+                int randomParticle = Random.Range(0, debris.debrisParticles.Length);
+                GameObject particle = Instantiate(debris.debrisParticles[randomParticle], collision.GetContact(0).point, Quaternion.LookRotation(transform.forward));
             }
         }
-        // BUT IF IT DOESN'T HAVE IT AND THE COLLIDER AND THE MESH RENDERER AREN'T ON THE SAME GAMEOBJECT
-        // THEN WE HAVE TO GUARANTEE IT OURSELVES
-        else
-        {
-            if (collider.TryGetComponent(out Renderer renderer))
-            {
-                mat = renderer.material;
-            }
-
-            if (!collider.TryGetComponent(out SkinnedMeshRenderer skinnedRenderer))
-            {
-                mesh = collider.GetComponent<MeshFilter>().mesh;
-            }
-        }
-
-        GameObject particle = Instantiate(particleOnHit, collision.GetContact(0).point, Quaternion.LookRotation(-transform.forward));
-        particle.GetComponent<ParticleSystemRenderer>().material = mat;
-        particle.GetComponent<ParticleSystemRenderer>().mesh = mesh;
-        //Destroy(particle, particleDestroyTime);
-        //Debug.Log("Hit! Current hit left: " + (maxHit - currentHit));
     }
 }

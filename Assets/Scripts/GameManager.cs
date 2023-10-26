@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public enum GameState { Running, Paused, Interrupted }
-    public enum PauseState { MainMenu, PauseMenu }
+    public enum PauseState { MainMenu = 0, PauseMenu = 1, DeathMenu = 2 }
 
     public static GameState gameState { get; private set; }
     private GameState previousGameState;
@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     private static int startCounter = 0, pauseCounter = 0, resumeCounter = 0, mainMenuCounter = 0;
 
     [Header("UI")]
-    [SerializeField] private GameObject[] mainMenuElements, inGameElements, pauseMenuElements;
+    [SerializeField] private GameObject[] mainMenuElements, inGameElements, pauseMenuElements, deathMenuElements;
 
     void Awake()
     {
@@ -180,6 +180,7 @@ public class GameManager : MonoBehaviour
 
                 foreach (var element in pauseMenuElements) element.SetActive(false);
                 foreach (var element in mainMenuElements) element.SetActive(false);
+                foreach (var element in deathMenuElements) element.SetActive(false);
 
                 break;
 
@@ -190,13 +191,25 @@ public class GameManager : MonoBehaviour
                 {
                     case PauseState.MainMenu:
                         foreach (var element in mainMenuElements) element.SetActive(true);
+
                         foreach (var element in pauseMenuElements) element.SetActive(false);
+                        foreach (var element in deathMenuElements) element.SetActive(false);
 
                         break;
 
                     case PauseState.PauseMenu:
                         foreach (var element in pauseMenuElements) element.SetActive(true);
+
                         foreach (var element in mainMenuElements) element.SetActive(false);
+                        foreach (var element in deathMenuElements) element.SetActive(false);
+
+                        break;
+
+                    case PauseState.DeathMenu:
+                        foreach (var element in deathMenuElements) element.SetActive(true);
+
+                        foreach (var element in mainMenuElements) element.SetActive(false);
+                        foreach (var element in pauseMenuElements) element.SetActive(false);
 
                         break;
                 }
@@ -234,6 +247,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void PauseGame(int pausedState)
+    {
+        if (pauseCounter == 0)
+        {
+            gameState = GameState.Paused;
+            pauseState = (PauseState)pausedState;
+
+            pauseCounter++;
+        }
+    }
+
     public void PauseGame(PauseState pausedState)
     {
         if (pauseCounter == 0)
@@ -253,6 +277,11 @@ public class GameManager : MonoBehaviour
 
             resumeCounter++;
         }
+    }
+
+    public void ReplayLevel()
+    {
+        Debug.LogWarning("Not Implemented");
     }
 
     public void GoToMainMenu()

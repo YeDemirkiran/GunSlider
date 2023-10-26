@@ -19,6 +19,7 @@ public class GunController : MonoBehaviour
 
     [Header("SHOOTING SETTINGS")]
     public int maxAmmo = 7;
+    [SerializeField] float bulletDamage = 10f;
     [HideInInspector] public int currentAmmo;
     [SerializeField] private float shootingCooldown = 0.125f;
     private bool canShoot = true, isCooldownRunning = false;
@@ -37,9 +38,11 @@ public class GunController : MonoBehaviour
 
     private bool clicked = false;
 
+    private Coroutine currentLookRoutine;
+
     private void Start()
     {
-        rotation = transform.localEulerAngles;
+        rotation = transform.eulerAngles;
 
         foreach (Transform item in bulletHolder)
         {
@@ -57,34 +60,52 @@ public class GunController : MonoBehaviour
         currentAmmo = maxAmmo;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (!GameManager.isPaused)
-        {
-            //if (Input.GetKey(KeyCode.Mouse0))
-            //{
-            //    Shoot();
-            //}
-
-            //if (Input.GetKeyDown(KeyCode.R))
-            //{
-            //    Reload();
-            //}
-        }
+        //transform.eulerAngles = rotation;
     }
 
     public void Rotate(float deltaX, float deltaY, bool invertY)
     {
-        if (GameManager.isPaused) return;
+        //Debug.LogError("Remove the Rotation");
+        //if (GameManager.isPaused) return;
 
-        rotation.x += (invertY ? -1 : 1) * deltaX * sensitivity * Time.deltaTime;
-        rotation.x = Mathf.Clamp(rotation.x, xAngleClamp.x, xAngleClamp.y);
+        //rotation.x += (invertY ? -1 : 1) * deltaX * sensitivity * Time.deltaTime;
+        //rotation.x = Mathf.Clamp(rotation.x, xAngleClamp.x, xAngleClamp.y);
 
-        rotation.y += deltaY * sensitivity * Time.deltaTime;
-        rotation.y = Mathf.Clamp(rotation.y, yAngleClamp.x, yAngleClamp.y);
+        //rotation.y += deltaY * sensitivity * Time.deltaTime;
+        //rotation.y = Mathf.Clamp(rotation.y, yAngleClamp.x, yAngleClamp.y);
 
-        transform.localEulerAngles = rotation;
+        //transform.eulerAngles = rotation;
+    }
+
+    // FOR AUTO-AIM && AI
+    public void AimAtTarget(Vector3 point, float errorMargin = 0f)
+    {
+        //Debug.LogError("Remove the Aiming");
+
+        //if (GameManager.isPaused) return;
+
+        //if (currentLookRoutine != null)
+        //{
+        //    StopCoroutine(currentLookRoutine);
+        //}
+
+        //currentLookRoutine = StartCoroutine(LookTarget());
+
+        //IEnumerator LookTarget()
+        //{
+        //    Vector3 currentDirection = transform.forward;
+        //    Vector3 targetDirection = (point + (Random.insideUnitSphere * errorMargin) - transform.position).normalized;
+
+        //    while (true)
+        //    {               
+        //        currentDirection = Vector3.MoveTowards(currentDirection, targetDirection, sensitivity * Time.deltaTime);
+        //        rotation = Quaternion.LookRotation(currentDirection).eulerAngles;
+
+        //        yield return null;
+        //    }
+        //}
     }
 
     public void Shoot()
@@ -101,9 +122,11 @@ public class GunController : MonoBehaviour
                     {
                         canShoot = false;
 
+                        bullets[currentBullet].SetDamage(bulletDamage);
+
                         bullets[currentBullet].transform.SetParent(null);
                         bullets[currentBullet].gameObject.SetActive(true);
-                        bullets[currentBullet].Shoot(transform.forward * bulletForce);
+                        bullets[currentBullet].Shoot(transform.forward, bulletForce);
                         //bullets[currentBullet].Shoot(transform.forward * bulletForce, false);
 
                         currentBullet++;

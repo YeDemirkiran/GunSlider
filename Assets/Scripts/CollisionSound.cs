@@ -11,6 +11,7 @@ public class CollisionSound : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         source.pitch = Random.Range(pitchRandomness.x, pitchRandomness.y);
-        source.PlayOneShot(clips[Random.Range(0, clips.Length)]);
+
+        AudioSource.PlayClipAtPoint(clips[Random.Range(0, clips.Length)], collision.GetContact(0).point);
     }
 }

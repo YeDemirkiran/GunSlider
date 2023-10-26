@@ -7,7 +7,7 @@ public class StaticPivot : MonoBehaviour
     private Vector3 positionOffset;
     private Vector3 defaultRotation;
 
-    private void Start()
+    private void OnEnable()
     {
         positionOffset = target.position - transform.position;
         defaultRotation = transform.eulerAngles;
