@@ -13,7 +13,7 @@ public class HealthMeter : MonoBehaviour
     {
         if (!GameManager.isPaused)
         {
-            healthText.text = $"{health.currentHealth}";
+            healthText.text = $"{(int)health.currentHealth}";
 
             healthText.color = Color.Lerp(normalColor, depletedColor, 1f - (health.currentHealth / health.maxHealth));
         }      

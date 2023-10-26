@@ -55,7 +55,7 @@ public class EntityHealth : MonoBehaviour
 
         if (!isDead && amount <= 0f)
         {
-            if (audioSource != null && soundsOnHit.Length > 0)
+            if (audioSource != null && soundsOnHit.Length > 0 && !audioSource.isPlaying)
             {
                 AudioUtilities.PlayRandomSound(audioSource, soundsOnHit, Vector2.one);
             }
