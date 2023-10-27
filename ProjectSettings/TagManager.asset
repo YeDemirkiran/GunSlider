@@ -17,8 +17,8 @@ TagManager:
   - Bot
   - Bullet
   - Enemy
-  - 
-  - 
+  - HeatSource
+  - HeatSensor
   - 
   - 
   - 
