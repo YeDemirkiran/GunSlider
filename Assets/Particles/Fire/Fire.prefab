@@ -33,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.11864662, z: 0, w: 0.9929366}
   m_LocalPosition: {x: -12.53, y: 0.105, z: 5.03}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.6, y: 1.6, z: 1.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -55,11 +55,17 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 0.12
+        m_Name: Radius
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 0.5, y: 0, z: 0.1}
+        m_Name: BoxSize
+        m_Overridden: 1
     m_Vector4f:
       m_Array: []
     m_Uint:
@@ -71,7 +77,39 @@ VisualEffect:
     m_AnimationCurve:
       m_Array: []
     m_Gradient:
-      m_Array: []
+      m_Array:
+      - m_Value:
+          serializedVersion: 2
+          key0: {r: 357.81622, g: 67.4418, b: 0, a: 0}
+          key1: {r: 8.474188, g: 1.5528617, b: 0.88734955, a: 1}
+          key2: {r: 0, g: 0, b: 0, a: 1}
+          key3: {r: 0, g: 0, b: 0, a: 0}
+          key4: {r: 0, g: 0, b: 0, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 0
+          ctime1: 14811
+          ctime2: 27394
+          ctime3: 0
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 0
+          atime1: 6554
+          atime2: 37420
+          atime3: 65535
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 0
+          m_ColorSpace: -1
+          m_NumColorKeys: 3
+          m_NumAlphaKeys: 4
+        m_Name: ColorOverLifetime
+        m_Overridden: 1
     m_NamedObject:
       m_Array: []
     m_Bool:
@@ -128,7 +166,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.8018868, g: 0.44451872, b: 0.24586153, a: 1}
-  m_Intensity: 270.29
+  m_Intensity: 45
   m_Range: 45
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
