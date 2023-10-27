@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[AddComponentMenu("Heat System/Heat Damage", 1)]
 public class HeatDamage : MonoBehaviour
 {
     [SerializeField] private EntityHealth health;

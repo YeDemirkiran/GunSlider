@@ -1,8 +1,24 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum Axis { x, y, z }
 
 // MOVE THESE TO A PROPER PLACE LATER
+
+public static class ListExtensions
+{
+    public static T GetRandom<T>(this List<T> list)
+    {
+        return list[Random.Range(0, list.Count)];
+    }
+}
+public static class ArrayExtensions
+{
+    public static T GetRandom<T>(this T[] list)
+    {
+        return list[Random.Range(0, list.Length)];
+    }
+}
 
 public static class Vector2Extensions
 {
@@ -93,4 +109,15 @@ public static class Vector3Extensions
 
         return inDegrees ? angle * Mathf.Rad2Deg : angle;
     }
+
+    public static Vector3 Random(Vector3 min, Vector3 max)
+    {
+        Vector3 vector = new Vector3();
+
+        vector.x = UnityEngine.Random.Range(min.x, max.x);
+        vector.y = UnityEngine.Random.Range(min.y, max.y);
+        vector.z = UnityEngine.Random.Range(min.z, max.z);
+
+        return vector;
+    } 
 }

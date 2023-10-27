@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[AddComponentMenu("Heat System/Heat Source", 0)]
 public class HeatSource : MonoBehaviour
 {
     [SerializeField] private new SphereCollider collider;

@@ -50,6 +50,8 @@ public class EntityHealth : MonoBehaviour
 
     public void AddHealth(float amount)
     {
+        if (GameManager.isPaused) return;
+
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 

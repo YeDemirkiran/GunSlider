@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[AddComponentMenu("Heat System/Heat Sensor Audio", 3)]
 public class HeatSensorAudio : MonoBehaviour
 {
     [SerializeField] private HeatSensor sensor;

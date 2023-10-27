@@ -1,10 +1,14 @@
 using UnityEngine;
 
+[AddComponentMenu("Heat System/Heat Sensor", 4)]
+[RequireComponent(typeof(Collider), typeof(Rigidbody))]
 public class HeatSensor : MonoBehaviour
 {
     public float minHeat = 20f, maxHeat = 50f, degreeChangePerSecond, degreeGravityPerSecond;
 
     public float currentHeat = 50f;
+
+    public HeatSource currentHeatSource {  get; private set; }
 
     private float desiredHeat;
 
@@ -33,13 +37,21 @@ public class HeatSensor : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        Debug.Log("HEHEEHE");
-
         if (other.TryGetComponent(out HeatSource heatSource))
         {
+            currentHeatSource = heatSource;
+
             float distance = heatSource.radius - Vector3.Distance(transform.position, heatSource.transform.position);
 
             desiredHeat = heatSource.coreHeat * heatSource.heatCurve.Evaluate(distance / heatSource.radius);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent(out HeatSource heatSource))
+        {
+            currentHeatSource = null;
         }
     }
 }

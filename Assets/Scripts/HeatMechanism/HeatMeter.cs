@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[AddComponentMenu("Heat System/Heat Meter", 2)]
+
 public class HeatMeter : MonoBehaviour
 {
     [SerializeField] private HeatSensor sensor;
