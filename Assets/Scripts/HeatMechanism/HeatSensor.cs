@@ -25,9 +25,6 @@ public class HeatSensor : MonoBehaviour
         {
             currentHeat += Time.deltaTime * degreeChangePerSecond;
         }
-
-        Debug.Log("Current Heat: " + currentHeat);
-        Debug.Log("Desired Heat: " + desiredHeat);
     }
 
     public void AddHeat(float heat)

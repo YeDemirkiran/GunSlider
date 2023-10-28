@@ -1,0 +1,16 @@
+SOFAlizer 1.4.0-dev: SOFA-based spatializer (c) Piotr Majdak & Michael Mihocic, ARI, OeAW
+2023-10-27 22:50:14
+System sampling rate: 48000 Hz, Buffer size:512 samples
+hrtf0.sofa: 1550 HRTFs, 256 samples @ 48000 Hz. ARI, DTF B, NH4.
+--> cropped to 128 samples
+hrtf1.sofa: 1550 HRTFs, 256 samples @ 48000 Hz. ARI, HRTF B, NH4.
+--> cropped to 128 samples
+hrtf2.sofa: Can't load, error code: 2 (No such file or directory)
+hrtf3.sofa: Can't load, error code: 2 (No such file or directory)
+hrtf4.sofa: 1550 HRTFs, 256 samples @ 48000 Hz. ARI, HRTF B, NH4.
+--> cropped to 128 samples
+hrtf5.sofa: Can't load, error code: 2 (No such file or directory)
+hrtf6.sofa: Can't load, error code: 2 (No such file or directory)
+hrtf7.sofa: Can't load, error code: 2 (No such file or directory)
+hrtf8.sofa: Can't load, error code: 2 (No such file or directory)
+hrtf9.sofa: Can't load, error code: 2 (No such file or directory)
