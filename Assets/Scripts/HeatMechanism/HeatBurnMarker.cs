@@ -1,25 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 [AddComponentMenu("Heat System/Heat Burn Marker", 5)]
 public class HeatBurnMarker : MonoBehaviour
 {
-    private enum BurnMode { SingleMesh, Humanoid }
+    private enum BurnMode { MeshBased, ColliderBased }
 
     [Header("GENERAL")]
     [SerializeField] private BurnMode burnMode;
 
     [SerializeField] private Renderer meshRenderer;
+
+    [SerializeField] private Collider[] burnableColliders;
+
     [SerializeField] private HeatSensor sensor;
     [SerializeField] private float heatThreshold;
 
     [Header("BURNS")]
     [SerializeField] private Material[] decalMaterials;
-    [SerializeField] private Vector3 markMinSize, markMaxSize;
     [SerializeField] private int maxMarkCount;
+    [SerializeField] private Vector3 markMinSize, markMaxSize;
     [SerializeField] private float markAppearDelay;
     [SerializeField] private float burningTime, emissionCooldownTime, healingSpeed;
 
@@ -33,7 +35,6 @@ public class HeatBurnMarker : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("List count: " + projectors.Count);
         if (sensor.currentHeatSource != null && sensor.currentHeat > heatThreshold)
         {
             if (currentMarkCount < maxMarkCount)
@@ -73,13 +74,40 @@ public class HeatBurnMarker : MonoBehaviour
                             break;
                     }
 
-                    Physics.Raycast(heatSource.position, randomDirection, out RaycastHit hit, 10f);
+                    RaycastHit[] hits = Physics.RaycastAll(heatSource.position, randomDirection, 10f);
 
+                    foreach (var hit in hits)
+                    {
+                        if (hit.transform.root == transform.root)
+                        {
+                            foreach (var collider in burnableColliders)
+                            {
+                                if (collider == hit.collider)
+                                {
+                                    delayTimer = 0f;
+                                    currentMarkCount++;
 
-                    delayTimer = 0f;
-                    currentMarkCount++;
+                                    StartCoroutine(CreateMark(hit.point, randomDirection, burningTime, hit.transform));
 
-                    StartCoroutine(CreateMark(hit.point, randomDirection, burningTime));
+                                    Debug.Log("Hit Collider Name: " + hit.transform.name);
+
+                                    break;
+                                }
+
+                                else
+                                {
+                                    Debug.Log("You fucked up my face");
+                                }
+                            }
+
+                            break;
+                        }
+
+                        else
+                        {
+                            Debug.Log("Not hit a proper collider. Name: " + hit.transform.name);
+                        }
+                    }                    
                 }
                 else
                 {
@@ -103,7 +131,7 @@ public class HeatBurnMarker : MonoBehaviour
         }
     }
 
-    private IEnumerator CreateMark(Vector3 position, Vector3 orientation, float formingDuration)
+    private IEnumerator CreateMark(Vector3 position, Vector3 orientation, float formingDuration, Transform parent = null)
     {
         float lerp = 0f;
 
@@ -112,7 +140,7 @@ public class HeatBurnMarker : MonoBehaviour
 
         mark.transform.position = position;
         mark.transform.rotation = Quaternion.LookRotation(orientation);
-        mark.transform.parent = transform;
+        mark.transform.parent = parent;
 
         projector.size = Vector3Extensions.Random(markMinSize, markMaxSize);
         projector.pivot = new Vector3(0f, 0f, projector.size.z / 2f);
@@ -156,8 +184,6 @@ public class HeatBurnMarker : MonoBehaviour
         {
             lerp += Time.deltaTime / emissionCooldownTime;
             material.SetFloat("_EmissionStrength", Mathf.Lerp(initalEmission, 0f, lerp));
-
-            Debug.Log("Current: " + material.GetFloat("_EmissionStrength"));
 
             yield return null;
         }
