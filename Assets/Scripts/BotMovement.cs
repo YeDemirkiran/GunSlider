@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using static AudioUtilities;
 using static AnimationUtilities;
-using UnityEngine.Animations.Rigging;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -140,6 +139,7 @@ public class BotMovement : MonoBehaviour
         movementSpeed = Vector3.Lerp(standingSpeed, crouchingSpeed, crouchLerp);
 
         MoveInternal();
+        Move(0f, 0f);
 
         AnimatorAssignValues(yDirection * movementLerpY, xDirection * movementLerpX, false, crouchLerp);
     }

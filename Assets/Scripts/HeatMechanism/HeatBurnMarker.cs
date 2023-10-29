@@ -89,23 +89,11 @@ public class HeatBurnMarker : MonoBehaviour
 
                                     StartCoroutine(CreateMark(hit.point, randomDirection, burningTime, hit.transform));
 
-                                    Debug.Log("Hit Collider Name: " + hit.transform.name);
-
                                     break;
-                                }
-
-                                else
-                                {
-                                    Debug.Log("You fucked up my face");
                                 }
                             }
 
                             break;
-                        }
-
-                        else
-                        {
-                            Debug.Log("Not hit a proper collider. Name: " + hit.transform.name);
                         }
                     }                    
                 }

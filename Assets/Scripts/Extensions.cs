@@ -66,7 +66,6 @@ public static class Vector2Extensions
         return inDegrees ? angle * Mathf.Rad2Deg : angle;
     }
 }
-
 public static class Vector3Extensions
 {
     public static Vector2 ToVector2(this Vector3 vector, Axis removedAxis)
@@ -101,6 +100,17 @@ public static class Vector3Extensions
         return vec2;
     }
 
+    public static Vector3 Clamp(this Vector3 vector, Vector3 mins, Vector3 maxs)
+    {
+        Vector3 vec = vector;
+
+        vec.x = Mathf.Clamp(vec.x, mins.x, maxs.x);
+        vec.y = Mathf.Clamp(vec.y, mins.y, maxs.y);
+        vec.z = Mathf.Clamp(vec.z, mins.y, maxs.z);
+
+        return vec;
+    }
+
     public static float DotAngle(Vector3 forward, Vector3 direction, bool inDegrees = true)
     {
         float dot = Vector3.Dot(forward, direction);
@@ -120,4 +130,46 @@ public static class Vector3Extensions
 
         return vector;
     } 
+}
+
+public static class BoundsExtensions
+{
+    public static Vector3 GetBottom(this Bounds bounds)
+    {
+        return bounds.center - (Vector3.up * bounds.extents.y);
+    }
+    public static Vector3 GetTop(this Bounds bounds)
+    {
+        return bounds.center + (Vector3.up * bounds.extents.y);
+    }
+
+    public static Vector3 GetRight(this Bounds bounds)
+    {
+        return bounds.center + (Vector3.right * bounds.extents.x);
+    }
+    public static Vector3 GetLeft(this Bounds bounds)
+    {
+        return bounds.center - (Vector3.right * bounds.extents.x);
+    }
+
+    public static Vector3 GetFront(this Bounds bounds)
+    {
+        return bounds.center + (Vector3.forward * bounds.extents.z);
+    }
+    public static Vector3 GetBack(this Bounds bounds)
+    {
+        return bounds.center - (Vector3.forward * bounds.extents.z);
+    }
+
+    // CROSS DIRECTIONS
+    public static Vector3 GetCross(this Bounds bounds, Vector3 direction)
+    {
+        direction = direction.Clamp(new Vector3(-1f, -1f, -1f), new Vector3(1f, 1f, 1f));
+
+        float right = bounds.center.x + (bounds.extents.x * direction.x);
+        float up = bounds.center.y + (bounds.extents.y * direction.y);
+        float forward = bounds.center.z + (bounds.extents.z * direction.z);
+
+        return new Vector3(right, up, forward);
+    }
 }

@@ -14,9 +14,14 @@ public class BotActivator : MonoBehaviour
                 enemy.target = player;
             }
 
-            if (other.TryGetComponent(out AggressiveAI enemyAI))
+            if (other.TryGetComponent(out AggressiveAI aggressiveAI))
             {
-                enemyAI.target = player;
+                aggressiveAI.target = player;
+            }
+
+            if (other.TryGetComponent(out CivillianController civilAI))
+            {
+                civilAI.target = player;
             }
         }  
     }
@@ -30,9 +35,14 @@ public class BotActivator : MonoBehaviour
                 enemy.target = null;
             }
 
-            if (other.TryGetComponent(out AggressiveAI enemyAI))
+            if (other.TryGetComponent(out AggressiveAI aggressiveAI))
             {
-                enemyAI.target = null;
+                aggressiveAI.target = null;
+            }
+
+            if (other.TryGetComponent(out CivillianController civilAI))
+            {
+                civilAI.target = null;
             }
         }
     }

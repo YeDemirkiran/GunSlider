@@ -46,48 +46,13 @@ public class EnemyController : MonoBehaviour
     [Range(0f, 180f)][SerializeField] private float maxAngleDifference;
     [SerializeField] private float escapingMinDistance;
 
-    // Start is called before the first frame update
     void Awake()
     {
         target = null;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // PSEUDO CODE
-        // If Player is visible
-        //   TYPE: AGGRESSIVE
-        //   {
-        //     ATTACK TYPE: Melee
-        //     {
-        //       If near the player: Melee Attack
-        //       If not: Approach 
-        //     }
-        //
-        //     ATTACK TYPE: Ranged
-        //     { 
-        //       ?If within the firing radius: 
-        //         ?If player is aiming at you:
-        //           ?If you don't have a cover: Find a cover
-        //           ?If not: Occasionally leave the cover, shoot and go back
-        //          
-        //         ?If not:
-        //           -If you're covered: Leave the cover
-        //           -Approach the player
-        //           -Aim & shoot
-        //           -Check again if the player is aiming at you
-        //
-        //       ?If not: Approach
-        //     }
-        //     
-        //   TYPE: DEFENSIVE
-        //   {
-        //     If there are any ways to escape: Run in the opposite side of the player 
-        //     If not: Kneel and beg for mercy
-        //   }
-
-        // NEW 
         if (target != null)
         {
             // We're on the same Y axis so strip that away
@@ -99,10 +64,7 @@ public class EnemyController : MonoBehaviour
 
             float distance = Vector2.Distance(transformPosVec2, playerPosVec2);
 
-            Vector3 direction = (target.position - transform.position).normalized;
             Vector2 directionVec2 = (playerPosVec2 - transformPosVec2).normalized;
-
-            //Debug.Log("CROSS: " + Vector3.Cross(transform.forward, direction));
             
             float verticalAngle = Vector2Extensions.DotAngle(transformForwardVec2, directionVec2);
 
@@ -243,18 +205,6 @@ public class EnemyController : MonoBehaviour
                         bot.Pray(true);
                     }
                 }
-
-                // CalculateSurroundings(); calculate if there is an exit route on the opposite side of the player
-                // But since I don't know how to do this, we will followed a simpler solution above
-
-                //if (true) // If there are 
-                //{
-                //    // Escape bitch
-                //}
-                //else
-                //{
-                //    // Plea();
-                //}
             }
         }
     }

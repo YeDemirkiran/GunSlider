@@ -597,6 +597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 2.5
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -910,14 +911,8 @@ MonoBehaviour:
   animator: {fileID: 1266319111206762450}
   animatorMesh: {fileID: 5119668557274111250}
   currentAnimationType: 0
-  meleeIndex: 0
-  rangedIndex: 0
-  spineBone: {fileID: 0}
-  spineSensitivity: {x: 0, y: 0, z: 0}
-  spineClampX: {x: 0, y: 0, z: 0}
-  spineClampY: {x: 0, y: 0, z: 0}
-  invertSpineX: 0
-  invertSpineY: 0
+  meleeLayerIndex: 0
+  rangedLayerIndex: 0
   audioSource: {fileID: 4870880689555263124}
   jumpClips:
   - {fileID: 8300000, guid: 62b7596edceed7a4da77d1c62f81f424, type: 3}
@@ -1004,12 +999,14 @@ MonoBehaviour:
   enemyState: 0
   attackType: 0
   bot: {fileID: 8370040309291692238}
+  turningSpeed: 250
   meleeAttackRadius: 0
   gunController: {fileID: 0}
   rangedAttackRadius: 0
   actionTimeMinMax: {x: 0, y: 0}
   aimIntervalMinMax: {x: 0, y: 0}
   aimErrorMargin: 0.25
+  rangedAngleDifference: 0
   changePositionOnHit: 0
   maxAngleDifference: 30
   escapingMinDistance: 5
@@ -1276,6 +1273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 2
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -1484,7 +1482,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d2140b4baaa04944da1f40d011b9d5bf, type: 2}
@@ -2047,6 +2045,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 10
   audioSource: {fileID: 5002675466691169094}
   clipsOnHits:
@@ -2256,6 +2255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -2408,7 +2408,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 036d610729f51f54da09dde397bf0a0c, type: 2}
@@ -2676,7 +2676,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d2140b4baaa04944da1f40d011b9d5bf, type: 2}
@@ -2962,6 +2962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -3175,6 +3176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 2.5
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -3267,7 +3269,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d2140b4baaa04944da1f40d011b9d5bf, type: 2}
@@ -3417,7 +3419,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d2140b4baaa04944da1f40d011b9d5bf, type: 2}
@@ -3639,6 +3641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -3769,6 +3772,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 5
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -3941,7 +3945,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 036d610729f51f54da09dde397bf0a0c, type: 2}
@@ -4163,6 +4167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 2.5
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -4355,6 +4360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -4579,6 +4585,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 2
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -4964,6 +4971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -5205,7 +5213,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d2140b4baaa04944da1f40d011b9d5bf, type: 2}
