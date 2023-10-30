@@ -45,24 +45,45 @@ public class CivillianController : MonoBehaviour
                 {
                     bot.Pray(false);
 
-                    TurnAwayFromPoint(target.position, maxAngleDifference / 2f);
+                    
 
                     if (currentObstacle != null)
                     {
-                        if (currentObstacle.bounds.GetTop().y - ownBoundsCalculator.CalculateBounds().GetBottom().y < smallObjectJumpingThreshold)
+                        Bounds obstacleBounds = currentObstacle.bounds;
+                        Bounds ownBounds = ownBoundsCalculator.CalculateBounds();
+
+                        if (obstacleBounds.GetTop().y - ownBounds.GetBottom().y < smallObjectJumpingThreshold)
                         {
                             if (Vector3.Distance(currentObstacle.transform.position, transform.position) < smallObjectJumpingDistance)
                             {
                                 bot.Jump();
                             }
+
+                            bot.Move(1f, 0f);
                         }
                         else
                         {
+                            Vector3 closestPoint = obstacleDetector.CalculateClosestPoint(obstacleBounds);
+                            Vector3 targetPoint = closestPoint + ownBounds.size;
 
+                            //TurnTowardsPoint(targetPoint, 0f);
+
+                            bot.Move(0f, 1f);
+
+                            Debug.DrawLine(closestPoint, targetPoint, Color.blue);
+                            Debug.DrawLine(transform.position, closestPoint, Color.red);
+
+                            Debug.Log("CLOSEST: " + closestPoint);
+                            Debug.Log("TARGET: " + targetPoint);
+                            //Debug.Break();
                         }
                     }
-
-                    bot.Move(1f, 0f);
+                    else
+                    {
+                        TurnAwayFromPoint(target.position, maxAngleDifference / 2f);
+                        bot.Move(1f, 0f);
+                    } 
+                    
 
                     // Reset it. The Obstacle Detector will give it us again, and if there is none, this will stay null.
                     currentObstacle = null;
@@ -97,6 +118,26 @@ public class CivillianController : MonoBehaviour
         Vector2 transformSideVec2 = transform.right.ToVector2(Axis.y);
 
         Vector2 pointPosVec2 = point.ToVector2(Axis.y);
+
+        Vector2 directionBetweenPointVec2 = (pointPosVec2 - transformPosVec2).normalized;
+
+        float verticalAngleBetweenTarget = Vector2Extensions.DotAngle(transformForwardVec2, directionBetweenPointVec2);
+
+        float horizontalDot = Vector2.Dot(directionBetweenPointVec2, transformSideVec2);
+
+        if (verticalAngleBetweenTarget > 0f + margin)
+        {
+            bot.Rotate(Vector3.up, turningSpeed * Mathf.Sign(horizontalDot));
+        }
+    }
+
+    void TurnTowardsPoint(Vector2 point, float margin)
+    {
+        Vector2 transformPosVec2 = transform.position.ToVector2(Axis.y);
+        Vector2 transformForwardVec2 = transform.forward.ToVector2(Axis.y);
+        Vector2 transformSideVec2 = transform.right.ToVector2(Axis.y);
+
+        Vector2 pointPosVec2 = point;
 
         Vector2 directionBetweenPointVec2 = (pointPosVec2 - transformPosVec2).normalized;
 
