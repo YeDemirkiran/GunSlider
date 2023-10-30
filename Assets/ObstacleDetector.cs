@@ -13,6 +13,37 @@ public class Obstacle
         this.gameObject = gameObject;
         this.boundsCalculator = boundsCalculator;
     }
+
+    // CURRENTLY CAN ONLY CALCULATE ON THE SAME HEIGHT, NO Y-AXIS
+    // I DON'T NEED IT
+    public Vector3 CalculateClosestPoint(Vector3 originPosition)
+    {
+        Vector3 pointCoordinates = Vector3.zero;
+
+        // Z-AXIS
+        Vector2 boundsFront = bounds.GetFront();
+        Vector2 boundsBack = bounds.GetBack();
+
+        // X-AXIS
+        Vector2 boundsRight = bounds.GetRight();
+        Vector2 boundsLeft = bounds.GetLeft();
+
+        // Distances
+        float frontDistance = Vector3.Distance(originPosition, boundsFront);
+        float backDistance = Vector3.Distance(originPosition, boundsBack);
+        float rightDistance = Vector3.Distance(originPosition, boundsRight);
+        float leftDistance = Vector3.Distance(originPosition, boundsLeft);
+
+        // Front or back?
+        if (frontDistance < backDistance) pointCoordinates.z = 1f;
+        else pointCoordinates.z = -1f;
+
+        // Right or left?
+        if (rightDistance < leftDistance) pointCoordinates.x = 1f;
+        else pointCoordinates.x = -1f;
+
+        return bounds.GetPoint(pointCoordinates);
+    }
 }
 
 public class ObstacleDetector : MonoBehaviour
@@ -62,48 +93,5 @@ public class ObstacleDetector : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.DrawLine(transform.position, transform.position + (transform.forward * detectorDistance));
-    }
-
-    public Vector3 CalculateClosestPoint(Bounds bounds)
-    {
-        Vector3 position;
-
-        Vector3 pointCoordinates = Vector3.zero;
-
-        // Z-AXIS
-        Vector2 boundsFront = bounds.GetFront();
-        Vector2 boundsBack = bounds.GetBack();
-
-        // X-AXIS
-        Vector2 boundsRight = bounds.GetRight();
-        Vector2 boundsLeft = bounds.GetLeft();
-
-        //Vector2 transformPosVec2 = transform.position.ToVector2(Axis.y);
-
-        //// Z-AXIS
-        //Vector2 boundsFrontVec2 = bounds.GetFront().ToVector2(Axis.y);
-        //Vector2 boundsBackVec2 = bounds.GetBack().ToVector2(Axis.y);
-
-        //// X-AXIS
-        //Vector2 boundsRightVec2 = bounds.GetRight().ToVector2(Axis.y);
-        //Vector2 boundsLeftVec2 = bounds.GetLeft().ToVector2(Axis.y);
-
-        // Distances
-        float frontDistance = Vector3.Distance(transform.position, boundsFront);
-        float backDistance = Vector3.Distance(transform.position, boundsBack);
-        float rightDistance = Vector3.Distance(transform.position, boundsRight);
-        float leftDistance = Vector3.Distance(transform.position, boundsLeft);
-
-        // Front or back?
-        if (frontDistance < backDistance) pointCoordinates.z = 1f;
-        else pointCoordinates.z = -1f;
-
-        // Right or left?
-        if (rightDistance < leftDistance) pointCoordinates.x = 1f;
-        else pointCoordinates.x = -1f;
-
-        position = bounds.GetPoint(pointCoordinates);
-
-        return position;
     }
 }

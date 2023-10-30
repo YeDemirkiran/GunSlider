@@ -43,9 +43,7 @@ public class CivillianController : MonoBehaviour
             {
                 if (distance > escapingMinDistance)
                 {
-                    bot.Pray(false);
-
-                    
+                    bot.Pray(false);                    
 
                     if (currentObstacle != null)
                     {
@@ -63,18 +61,21 @@ public class CivillianController : MonoBehaviour
                         }
                         else
                         {
-                            Vector3 closestPoint = obstacleDetector.CalculateClosestPoint(obstacleBounds);
+                            Vector3 closestPoint = currentObstacle.CalculateClosestPoint(transform.position);
                             Vector3 targetPoint = closestPoint + ownBounds.size;
+
+                            Vector2 obstacleDirectionVec2 = (obstacleBounds.center - transform.position).ToVector2(Axis.y);
+                            float horizontalDot = Vector2.Dot(obstacleDirectionVec2, transform.right.ToVector2(Axis.y));
 
                             //TurnTowardsPoint(targetPoint, 0f);
 
-                            bot.Move(0f, 1f);
+                            bot.Move(0f, -horizontalDot);
 
                             Debug.DrawLine(closestPoint, targetPoint, Color.blue);
                             Debug.DrawLine(transform.position, closestPoint, Color.red);
 
-                            Debug.Log("CLOSEST: " + closestPoint);
-                            Debug.Log("TARGET: " + targetPoint);
+                            //Debug.Log("CLOSEST: " + closestPoint);
+                            //Debug.Log("TARGET: " + targetPoint);
                             //Debug.Break();
                         }
                     }
