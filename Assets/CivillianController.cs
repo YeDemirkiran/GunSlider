@@ -1,10 +1,11 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 using static EnemyStates;
 
 public class CivillianController : MonoBehaviour
 {
     public Transform target { get; set; }
+
+    public Obstacle currentObstacle { get; set; }
 
     [Header("GENERAL")]
 
@@ -17,13 +18,18 @@ public class CivillianController : MonoBehaviour
     [Range(0f, 180f)][SerializeField] private float maxAngleDifference;
     [SerializeField] private float escapingMinDistance;
 
+    [Header("Object Avoidance")]
+    [SerializeField] private BoundsCalculator ownBoundsCalculator;
+    [SerializeField] private ObstacleDetector obstacleDetector;
+
+    [SerializeField] private float smallObjectJumpingDistance = 1f, smallObjectJumpingThreshold = 0.5f;
+
     void Update()
     {
         if (target != null)
         {
             Vector2 transformPosVec2 = transform.position.ToVector2(Axis.y);
             Vector2 transformForwardVec2 = transform.forward.ToVector2(Axis.y);
-            Vector2 transformSideVec2 = transform.right.ToVector2(Axis.y);
 
             Vector2 targetPosVec2 = target.position.ToVector2(Axis.y);
 
@@ -33,11 +39,6 @@ public class CivillianController : MonoBehaviour
 
             float verticalAngle = Vector2Extensions.DotAngle(transformForwardVec2, directionVec2);
 
-            Debug.Log("Barr: " + transformPosVec2);
-            Debug.Log("Barr2: " + targetPosVec2);
-
-            float horizontalDot = Vector2.Dot(directionVec2, transformSideVec2);
-
             if (enemyType == EnemyType.Defensive)
             {
                 if (distance > escapingMinDistance)
@@ -46,7 +47,25 @@ public class CivillianController : MonoBehaviour
 
                     TurnAwayFromPoint(target.position, maxAngleDifference / 2f);
 
+                    if (currentObstacle != null)
+                    {
+                        if (currentObstacle.bounds.GetTop().y - ownBoundsCalculator.CalculateBounds().GetBottom().y < smallObjectJumpingThreshold)
+                        {
+                            if (Vector3.Distance(currentObstacle.transform.position, transform.position) < smallObjectJumpingDistance)
+                            {
+                                bot.Jump();
+                            }
+                        }
+                        else
+                        {
+
+                        }
+                    }
+
                     bot.Move(1f, 0f);
+
+                    // Reset it. The Obstacle Detector will give it us again, and if there is none, this will stay null.
+                    currentObstacle = null;
                 }
 
                 else

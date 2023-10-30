@@ -11,43 +11,45 @@ public class BoundsCalculator : MonoBehaviour
 
     [SerializeField] private bool drawBoundsAsGizmo;
 
-    public Bounds bounds { get; private set; }
+    //public Bounds bounds { get; private set; }
 
     private void Update()
     {
-        switch (calculationMethod)
-        {
-            case CalculationMethod.MeshBased:
-                bounds = CalculateBounds(meshes);
+        //switch (calculationMethod)
+        //{
+        //    case CalculationMethod.MeshBased:
+        //        bounds = CalculateBounds(meshes);
 
-                break;
+        //        break;
 
-            case CalculationMethod.ColliderBased:
-                bounds = CalculateBounds(colliders);
+        //    case CalculationMethod.ColliderBased:
+        //        bounds = CalculateBounds(colliders);
 
-                break;
-        }
+        //        break;
+        //}
     }
 
     private void OnDrawGizmosSelected()
     {
         if (!drawBoundsAsGizmo) return;
 
-        if (!Application.isPlaying)
-        {
-            switch (calculationMethod)
-            {
-                case CalculationMethod.MeshBased:
-                    bounds = CalculateBounds(meshes);
+        //if (!Application.isPlaying)
+        //{
+        //    switch (calculationMethod)
+        //    {
+        //        case CalculationMethod.MeshBased:
+        //            bounds = CalculateBounds(meshes);
 
-                    break;
+        //            break;
 
-                case CalculationMethod.ColliderBased:
-                    bounds = CalculateBounds(colliders);
+        //        case CalculationMethod.ColliderBased:
+        //            bounds = CalculateBounds(colliders);
 
-                    break;
-            }
-        }    
+        //            break;
+        //    }
+        //}    
+
+        Bounds bounds = CalculateBounds();
 
         Gizmos.DrawWireCube(bounds.center, bounds.size);
 
@@ -69,7 +71,27 @@ public class BoundsCalculator : MonoBehaviour
         //}        
     }
 
-    public Bounds CalculateBounds(Renderer[] meshes)
+    public Bounds CalculateBounds()
+    {
+        Bounds bounds = new Bounds();
+
+        switch (calculationMethod)
+        {
+            case CalculationMethod.MeshBased:
+                bounds = CalculateBounds(meshes);
+
+                break;
+
+            case CalculationMethod.ColliderBased:
+                bounds = CalculateBounds(colliders);
+
+                break;
+        }
+
+        return bounds;
+    }
+
+    private Bounds CalculateBounds(Renderer[] meshes)
     {
         if (meshes.Length == 0) return new Bounds(transform.position, Vector3.zero);
 
@@ -82,7 +104,7 @@ public class BoundsCalculator : MonoBehaviour
         return bounds;
     }
 
-    public Bounds CalculateBounds(Collider[] colliders)
+    private Bounds CalculateBounds(Collider[] colliders)
     {
         if (colliders.Length == 0) return new Bounds(transform.position, Vector3.zero);
 

@@ -162,7 +162,7 @@ public static class BoundsExtensions
     }
 
     // CROSS DIRECTIONS
-    public static Vector3 GetCross(this Bounds bounds, Vector3 direction)
+    public static Vector3 GetPoint(this Bounds bounds, Vector3 direction)
     {
         direction = direction.Clamp(new Vector3(-1f, -1f, -1f), new Vector3(1f, 1f, 1f));
 
