@@ -44,6 +44,48 @@ public class Obstacle
 
         return bounds.GetPoint(pointCoordinates);
     }
+
+    public Vector3 CalculateClosestPoint(Vector3 originPosition, out Vector3 coordinates)
+    {
+        Vector2 originVec2 = originPosition.ToVector2(Axis.y);
+        Vector3 pointCoordinates = Vector3.zero;
+
+        // Z-AXIS
+        Vector2 boundsFront = bounds.GetFront().ToVector2(Axis.y);
+        Vector2 boundsBack = bounds.GetBack().ToVector2(Axis.y);
+
+        // X-AXIS
+        Vector2 boundsRight = bounds.GetRight().ToVector2(Axis.y);
+        Vector2 boundsLeft = bounds.GetLeft().ToVector2(Axis.y);
+
+        // Distances
+        float frontDistance = Vector2.Distance(originVec2, boundsFront);
+        float backDistance = Vector2.Distance(originVec2, boundsBack);
+        float rightDistance = Vector2.Distance(originVec2, boundsRight);
+        float leftDistance = Vector2.Distance(originVec2, boundsLeft);
+
+        Debug.Log("Front : " + boundsFront);
+        Debug.Log("back : " + boundsBack);
+        Debug.Log("right : " + boundsRight);
+        Debug.Log("left : " + boundsLeft);
+
+        Debug.Log("Front Distance: " + frontDistance);
+        Debug.Log("back Distance: " + backDistance);
+        Debug.Log("right Distance: " + rightDistance);
+        Debug.Log("left Distance: " + leftDistance);
+
+        // Front or back?
+        if (frontDistance < backDistance) { pointCoordinates.z = 1f;}
+        else { pointCoordinates.z = -1f; }
+
+        // Right or left?
+        if (rightDistance < leftDistance) { pointCoordinates.x = 1f;}
+        else { pointCoordinates.x = -1f; }
+
+        coordinates = pointCoordinates;
+
+        return bounds.GetPoint(pointCoordinates);
+    }
 }
 
 public class ObstacleDetector : MonoBehaviour
@@ -78,15 +120,20 @@ public class ObstacleDetector : MonoBehaviour
                     Obstacle obstacle = new Obstacle(hit.transform.gameObject, boundsCalculator);
                     controller.currentObstacle = obstacle;
                 }
+                else if (hit.transform.root.TryGetComponent(out BoundsCalculator rootBoundsCalculator))
+                {
+                    Obstacle obstacle = new Obstacle(hit.transform.gameObject, rootBoundsCalculator);
+                    controller.currentObstacle = obstacle;
+                }
                 else
                 {
-                    Debug.Log("Object detected! Name: " + hit.transform.name);
+                    //Debug.Log("Object detected! Name: " + hit.transform.name);
                 }
             }
         }
         else
         {
-            Debug.Log("Nothing detected.");
+            //Debug.Log("Nothing detected.");
         }
     }
 

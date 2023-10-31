@@ -35,6 +35,8 @@ public class HeatBurnMarker : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.isPaused) { return; }
+
         if (sensor.currentHeatSource != null && sensor.currentHeat > heatThreshold)
         {
             if (currentMarkCount < maxMarkCount)

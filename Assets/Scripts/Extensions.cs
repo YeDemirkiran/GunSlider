@@ -58,6 +58,16 @@ public static class Vector2Extensions
         return vec3;
     }
 
+    public static bool IsWithinRange(this Vector2 origin, Vector2 targetPoint, float maxDistance)
+    {
+        if (Vector2.Distance(origin, targetPoint) < maxDistance)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public static float DotAngle(Vector2 forward, Vector2 direction, bool inDegrees = true)
     {
         float dot = Vector2.Dot(forward, direction);
@@ -111,6 +121,16 @@ public static class Vector3Extensions
         return vec;
     }
 
+    public static bool IsWithinRange(this Vector3 origin, Vector3 targetPoint, float maxDistance)
+    {
+        if (Vector3.Distance(origin, targetPoint) < maxDistance)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public static float DotAngle(Vector3 forward, Vector3 direction, bool inDegrees = true)
     {
         float dot = Vector3.Dot(forward, direction);
@@ -154,10 +174,20 @@ public static class BoundsExtensions
 
     public static Vector3 GetFront(this Bounds bounds)
     {
+        Debug.Log("FRONT FUNCTION");
+
+        Debug.Log("Center: " + bounds.center);
+        Debug.Log("Extents: " + bounds.extents.z);
+
         return bounds.center + (Vector3.forward * bounds.extents.z);
     }
     public static Vector3 GetBack(this Bounds bounds)
     {
+        Debug.Log("BACK FUNCTION");
+
+        Debug.Log("Center: " + bounds.center);
+        Debug.Log("Extents: " + bounds.extents.z);
+
         return bounds.center - (Vector3.forward * bounds.extents.z);
     }
 

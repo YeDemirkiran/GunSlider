@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2683703809920822432}
   - component: {fileID: 1763825509301081132}
   - component: {fileID: 2553599981906409937}
+  - component: {fileID: 179514322625340411}
   m_Layer: 0
   m_Name: Car_02
   m_TagString: Untagged
@@ -27,13 +28,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8024623025254775854}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000014620108, y: 0.74331814, z: -0.000000016245735, w: 0.66893816}
+  m_LocalRotation: {x: 0, y: 0.7433199, z: 0, w: 0.6689361}
   m_LocalPosition: {x: 4.1231775, y: -0.00020219956, z: -0.00025978818}
-  m_LocalScale: {x: 0.57950014, y: 0.57950014, z: 0.57950014}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.625, y: 0.62499994, z: 0.625}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 96.03, z: 0}
 --- !u!33 &2683703809920822432
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -106,3 +107,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 690106047850165013, guid: b1ff294ea9c9a904d9ed088b92301732, type: 3}
+--- !u!114 &179514322625340411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8024623025254775854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f4a9b7670c96b40a6662b3852c771d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  calculationMethod: 1
+  meshes: []
+  colliders:
+  - {fileID: 2553599981906409937}
+  drawBoundsAsGizmo: 1

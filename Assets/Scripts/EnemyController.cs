@@ -53,6 +53,8 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.isPaused) { return; }
+
         if (target != null)
         {
             // We're on the same Y axis so strip that away

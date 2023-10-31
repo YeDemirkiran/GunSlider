@@ -81,6 +81,8 @@ public class BotMovement : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.isPaused) { return; }
+
         Gravity();
         PushInternal();
 
