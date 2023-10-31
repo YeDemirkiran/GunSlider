@@ -174,19 +174,19 @@ public static class BoundsExtensions
 
     public static Vector3 GetFront(this Bounds bounds)
     {
-        Debug.Log("FRONT FUNCTION");
+        //Debug.Log("FRONT FUNCTION");
 
-        Debug.Log("Center: " + bounds.center);
-        Debug.Log("Extents: " + bounds.extents.z);
+        //Debug.Log("Center: " + bounds.center);
+        //Debug.Log("Extents: " + bounds.extents.z);
 
         return bounds.center + (Vector3.forward * bounds.extents.z);
     }
     public static Vector3 GetBack(this Bounds bounds)
     {
-        Debug.Log("BACK FUNCTION");
+        //Debug.Log("BACK FUNCTION");
 
-        Debug.Log("Center: " + bounds.center);
-        Debug.Log("Extents: " + bounds.extents.z);
+        //Debug.Log("Center: " + bounds.center);
+        //Debug.Log("Extents: " + bounds.extents.z);
 
         return bounds.center - (Vector3.forward * bounds.extents.z);
     }

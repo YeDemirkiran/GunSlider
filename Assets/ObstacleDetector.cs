@@ -64,15 +64,15 @@ public class Obstacle
         float rightDistance = Vector2.Distance(originVec2, boundsRight);
         float leftDistance = Vector2.Distance(originVec2, boundsLeft);
 
-        Debug.Log("Front : " + boundsFront);
-        Debug.Log("back : " + boundsBack);
-        Debug.Log("right : " + boundsRight);
-        Debug.Log("left : " + boundsLeft);
+        //Debug.Log("Front : " + boundsFront);
+        //Debug.Log("back : " + boundsBack);
+        //Debug.Log("right : " + boundsRight);
+        //Debug.Log("left : " + boundsLeft);
 
-        Debug.Log("Front Distance: " + frontDistance);
-        Debug.Log("back Distance: " + backDistance);
-        Debug.Log("right Distance: " + rightDistance);
-        Debug.Log("left Distance: " + leftDistance);
+        //Debug.Log("Front Distance: " + frontDistance);
+        //Debug.Log("back Distance: " + backDistance);
+        //Debug.Log("right Distance: " + rightDistance);
+        //Debug.Log("left Distance: " + leftDistance);
 
         // Front or back?
         if (frontDistance < backDistance) { pointCoordinates.z = 1f;}

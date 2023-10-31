@@ -75,47 +75,37 @@ public class CivillianController : MonoBehaviour
 
                             Vector2 pointDirectionVec2 = (closestPoint - transform.position).normalized.ToVector2(Axis.y);
 
-                            if (transform.position.x > closestPoint.x)
+                            // RIGHT POINTS
+                            if (faceCoordinates.x > 0f)
                             {
-                                Debug.Log("Right");
+                                // ON THE RIGHT OF THE POINT
+                                if (transform.position.x > closestPoint.x)
+                                {
+                                    targetPoint = ownBounds.GetPoint(new Vector3(faceCoordinates.z, -1f, 0f)) + (Vector3.forward * ownBoundsSize.z * faceCoordinates.z);
+                                }
+
+                                // ON THE LEFT OF THE POINT
+                                else
+                                {
+                                    targetPoint = ownBounds.GetPoint(new Vector3(-faceCoordinates.z, -1f, 0f)) + Vector3.right * ownBoundsSize.x;
+                                }                                
                             }
+
+                            // LEFT POINTS
                             else
                             {
-                                Debug.Log("Left");
+                                // ON THE RIGHT OF THE POINT
+                                if (transform.position.x > closestPoint.x)
+                                {
+                                    targetPoint = ownBounds.GetPoint(new Vector3(faceCoordinates.z, -1f, 0f)) + Vector3.right * -ownBoundsSize.x;
+                                }
+
+                                // ON THE LEFT OF THE POINT
+                                else
+                                {
+                                    targetPoint = ownBounds.GetPoint(new Vector3(-faceCoordinates.z, -1f, 0f)) + (Vector3.forward * ownBoundsSize.z * faceCoordinates.z);
+                                }
                             }
-
-                            if (transform.position.z > closestPoint.z)
-                            {
-                                Debug.Log("Front");
-                            }
-                            else
-                            {
-                                Debug.Log("Back");
-                            }
-
-                            //float verticalDot = Vector2.Dot(pointDirectionVec2, transform.forward.ToVector2(Axis.y));
-                            //float horizontalDot = Vector2.Dot(pointDirectionVec2, transform.right.ToVector2(Axis.y));
-
-                            //// On the left of the point
-                            //if (horizontalDot > 0f)
-                            //{
-                            //    ownBoundsSize.y = ownBoundsSize.x = 0f;
-
-                            //    targetPoint = closestPoint + (ownBoundsSize * faceCoordinates.z);
-                            //    Debug.Log("wuwuwuuw");
-                            //}
-
-                            //// On the right of the point
-                            //else
-                            //{
-                            //    ownBoundsSize.y = ownBoundsSize.z = 0f;
-
-                            //    targetPoint = closestPoint + (ownBoundsSize * faceCoordinates.x);
-                            //    Debug.Log("quququqqu");
-                            //}
-
-                            //Debug.Log("VERT: " + verticalDot);
-                            //Debug.Log("HORT: " + horizontalDot);
 
                             targetPoint.y = transform.position.y;
 
@@ -130,7 +120,7 @@ public class CivillianController : MonoBehaviour
                             //Debug.Log("SIZE: " + ownBoundsSize);
                             Debug.DrawLine(closestPoint, targetPoint, Color.blue);
 
-                            Debug.Break();
+                            //Debug.Break();
                             //Debug.DrawLine(transform.position, transform.position + pointDirectionVec2.ToVector3(Axis.y, 0f), Color.red);
                             Debug.DrawLine(transform.position, closestPoint, Color.red);
                             //Debug.DrawLine(transform.position, transform.position + Vector3.Scale(ownBounds.size, faceCoordinates), Color.magenta);
