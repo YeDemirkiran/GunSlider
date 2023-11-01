@@ -1,9 +1,11 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using static EnemyStates;
 
 public class Cover : Obstacle
 {
+    public Collider collider;
     public Vector3 coverSpot;
     public float coverHeight;
 
@@ -68,6 +70,7 @@ public class AggressiveAI : MonoBehaviour
 
     [Header("COVER SYSTEM")]
     [SerializeField] private float coverCheckRadius;
+    [SerializeField] private LayerMask coverLayerMask;
 
 
     private void Update()
@@ -137,25 +140,34 @@ public class AggressiveAI : MonoBehaviour
 
                             if (currentCover == null)
                             {
-                                Cover testedCover = new Cover(coverTest.gameObject, coverTest.GetComponent<BoundsCalculator>());
+                                currentCover = FindCover(coverCheckRadius, coverLayerMask);
 
-                                if (CheckCover(testedCover, Vector3.zero, bot.crouchingHeight, out Vector3 coverPosition, out float coverHeight))
-                                {
-                                    currentCover = testedCover;
+                                // If the cover is null, it means we don't have a cover nearby. We are fucked so get ready to fight
 
-                                    currentCover.coverHeight = coverHeight;
-                                    currentCover.coverSpot = coverPosition;
-
-                                    Debug.Log("Cover is good, moving towards");
+                                if (currentCover == null)
+                                {   
+                                    coverState = CoverState.Exposed;
                                 }
-                                else
-                                {
-                                    Debug.Log("Cover is not good");
-                                }
+
+                                //Cover testedCover = new Cover(coverTest.gameObject, coverTest.GetComponent<BoundsCalculator>());
+
+                                //if (CheckCover(testedCover, Vector3.zero, bot.crouchingHeight, out Vector3 coverPosition, out float coverHeight))
+                                //{
+                                //    currentCover = testedCover;
+
+                                //    currentCover.coverHeight = coverHeight;
+                                //    currentCover.coverSpot = coverPosition;
+
+                                //    Debug.Log("Cover is good, moving towards");
+                                //}
+                                //else
+                                //{
+                                //    Debug.Log("Cover is not good");
+                                //}
                             }
                             else
                             {
-                                if (MoveTowards(currentCover.coverSpot))
+                                if (MoveTowards(currentCover.collider.ClosestPoint(transform.position), 1f))
                                 {
                                     Debug.Log("Reached the cover.");
 
@@ -195,25 +207,38 @@ public class AggressiveAI : MonoBehaviour
         }
     }
 
-    private Cover FindCover(float radius, LayerMask layerMask, out Vector3 coverPosition)
+    private Cover FindCover(float radius, LayerMask layerMask)
     {
+        Debug.Log("Finding a cover");
+
+        Debug.DrawLine(transform.position, transform.position + transform.forward * radius, Color.magenta);
+        Debug.Break();
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
+        Collider[] collidersOrdered = colliders.OrderBy(c => (transform.position - c.transform.position).sqrMagnitude).ToArray();
 
-        foreach (var collider in colliders)
+        foreach (var _collider in collidersOrdered)
         {
-            if (collider.TryGetComponent(out BoundsCalculator boundsCalculator))
+            if (Vector3.Distance(_collider.transform.position, transform.position) <= radius)
             {
-                Cover cover = new Cover(boundsCalculator.gameObject, boundsCalculator);
-
-                if (CheckCover(cover, Vector3.zero, bot.crouchingHeight, out Vector3 _coverPosition, out float coverHeight))
+                if (_collider.TryGetComponent(out BoundsCalculator boundsCalculator))
                 {
-                    coverPosition = _coverPosition;
-                    return cover;
+                    Cover cover = new Cover(boundsCalculator.gameObject, boundsCalculator);
+
+                    if (CheckCover(cover, Vector3.zero, bot.crouchingHeight, out Vector3 _coverPosition, out float coverHeight))
+                    {
+                        cover.coverHeight = coverHeight;
+                        cover.coverSpot = _coverPosition;
+                        cover.collider = _collider;
+
+                        return cover;
+                    }
                 }
-            }
+            }          
         }
 
-        coverPosition = Vector3.zero;
+        Debug.Log("No Cover in radius.");    
+
         return null;
     }
 
