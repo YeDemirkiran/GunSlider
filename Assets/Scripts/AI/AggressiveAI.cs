@@ -2,6 +2,18 @@ using UnityEngine;
 using UnityEngine.Events;
 using static EnemyStates;
 
+public class Cover : Obstacle
+{
+    public Vector3 coverSpot;
+    public float coverHeight;
+
+    public Cover(GameObject gameObject, BoundsCalculator boundsCalculator) : base(gameObject, boundsCalculator)
+    {
+        
+    }
+
+}
+
 public class AggressiveAI : MonoBehaviour
 {
     public Transform target { get; set; }
@@ -14,6 +26,12 @@ public class AggressiveAI : MonoBehaviour
     [SerializeField] AttackType attackType;
 
     private AttackState attackState = AttackState.Aiming;
+
+    // COVER
+    private CoverState coverState = CoverState.Covered;
+    private Cover currentCover = null;
+
+    [SerializeField] private Transform coverTest;
 
     [SerializeField] private BotMovement bot;
     [SerializeField] private float turningSpeed = 250f;
@@ -47,6 +65,9 @@ public class AggressiveAI : MonoBehaviour
 
     [SerializeField] private int maxAttackCount;
     private int currentAttackCount;
+
+    [Header("COVER SYSTEM")]
+    [SerializeField] private float coverCheckRadius;
 
 
     private void Update()
@@ -105,6 +126,55 @@ public class AggressiveAI : MonoBehaviour
                         attackState = AttackState.Aiming;
                     }
 
+                    // Cover states
+                    switch (coverState)
+                    {
+                        case CoverState.Exposed:
+
+                            break;
+
+                        case CoverState.Covered:
+
+                            if (currentCover == null)
+                            {
+                                Cover testedCover = new Cover(coverTest.gameObject, coverTest.GetComponent<BoundsCalculator>());
+
+                                if (CheckCover(testedCover, Vector3.zero, bot.crouchingHeight, out Vector3 coverPosition, out float coverHeight))
+                                {
+                                    currentCover = testedCover;
+
+                                    currentCover.coverHeight = coverHeight;
+                                    currentCover.coverSpot = coverPosition;
+
+                                    Debug.Log("Cover is good, moving towards");
+                                }
+                                else
+                                {
+                                    Debug.Log("Cover is not good");
+                                }
+                            }
+                            else
+                            {
+                                if (MoveTowards(currentCover.coverSpot))
+                                {
+                                    Debug.Log("Reached the cover.");
+
+                                    if (currentCover.coverHeight < bot.standingHeight)
+                                    {
+                                        bot.Crouch();
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.Log("Not at the cover yet");
+                                }
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+
                     // Attack states
 
                     switch (attackState)
@@ -124,6 +194,172 @@ public class AggressiveAI : MonoBehaviour
             }
         }
     }
+
+    private Cover FindCover(float radius, LayerMask layerMask, out Vector3 coverPosition)
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
+
+        foreach (var collider in colliders)
+        {
+            if (collider.TryGetComponent(out BoundsCalculator boundsCalculator))
+            {
+                Cover cover = new Cover(boundsCalculator.gameObject, boundsCalculator);
+
+                if (CheckCover(cover, Vector3.zero, bot.crouchingHeight, out Vector3 _coverPosition, out float coverHeight))
+                {
+                    coverPosition = _coverPosition;
+                    return cover;
+                }
+            }
+        }
+
+        coverPosition = Vector3.zero;
+        return null;
+    }
+
+    private bool CheckCover(Cover cover, Vector3 referenceGroundPosition, float crouchingHeight, out Vector3 coverPosition, out float coverHeight)
+    {
+        Bounds coverBounds = cover.bounds;
+
+        // If the cover doesn't cover us, is it even a cover?
+        if (CheckCoverHeight(out float _coverHeight))
+        {
+            // Get the best position between the target and the cover, for hiding
+
+            Vector3 coverCoordinates = GetCoverCoordinates();
+
+            if (CheckCoverWidth(coverCoordinates))
+            {
+                coverHeight = _coverHeight;
+                coverPosition = coverBounds.GetPoint(coverCoordinates);
+                return true;
+            }
+        }
+
+        coverHeight = 0;
+        coverPosition = Vector3.zero;
+        return false;
+
+        bool CheckCoverHeight(out float coverHeight)
+        {
+            Vector3 topFace = coverBounds.GetTop();
+            Vector3 bottomFace = coverBounds.GetBottom();
+
+            float heightBetweenGroundAndTop = topFace.y - referenceGroundPosition.y;
+            float heightBetweenGroundAndBottom = bottomFace.y - referenceGroundPosition.y;
+
+            if (heightBetweenGroundAndBottom < crouchingHeight / 2f)
+            {
+                if (heightBetweenGroundAndTop > crouchingHeight)
+                {
+                    coverHeight = heightBetweenGroundAndTop;
+                    return true;
+                }
+            }            
+
+            coverHeight = 0f;
+            return false;
+        }
+
+        bool CheckCoverWidth(Vector3 selectedSpot)
+        {
+            Debug.Log("Don't forget to implement cover width checking");
+
+            return true;
+        }
+
+        Vector3 GetCoverCoordinates()
+        {
+            Vector3 point = cover.CalculateClosestPoint(target.position, out Vector3 coordinates);
+            Vector3 targetCornerCoordinates = -Vector3.up;
+
+            // RIGHT CORNERS
+            if (coordinates.x > 0f)
+            {
+                // ON THE RIGHT OF THE CORNER
+                if (target.position.x > point.x)
+                {
+                    targetCornerCoordinates.x = -1f;
+                }
+
+                // ON THE LEFT OF THE POINT
+                else
+                {
+                    if (target.position.z > point.z)
+                    {
+                        targetCornerCoordinates.z = -1f;
+                    }
+                    else
+                    {
+                        targetCornerCoordinates.z = 1f;
+                    }
+                }
+            }
+
+            // LEFT CORNERS
+            else
+            {
+                // ON THE RIGHT OF THE CORNER
+                if (target.position.x > point.x)
+                {
+                    if (target.position.z > point.z)
+                    {
+                        targetCornerCoordinates.z = -1f;
+                    }
+                    else
+                    {
+                        targetCornerCoordinates.z = 1f;
+                    }
+                }
+
+                // ON THE LEFT OF THE POINT
+                else
+                {
+                    targetCornerCoordinates.x = 1f;
+                }
+            }            
+
+            return targetCornerCoordinates;
+        }
+    }
+
+    #region MOVING
+
+    /// <summary>
+    /// First calculates whether the NPC is on the target position. Returns true if so, Returns false and moves towards target,
+    /// if not.
+    /// </summary>
+    private bool MoveTowards(Vector3 targetPosition, float errorMargin = 0.25f, Vector2 inputOverrider = new Vector2())
+    {
+        if (inputOverrider.x == 0f && inputOverrider.y == 0f)
+        {
+            inputOverrider = Vector2.one;
+        }
+
+        Vector2 transformVec2 = transform.position.ToVector2(Axis.y);
+        Vector2 targetVec2 = targetPosition.ToVector2(Axis.y);
+
+        if (transformVec2.IsWithinRange(targetVec2, errorMargin))
+        {
+            return true;
+        }
+
+        Vector2 forwardDirectionVec2 = (targetPosition - transform.position).normalized.ToVector2(Axis.y);
+        Vector2 sideDirectionVec2 = (targetPosition - transform.position).normalized.ToVector2(Axis.y);
+
+        float verticalDot = Vector2.Dot(forwardDirectionVec2, transform.forward.ToVector2(Axis.y));
+        float horizontalDot = Vector2.Dot(sideDirectionVec2, transform.right.ToVector2(Axis.y));
+
+        verticalDot = Mathf.Abs(verticalDot) < 0.025f ? 0f : verticalDot;
+        horizontalDot = Mathf.Abs(horizontalDot) < 0.025f ? 0f : horizontalDot;
+
+        bot.Move(verticalDot * inputOverrider.y, horizontalDot * inputOverrider.x);
+
+        Debug.DrawLine(transformVec2.ToVector3(Axis.y, transform.position.y), targetVec2.ToVector3(Axis.y, transform.position.y), Color.green);
+
+        return false;
+    }
+    #endregion
 
     private void Aim()
     {

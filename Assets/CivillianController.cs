@@ -66,14 +66,10 @@ public class CivillianController : MonoBehaviour
                         }
                         else
                         {
-                            //Debug.Log("Transform: " + transform.position);
-
                             Vector3 closestPoint = currentObstacle.CalculateClosestPoint(transform.position, out Vector3 faceCoordinates);
-                            Vector3 targetPoint = default;
+                            Vector3 targetPoint;
 
                             Vector3 ownBoundsSize = ownBounds.size;       
-
-                            Vector2 pointDirectionVec2 = (closestPoint - transform.position).normalized.ToVector2(Axis.y);
 
                             // RIGHT POINTS
                             if (faceCoordinates.x > 0f)
@@ -109,21 +105,9 @@ public class CivillianController : MonoBehaviour
 
                             targetPoint.y = transform.position.y;
 
-                            //secondaryTargetPosition = transform.position + Vector3.Scale(ownBounds.size, faceCoordinates);
                             secondaryTargetPosition = targetPoint;
 
                             currentChasedTarget = CurrentChasedTarget.secondaryTarget;
-
-                            //Debug.Log("closestPoint: " + closestPoint);
-
-                            //Debug.Log("COORDINATES: " + faceCoordinates);
-                            //Debug.Log("SIZE: " + ownBoundsSize);
-                            Debug.DrawLine(closestPoint, targetPoint, Color.blue);
-
-                            //Debug.Break();
-                            //Debug.DrawLine(transform.position, transform.position + pointDirectionVec2.ToVector3(Axis.y, 0f), Color.red);
-                            Debug.DrawLine(transform.position, closestPoint, Color.red);
-                            //Debug.DrawLine(transform.position, transform.position + Vector3.Scale(ownBounds.size, faceCoordinates), Color.magenta);
                         }
                     }
 
@@ -173,8 +157,6 @@ public class CivillianController : MonoBehaviour
                     }
                 }
             }
-
-            Debug.Log(currentChasedTarget);
         }    
     }
 

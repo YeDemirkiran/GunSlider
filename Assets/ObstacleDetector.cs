@@ -74,11 +74,11 @@ public class Obstacle
         //Debug.Log("right Distance: " + rightDistance);
         //Debug.Log("left Distance: " + leftDistance);
 
-        // Front or back?
+        // Front, middle or back?
         if (frontDistance < backDistance) { pointCoordinates.z = 1f;}
         else { pointCoordinates.z = -1f; }
 
-        // Right or left?
+        // Right, middle or left?
         if (rightDistance < leftDistance) { pointCoordinates.x = 1f;}
         else { pointCoordinates.x = -1f; }
 

@@ -192,13 +192,13 @@ public static class BoundsExtensions
     }
 
     // CROSS DIRECTIONS
-    public static Vector3 GetPoint(this Bounds bounds, Vector3 direction)
+    public static Vector3 GetPoint(this Bounds bounds, Vector3 coordinates)
     {
-        direction = direction.Clamp(new Vector3(-1f, -1f, -1f), new Vector3(1f, 1f, 1f));
+        coordinates = coordinates.Clamp(new Vector3(-1f, -1f, -1f), new Vector3(1f, 1f, 1f));
 
-        float right = bounds.center.x + (bounds.extents.x * direction.x);
-        float up = bounds.center.y + (bounds.extents.y * direction.y);
-        float forward = bounds.center.z + (bounds.extents.z * direction.z);
+        float right = bounds.center.x + (bounds.extents.x * coordinates.x);
+        float up = bounds.center.y + (bounds.extents.y * coordinates.y);
+        float forward = bounds.center.z + (bounds.extents.z * coordinates.z);
 
         return new Vector3(right, up, forward);
     }

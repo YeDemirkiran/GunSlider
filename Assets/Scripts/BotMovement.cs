@@ -38,8 +38,8 @@ public class BotMovement : MonoBehaviour
     private float jumpApex = 0f;
 
     [Header("CROUCH")]
-    [SerializeField] private float standingHeight;
-    [SerializeField] private float crouchingHeight;
+    public float standingHeight;
+    public float crouchingHeight;
     [SerializeField] private float crouchTransitionDuration;
     private LerpFloat crouchLerp = new LerpFloat(0f);
     private Vector3 meshStandingPosition, meshCrouchingPosition;

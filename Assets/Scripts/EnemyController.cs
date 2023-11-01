@@ -8,6 +8,8 @@ public class EnemyStates
 
     public enum AttackType { Melee = 0, Ranged = 1 }
     public enum AttackState { Aiming = 0, Attacking = 1 }
+
+    public enum CoverState { Exposed = 0, Covered = 1 }
 }
 
 public class EnemyController : MonoBehaviour
