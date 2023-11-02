@@ -17,27 +17,21 @@ public class BoundsCalculator : MonoBehaviour
 
         Bounds bounds = CalculateBounds();
 
-        Gizmos.DrawWireCube(bounds.center, bounds.size);       
+        Gizmos.DrawWireCube(bounds.center, bounds.size);
     }
 
     public Bounds CalculateBounds()
     {
-        Bounds bounds = new Bounds();
-
         switch (calculationMethod)
         {
             case CalculationMethod.MeshBased:
-                bounds = CalculateBounds(meshes);
-
-                break;
+                return CalculateBounds(meshes);
 
             case CalculationMethod.ColliderBased:
-                bounds = CalculateBounds(colliders);
-
-                break;
+                return CalculateBounds(colliders);
         }
 
-        return bounds;
+        return default;
     }
 
     private Bounds CalculateBounds(Renderer[] meshes)
@@ -46,10 +40,14 @@ public class BoundsCalculator : MonoBehaviour
 
         Bounds bounds = meshes[0].bounds;
 
-        foreach (Renderer renderer in meshes)
+        if (meshes.Length > 1)
         {
-            bounds.Encapsulate(renderer.bounds);
+            foreach (Renderer renderer in meshes)
+            {
+                bounds.Encapsulate(renderer.bounds);
+            }
         }
+
         return bounds;
     }
 
@@ -59,10 +57,13 @@ public class BoundsCalculator : MonoBehaviour
 
         Bounds bounds = colliders[0].bounds;
 
-        foreach (Collider collider in colliders)
+        if (colliders.Length > 1)
         {
-            bounds.Encapsulate(collider.bounds);
-        }
+            foreach (Collider collider in colliders)
+            {
+                bounds.Encapsulate(collider.bounds);
+            }
+        }      
 
         return bounds;
     }

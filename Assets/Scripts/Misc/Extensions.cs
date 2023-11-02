@@ -202,4 +202,17 @@ public static class BoundsExtensions
 
         return new Vector3(right, up, forward);
     }
+
+    public static Vector3 GetPoint(this Bounds bounds, float x, float y, float z)
+    {
+        Vector3 coordinates = new Vector3(x, y, z);
+
+        coordinates = coordinates.Clamp(new Vector3(-1f, -1f, -1f), new Vector3(1f, 1f, 1f));
+
+        float right = bounds.center.x + (bounds.extents.x * coordinates.x);
+        float up = bounds.center.y + (bounds.extents.y * coordinates.y);
+        float forward = bounds.center.z + (bounds.extents.z * coordinates.z);
+
+        return new Vector3(right, up, forward);
+    }
 }
