@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum Axis { x, y, z }
+public enum Axis2D { x, y }
 
 // MOVE THESE TO A PROPER PLACE LATER
 

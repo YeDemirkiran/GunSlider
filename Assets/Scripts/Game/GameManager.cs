@@ -17,50 +17,35 @@ public class GameManager : MonoBehaviour
 
     private static int startCounter = 0, pauseCounter = 0, resumeCounter = 0, mainMenuCounter = 0;
 
+    [Header("Scene Management")]
+    [SerializeField] private int menuSceneIndex = 0;
+    [SerializeField] private int gameSceneIndex = 1;
+
     [Header("UI")]
-    [SerializeField] private GameObject[] mainMenuElements, inGameElements, pauseMenuElements, deathMenuElements;
+    [SerializeField] private GameObject[] mainMenuElements;
+    [SerializeField] private GameObject[] inGameElements, pauseMenuElements, deathMenuElements;
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+
+            gameState = GameState.Paused;
+            pauseState = PauseState.MainMenu;
         }
         else
         {
             Destroy(this);
-        }
-
-        gameState = GameState.Paused;
-        pauseState = PauseState.MainMenu;
+            Destroy(gameObject);
+            return;
+        }     
     }
 
-    //private void Start()
-    //{
-    //    SceneManager.LoadSceneAsync("Game 1", LoadSceneMode.Additive);   
-    //}
-
-    // Update is called once per frame
     void Update()
     {
         // Reset the counters so an object can call one of these
         startCounter = pauseCounter = resumeCounter = mainMenuCounter = 0;
-
-        //if (Input.GetKeyDown(KeyCode.Escape))
-        //{
-        //    if (isPaused)
-        //    {
-        //        if (pauseState != PauseState.MainMenu)
-        //        {
-        //            ResumeGame();
-        //        }
-        //    }
-
-        //    else
-        //    {
-        //        PauseGame(PauseState.PauseMenu);
-        //    }
-        //}
 
         OnGameStateChange();
 
@@ -70,10 +55,6 @@ public class GameManager : MonoBehaviour
         }
 
         SetUI(gameState, pauseState);
-
-        //Debug.Log("CURRENT GAME STATE: " + gameState);
-        //Debug.Log("CURRENT PAUSE STATE: " + pauseState);
-        //Debug.Log("TIMESCALE: " + Time.timeScale);
     }
 
     // GAME STATE // 
@@ -225,6 +206,8 @@ public class GameManager : MonoBehaviour
         {
             gameState = GameState.Running;
 
+            SceneManager.LoadScene(gameSceneIndex);
+
             startCounter++;
         }
     }
@@ -288,8 +271,8 @@ public class GameManager : MonoBehaviour
     {
         if (mainMenuCounter == 0)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            //PauseGame(PauseState.MainMenu);
+            SceneManager.LoadScene(menuSceneIndex);
+            PauseGame(PauseState.MainMenu);
 
             //mainMenuCounter++;
         }
