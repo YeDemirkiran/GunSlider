@@ -1,12 +1,16 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraEffects : MonoBehaviour
 {
     [HideInInspector] public static CameraEffects Instance;
 
+    public float moveDuration { get; set; } = 1f;
+
+    public AnimationCurve moveCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+
     private Coroutine currentShake;
+    private Coroutine currentMoveTowards;
 
     // Start is called before the first frame update
     void Awake()
@@ -14,6 +18,11 @@ public class CameraEffects : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+            Destroy(gameObject);
         }
     }
 
@@ -26,7 +35,6 @@ public class CameraEffects : MonoBehaviour
         
         currentShake = StartCoroutine(IShake(duration, amplitude, frequency));
     }
-
     private IEnumerator IShake(float duration, float amplitude, float frequency)
     {
         float durationTimer = 0f;
@@ -54,5 +62,36 @@ public class CameraEffects : MonoBehaviour
         }
 
         transform.localPosition = defaultPosition;
+    }
+
+    public void MoveTowards(Transform target)
+    {
+        if (currentMoveTowards != null)
+        {
+            StopCoroutine(currentMoveTowards);
+        }
+
+        currentMoveTowards = StartCoroutine(IMoveTowards(target));
+    }
+
+    private IEnumerator IMoveTowards(Transform target)
+    {
+        float lerp = 0f;
+
+        Vector3 initialPosition = transform.position;
+        Quaternion initialRotation = transform.rotation;
+
+        Vector3 targetPosition = target.position;
+        Quaternion targetRotation = target.rotation;
+
+        while (lerp < 1f)
+        {
+            lerp += Time.deltaTime / moveDuration;
+
+            transform.position = Vector3.Lerp(initialPosition, targetPosition, moveCurve.Evaluate(lerp));
+            transform.rotation = Quaternion.Lerp(initialRotation, targetRotation, lerp);
+
+            yield return null;
+        }
     }
 }

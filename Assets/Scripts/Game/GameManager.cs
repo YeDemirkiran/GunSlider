@@ -3,6 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    private delegate void Log(string message);
+
+    private Log Normal = (string message) => { Debug.Log(message); };
+    private Log Warning = (string message) => { Debug.LogWarning(message); };
+    private Log Error = (string message) => { Debug.LogError(message); };
+
     public static GameManager Instance;
 
     public enum GameState { Running, Paused, Interrupted }
@@ -25,8 +31,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] mainMenuElements;
     [SerializeField] private GameObject[] inGameElements, pauseMenuElements, deathMenuElements;
 
+    private void LogMessage(Log log)
+    {
+        log("anan");
+    }
+
     void Awake()
     {
+        LogMessage(Error);
+
         if (Instance == null)
         {
             Instance = this;
@@ -105,13 +118,25 @@ public class GameManager : MonoBehaviour
     {
         SetCursor(false);
         Time.timeScale = 1f;
-        //Debug.Log("ANNA");
     }
 
     private void OnPause()
     {
         SetCursor(true);
-        Time.timeScale = 0.00001f;
+
+        switch (pauseState)
+        {
+            case PauseState.MainMenu:
+                Time.timeScale = 1f;
+                break;
+            case PauseState.PauseMenu:
+                Time.timeScale = 0.00001f;
+                break;
+            case PauseState.DeathMenu:
+                Time.timeScale = 0.00001f;
+                break;
+        }
+        
     }
 
     private void OnInterrupt()
@@ -276,5 +301,14 @@ public class GameManager : MonoBehaviour
 
             //mainMenuCounter++;
         }
+    }
+
+    public void ExitGame()
+    {
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+
+        Application.Quit();
     }
 }
