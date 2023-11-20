@@ -3,12 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private delegate void Log(string message);
-
-    private Log Normal = (string message) => { Debug.Log(message); };
-    private Log Warning = (string message) => { Debug.LogWarning(message); };
-    private Log Error = (string message) => { Debug.LogError(message); };
-
     public static GameManager Instance;
 
     public enum GameState { Running, Paused, Interrupted }
@@ -27,22 +21,20 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int menuSceneIndex = 0;
     [SerializeField] private int gameSceneIndex = 1;
 
+    public int currentLevel { get; private set; } = 1;
+
     [Header("UI")]
     [SerializeField] private GameObject[] mainMenuElements;
     [SerializeField] private GameObject[] inGameElements, pauseMenuElements, deathMenuElements;
 
-    private void LogMessage(Log log)
-    {
-        log("anan");
-    }
-
     void Awake()
     {
-        LogMessage(Error);
-
         if (Instance == null)
         {
             Instance = this;
+
+            transform.parent = null;
+            DontDestroyOnLoad(gameObject);
 
             gameState = GameState.Paused;
             pauseState = PauseState.MainMenu;
@@ -74,39 +66,23 @@ public class GameManager : MonoBehaviour
 
     private void OnGameStateChange()
     {
-        //Debug.Log("1");
-
         if (gameState != previousGameState)
         {
-            //Debug.Log("2");
-
             switch (gameState)
             {
                 case GameState.Running:
                     OnResume();
-
-                    //Debug.Log("3");
-
                     break;
 
                 case GameState.Paused:
                     OnPause();
-
-                    //Debug.Log("4");
-
                     break;
 
                 case GameState.Interrupted:
                     OnInterrupt();
-
-                    //Debug.Log("5");
-
                     break;
 
                 default:
-
-                    //Debug.Log("6");
-
                     break;
             }
 
