@@ -6,9 +6,8 @@ public class UIScaleWithOrigin : MonoBehaviour
     [SerializeField] private float origin, originMaxDifference;
     [SerializeField] private Vector2 maxScale, minScale;
 
-    private new RectTransform transform;
+    new RectTransform transform;
 
-    // Start is called before the first frame update
     void Awake()
     {
         transform = GetComponent<RectTransform>();
@@ -16,6 +15,11 @@ public class UIScaleWithOrigin : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        transform.localScale = CurrentScale();
+    }
+
+    public Vector2 CurrentScale()
     {
         float originDifference = 0f;
 
@@ -28,10 +32,10 @@ public class UIScaleWithOrigin : MonoBehaviour
             case Axis2D.y:
                 originDifference = origin - transform.localPosition.y;
                 break;
-        }        
+        }
 
         originDifference = Mathf.Abs(originDifference) / originMaxDifference;
 
-        transform.localScale = Vector2.Lerp(minScale, maxScale, 1f - originDifference);
+        return Vector2.Lerp(minScale, maxScale, 1f - originDifference);
     }
 }

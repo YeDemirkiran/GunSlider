@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int menuSceneIndex = 0;
     [SerializeField] private int gameSceneIndex = 1;
 
-    public int currentLevel { get; private set; } = 1;
+    public int currentLevel { get; private set; } = 44;
 
     [Header("UI")]
     [SerializeField] private GameObject[] mainMenuElements;
