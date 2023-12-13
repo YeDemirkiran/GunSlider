@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     {
         playerInput.Enable();
 
-        playerInput.Default.PauseGame.performed += ctx => GameManager.Instance.Pause();
+        playerInput.Default.PauseGame.performed += ctx => PauseKey();
 
         playerInput.Default.Crouch.performed += ctx => 
         {
@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
     {
         playerInput.Disable();
 
-        playerInput.Default.PauseGame.performed -= ctx => GameManager.Instance.Pause();
+        playerInput.Default.PauseGame.performed -= ctx => PauseKey();
 
         playerInput.Default.Crouch.performed -= ctx =>
         {
@@ -68,29 +68,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!GameManager.isPaused)
         {
-            //foreach (KeyCode key in crouchKeys)
-            //{
-            //    if (Input.GetKeyDown(key))
-            //    {
-            //        bot.Crouch();
-                    
-
-            //        Debug.Log("Crouched");
-            //        break;
-            //    }
-            //    else if (Input.GetKeyUp(key))
-            //    {
-            //        bot.StandUp();
-
-            //        Debug.Log("Stood up");
-            //        break;
-            //    }
-            //}
-
-            //if (Input.GetKey(KeyCode.Space)) bot.Jump();
-            //if (Input.GetKeyDown(KeyCode.Space)) bot.Push();
-
-
             Vector2 movementInput = playerInput.Default.Move.ReadValue<Vector2>();
             bot.Move(movementInput.y, movementInput.x);
 
@@ -100,8 +77,18 @@ public class PlayerController : MonoBehaviour
 
             Vector2 weaponInput = playerInput.Default.MoveWeapon.ReadValue<Vector2>();
             gunController.Rotate(weaponInput.y, weaponInput.x, true);
+        }
+    }
 
-            //bot.RotateSpine(Input.GetAxis("Mouse X") * 100f, Input.GetAxis("Mouse Y") * 100f, true);
+    void PauseKey()
+    {
+        if (!GameManager.isPaused)
+        {
+            GameManager.Instance.Pause();
+        }
+        else
+        {
+            GameManager.Instance.Resume();
         }
     }
 }

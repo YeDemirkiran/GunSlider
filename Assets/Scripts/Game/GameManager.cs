@@ -45,13 +45,6 @@ public class GameManager : MonoBehaviour
         }     
     }
 
-    private void OnInterrupt()
-    {
-        SetCursor(true);
-
-        Time.timeScale = 0.00001f;
-    }
-
     private void SetCursor(bool isActive)
     {
         Cursor.lockState = isActive ? CursorLockMode.None : CursorLockMode.Locked;
