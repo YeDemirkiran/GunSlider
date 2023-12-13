@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     {
         playerInput.Enable();
 
-        playerInput.Default.PauseGame.performed += ctx => GameManager.Instance.PauseGame();
+        playerInput.Default.PauseGame.performed += ctx => GameManager.Instance.Pause();
 
         playerInput.Default.Crouch.performed += ctx => 
         {
@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
     {
         playerInput.Disable();
 
-        playerInput.Default.PauseGame.performed -= ctx => GameManager.Instance.PauseGame();
+        playerInput.Default.PauseGame.performed -= ctx => GameManager.Instance.Pause();
 
         playerInput.Default.Crouch.performed -= ctx =>
         {
