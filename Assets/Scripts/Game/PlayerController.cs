@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private PlayerInput playerInput;
+    PlayerInput playerInput;
 
     [SerializeField] private BotMovement bot;
     [SerializeField] private CameraController cameraController;
     [SerializeField] private GunController gunController;
 
-    [SerializeField] KeyCode[] crouchKeys;
-
-    private bool isPressingJump = false;
+    bool isPressingJump = false;
 
     private void Awake()
     {
@@ -59,8 +57,6 @@ public class PlayerController : MonoBehaviour
 
         playerInput.Default.Shoot.performed -= ctx => gunController.Shoot();
         playerInput.Default.Reload.performed -= ctx => gunController.Reload();
-
-        //playerInput.Default.Punch.performed -= ctx => bot.Punch();
     }
 
     // Update is called once per frame

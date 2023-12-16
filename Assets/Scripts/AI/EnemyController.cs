@@ -125,7 +125,7 @@ public class EnemyController : MonoBehaviour
 
                         if (aimTimer > currentAimTime)
                         {
-                            gunController.AimAtTarget(target.position, aimErrorMargin);
+                            //gunController.AimAtTarget(target.position, aimErrorMargin);
 
                             aimTimer = 0f;
                             currentAimTime = Random.Range(aimIntervalMinMax.x, aimIntervalMinMax.y);
