@@ -38,7 +38,7 @@ public class AggressiveAI : MonoBehaviour
     [SerializeField] private BotMovement bot;
     [SerializeField] private float turningSpeed = 250f;
 
-    [SerializeField] private AimTarget aimTarget;
+    [SerializeField] private TargetAim targetAim;
 
     private bool inRange = false;
 
@@ -392,10 +392,10 @@ public class AggressiveAI : MonoBehaviour
 
         if (aimTimer > currentAimTime)
         {
-            if (aimTarget.aimingDone)
+            if (targetAim.aimingDone)
             {
-                DynamicAim.ChooseTarget(ref aimTarget, target.GetComponent<BodyHitpoints>());
-                aimTarget.Aim(false, aimSpeed);
+                DynamicAim.ChooseTarget(ref targetAim, target.GetComponent<BodyHitpoints>());
+                targetAim.Aim(false, aimSpeed);
             }
             else
             {

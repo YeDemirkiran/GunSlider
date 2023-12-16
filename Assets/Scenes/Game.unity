@@ -14407,7 +14407,7 @@ MonoBehaviour:
   coverTest: {fileID: 0}
   bot: {fileID: 625236082}
   turningSpeed: 250
-  aimTarget: {fileID: 898980690}
+  targetAim: {fileID: 0}
   rangedAttackRadius: 10
   rangedAngleDifference: 60
   gunController: {fileID: 625236081}
@@ -17941,8 +17941,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 625236080}
-  target: {fileID: 0}
-  aimingDone: 1
+  <target>k__BackingField: {fileID: 0}
+  <aimingDone>k__BackingField: 1
 --- !u!4 &901530230 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8165374155097924456, guid: ab223b1335c49844fb240b34a3def0f0,
@@ -23485,6 +23485,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0f087a75243bbf448202e28bed0ba4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!20 &1226617294 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 8247961600168339986, guid: 83502bab4c4e5a84ea70549441ba932b,
@@ -24593,7 +24617,7 @@ GameObject:
   - component: {fileID: 1322718923}
   - component: {fileID: 1322718924}
   m_Layer: 0
-  m_Name: AimTarget
+  m_Name: TargetAim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24623,12 +24647,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1322718922}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 803085da9e364754abff2708307bc9e4, type: 3}
+  m_Script: {fileID: 11500000, guid: a13deaa1f1241d44cb24de0f7850304d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 2041324057}
-  target: {fileID: 0}
-  aimingDone: 1
 --- !u!1001 &1324502053
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33746,7 +33768,7 @@ MonoBehaviour:
   coverTest: {fileID: 1792544709}
   bot: {fileID: 2120534218}
   turningSpeed: 250
-  aimTarget: {fileID: 1322718924}
+  targetAim: {fileID: 1322718924}
   rangedAttackRadius: 10
   rangedAngleDifference: 60
   gunController: {fileID: 1583412562}
@@ -36962,7 +36984,7 @@ PrefabInstance:
     - target: {fileID: 892355928474138106, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 892355928474138106, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
@@ -36972,7 +36994,7 @@ PrefabInstance:
     - target: {fileID: 906489047065032082, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
       propertyPath: maxHealth
-      value: 999
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 906489047065032082, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}
@@ -37278,6 +37300,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4799037795218299997, guid: 5682fdf8f476972468cc968545918d04,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4799037795218299997, guid: 5682fdf8f476972468cc968545918d04,
         type: 3}

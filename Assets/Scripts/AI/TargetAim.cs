@@ -1,42 +1,14 @@
 using System.Collections;
 using UnityEngine;
 
-public class AimTarget : MonoBehaviour
+public class TargetAim : MonoBehaviour
 {
     public Transform parent;
-    [HideInInspector] public Hitpoint target;
+    public Hitpoint target {  get; set; }
 
-    [HideInInspector] public bool aimingDone = true;
+    public bool aimingDone { get; private set; } =  true;
 
-    private Coroutine aimRoutine;
-
-    // Update is called once per frame
-    void Update()
-    {
-        //if (delay > 0f)
-        //{
-        //    if (delayTimer > delay)
-        //    {
-        //        if (aimRoutine != null) StopCoroutine(aimRoutine);
-
-        //        aimRoutine = StartCoroutine(AimCoroutine());
-
-        //        delayTimer = 0f;
-        //    }
-        //    else
-        //    {
-        //        if (aimRoutine == null) delayTimer += Time.deltaTime;
-        //    }
-        //}
-
-        //else
-        //{
-        //    direction = (target.transform.position - parent.position).normalized;
-        //    transform.position = parent.position + direction;
-        //}
-
-        //transform.rotation = Quaternion.LookRotation(direction);
-    }
+    Coroutine aimRoutine;
 
     public void Aim(bool constant, float aimSpeed)
     {

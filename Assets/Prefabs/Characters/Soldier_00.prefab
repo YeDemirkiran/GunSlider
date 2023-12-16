@@ -381,6 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 8465556957577412514}
   clipsOnHits:
@@ -578,6 +579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -779,6 +781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -1606,6 +1609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -1624,6 +1628,7 @@ GameObject:
   - component: {fileID: 2390231301018613732}
   - component: {fileID: 1089942014974980113}
   - component: {fileID: 2016025215446617100}
+  - component: {fileID: 3809339912058034796}
   m_Layer: 3
   m_Name: Laser
   m_TagString: Untagged
@@ -1764,11 +1769,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 1089942014974980113}
-  laserMaxDistance: 500
   laserLight: {fileID: 8320117479701152202}
+  laserMaxDistance: 500
   layerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 345
+--- !u!114 &3809339912058034796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2210051879094579640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7b266b6583cf204f866fc298bbaa99c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laserColor: {r: 0, g: 0, b: 0, a: 0}
+  colorIntensity: 0
 --- !u!1 &2256323334248283668
 GameObject:
   m_ObjectHideFlags: 0
@@ -1968,6 +1987,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -2148,6 +2168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -7721,6 +7742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -8172,6 +8194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -8524,6 +8547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -8782,6 +8806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -8941,6 +8966,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -9069,6 +9095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 481a5d0c763eaf449818a5385e46ac81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 0}
   damageMultiplier: 1
   audioSource: {fileID: 0}
   clipsOnHits: []
@@ -9306,12 +9333,14 @@ MonoBehaviour:
   enemyState: 2
   attackType: 1
   bot: {fileID: 1817209378042442184}
+  turningSpeed: 250
   meleeAttackRadius: 5
   gunController: {fileID: 3765023510799302772}
   rangedAttackRadius: 20
   actionTimeMinMax: {x: 0.25, y: 0.75}
   aimIntervalMinMax: {x: 0.1, y: 0.5}
   aimErrorMargin: 0.25
+  rangedAngleDifference: 0
   changePositionOnHit: 0
   maxAngleDifference: 0
   escapingMinDistance: 0
