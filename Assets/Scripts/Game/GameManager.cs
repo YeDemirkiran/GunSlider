@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int menuSceneIndex = 0;
     [SerializeField] private int gameSceneIndex = 1;
 
-    public int currentLevel { get; private set; } = 0;
+    public int currentLevel { get { return PlayerData.lastPlayedLevel; } }
 
     void Awake()
     {
@@ -104,5 +104,25 @@ public class GameManager : MonoBehaviour
         #endif
 
         Application.Quit();
+    }
+}
+
+public static class PlayerData
+{
+    public static int lastUnlockedLevel { get; set; }
+    public static int lastPlayedLevel { get; set; }
+
+    public static int money { get; set; }
+
+    public static int[] unlockedStoreItems { get; set; }
+
+    public static void InitializeData()
+    {
+        // Implement
+    }
+
+    public static void SaveData()
+    {
+        // Implement
     }
 }
