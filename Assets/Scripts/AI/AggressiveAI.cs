@@ -75,7 +75,7 @@ public class AggressiveAI : MonoBehaviour
 
     private void Update()
     {
-        if (target == null) { return; }
+        if (GameManager.isPaused || target == null) { return; }
 
         // We're on the same Y axis so strip that away
         Vector2 transformPosVec2 = transform.position.ToVector2(Axis.y);
